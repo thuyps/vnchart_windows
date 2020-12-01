@@ -1,0 +1,554 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{86971DD6-304A-41F2-B8DA-9E4518F54128}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>stock123</RootNamespace>
+    <AssemblyName>vnChart</AssemblyName>
+    <ApplicationIcon>Icon1.ico</ApplicationIcon>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>dlls\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="app\chart\ChartADX.cs" />
+    <Compile Include="app\chart\ChartAroon.cs" />
+    <Compile Include="app\chart\ChartBase.cs" />
+    <Compile Include="app\chart\ChartBollinger.cs" />
+    <Compile Include="app\chart\ChartBubble.cs" />
+    <Compile Include="app\chart\ChartCFM.cs" />
+    <Compile Include="app\chart\ChartChangeIndex.cs" />
+    <Compile Include="app\chart\ChartIchimoku.cs" />
+    <Compile Include="app\chart\ChartLine.cs" />
+    <Compile Include="app\chart\ChartMACD.cs" />
+    <Compile Include="app\chart\ChartOBV.cs" />
+    <Compile Include="app\chart\ChartParabollic.cs" />
+    <Compile Include="app\chart\ChartStochastic.cs" />
+    <Compile Include="app\chart\ChartStochRSI.cs" />
+    <Compile Include="app\chart\ChartVolume.cs" />
+    <Compile Include="app\chart\ChartEnvelopes.cs" />
+    <Compile Include="app\chart\ChartMoney.cs" />
+    <Compile Include="app\chart\ChartVolumeByPrice.cs" />
+    <Compile Include="app\chart\ChartVStop.cs" />
+    <Compile Include="app\chart\ChartWilliamR.cs" />
+    <Compile Include="app\chart\ChartZigzag.cs" />
+    <Compile Include="app\chart\ChartMaster.cs" />
+    <Compile Include="app\chart\ChartFrame.cs" />
+    <Compile Include="app\chart\ChartNhomnganhTangtruong.cs" />
+    <Compile Include="app\chart\ChartTangtruongGroup.cs" />
+    <Compile Include="app\chart\ChartStatistics.cs" />
+    <Compile Include="app\chart\IndexCandle.cs" />
+    <Compile Include="app\chart\QuotePoint.cs" />
+    <Compile Include="app\chart\Drawer.cs" />
+    <Compile Include="app\chart\RealtimeChart.cs" />
+    <Compile Include="app\chart\SubchartsContainer.cs" />
+    <Compile Include="app\chart\TodayCandle.cs" />
+    <Compile Include="app\CompanyInfo.cs">
+    </Compile>
+    <Compile Include="app\chart\C.cs" />
+    <Compile Include="app\Context.cs" />
+    <Compile Include="app\AlarmItem.cs" />
+    <Compile Include="app\data\AlarmManager.cs" />
+    <Compile Include="app\data\AppConfig.cs" />
+    <Compile Include="app\data\FilterManager.cs" />
+    <Compile Include="app\data\GlobalData.cs" />
+    <Compile Include="app\data\stPriceboardState.cs" />
+    <Compile Include="app\data\stAlarm.cs" />
+    <Compile Include="app\data\stGainloss.cs" />
+    <Compile Include="app\MarketsTab.cs" />
+    <Compile Include="app\MarketSummary.cs" />
+    <Compile Include="app\net\JSONHandler.cs" />
+    <Compile Include="app\RowPriceboardGainLoss.cs" />
+    <Compile Include="app\RealtimeTradeListDetail.cs" />
+    <Compile Include="app\RowOnlineTrade.cs" />
+    <Compile Include="app\FormSettingParameters.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\HistoryChartControl.cs" />
+    <Compile Include="app\RowGlobalQuote.cs" />
+    <Compile Include="app\data\ShareComparer.cs" />
+    <Compile Include="app\data\stGlobalQuote.cs" />
+    <Compile Include="app\g_NetProtocol.cs" />
+    <Compile Include="app\MiniFormMoving.cs" />
+    <Compile Include="app\MiniIndex.cs" />
+    <Compile Include="app\RowQuoteList.cs" />
+    <Compile Include="app\data\Priceboard.cs" />
+    <Compile Include="app\data\Share.cs" />
+    <Compile Include="app\data\ShareManager.cs" />
+    <Compile Include="app\data\ShareStore.cs" />
+    <Compile Include="app\data\stCandle.cs" />
+    <Compile Include="app\data\stCompanyInfo.cs" />
+    <Compile Include="app\data\stPriceboardStateIndex.cs" />
+    <Compile Include="app\data\stShareGroup.cs" />
+    <Compile Include="app\data\stTradeTransaction.cs" />
+    <Compile Include="app\data\TradeHistory.cs" />
+    <Compile Include="app\IndexBriefLine.cs" />
+    <Compile Include="app\IndexControl.cs">
+    </Compile>
+    <Compile Include="app\MainApplication.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\net\NetProtocol.cs" />
+    <Compile Include="app\RowPriceboard.cs" />
+    <Compile Include="app\ScreenBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="app\ScreenHelp.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="app\ScreenHome.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="app\ScreenSearch.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="app\table\RowNormalShare.cs" />
+    <Compile Include="app\table\GainLossSumary.cs" />
+    <Compile Include="app\table\RowGainloss.cs" />
+    <Compile Include="app\table\RowIndice.cs" />
+    <Compile Include="app\table\stCell.cs" />
+    <Compile Include="app\table\TablePriceboard.cs" />
+    <Compile Include="app\ui\AlarmDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\AlarmDialog.Designer.cs">
+      <DependentUpon>AlarmDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DialogAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DialogAbout.Designer.cs">
+      <DependentUpon>DialogAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgCompareToShare.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgCompareToShare.Designer.cs">
+      <DependentUpon>DlgCompareToShare.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgFilterParamSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgFilterParamSetting.Designer.cs">
+      <DependentUpon>DlgFilterParamSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgProcessing.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgProcessing.Designer.cs">
+      <DependentUpon>DlgProcessing.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgSetAlarm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgSetAlarm.Designer.cs">
+      <DependentUpon>DlgSetAlarm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgSellStock.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgSellStock.Designer.cs">
+      <DependentUpon>DlgSellStock.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgAddShareGainloss.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgAddShareGainloss.Designer.cs">
+      <DependentUpon>DlgAddShareGainloss.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgAddText.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgAddText.Designer.cs">
+      <DependentUpon>DlgAddText.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgBuyMore.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgBuyMore.Designer.cs">
+      <DependentUpon>DlgBuyMore.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgEditSlogan.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgEditSlogan.Designer.cs">
+      <DependentUpon>DlgEditSlogan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgExpiredAccount.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgExpiredAccount.Designer.cs">
+      <DependentUpon>DlgExpiredAccount.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgFilterDefine.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgFilterDefine.Designer.cs">
+      <DependentUpon>DlgFilterDefine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgRegister.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgRegister.Designer.cs">
+      <DependentUpon>DlgRegister.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgConfig.Designer.cs">
+      <DependentUpon>DlgConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgContactingServer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgContactingServer.Designer.cs">
+      <DependentUpon>DlgContactingServer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgEnterDays.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgEnterDays.Designer.cs">
+      <DependentUpon>DlgEnterDays.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgAddShareGroup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgAddShareGroup.Designer.cs">
+      <DependentUpon>DlgAddShareGroup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgAddShare.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgAddShare.Designer.cs">
+      <DependentUpon>DlgAddShare.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgAddSubchart.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgAddSubchart.Designer.cs">
+      <DependentUpon>DlgAddSubchart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgFilterConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgFilterConfig.Designer.cs">
+      <DependentUpon>DlgFilterConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgLineColorPicker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgLineColorPicker.Designer.cs">
+      <DependentUpon>DlgLineColorPicker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgLogin.Designer.cs">
+      <DependentUpon>DlgLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgParameter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgParameter.Designer.cs">
+      <DependentUpon>DlgParameter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgResetPass.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgResetPass.Designer.cs">
+      <DependentUpon>DlgResetPass.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\DlgSMA.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\DlgSMA.Designer.cs">
+      <DependentUpon>DlgSMA.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\FilterSetDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\FilterSetDialog.Designer.cs">
+      <DependentUpon>FilterSetDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\HelpDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\HelpDlg.Designer.cs">
+      <DependentUpon>HelpDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\ui\NewVersionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app\ui\NewVersionDialog.Designer.cs">
+      <DependentUpon>NewVersionDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="app\FormSettingParameters.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FormSettingParameters.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\AlarmDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AlarmDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DialogAbout.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DialogAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgCompareToShare.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DlgCompareToShare.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgFilterParamSetting.resx">
+      <DependentUpon>DlgFilterParamSetting.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgProcessing.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DlgProcessing.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgSetAlarm.resx">
+      <DependentUpon>DlgSetAlarm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgSellStock.resx">
+      <DependentUpon>DlgSellStock.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgAddShareGainloss.resx">
+      <DependentUpon>DlgAddShareGainloss.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgAddText.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DlgAddText.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgBuyMore.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DlgBuyMore.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgEditSlogan.resx">
+      <DependentUpon>DlgEditSlogan.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgExpiredAccount.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DlgExpiredAccount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgFilterDefine.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DlgFilterDefine.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgRegister.resx">
+      <DependentUpon>DlgRegister.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgConfig.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DlgConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgContactingServer.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DlgContactingServer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgEnterDays.resx">
+      <DependentUpon>DlgEnterDays.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgAddShareGroup.resx">
+      <DependentUpon>DlgAddShareGroup.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgAddShare.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DlgAddShare.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgAddSubchart.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DlgAddSubchart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgFilterConfig.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DlgFilterConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgLineColorPicker.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DlgLineColorPicker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgLogin.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DlgLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgParameter.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DlgParameter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgResetPass.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DlgResetPass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\DlgSMA.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DlgSMA.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\FilterSetDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FilterSetDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\HelpDlg.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>HelpDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app\ui\NewVersionDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>NewVersionDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="xlib\framework\xDataInput.cs" />
+    <Compile Include="xlib\framework\xDataOutput.cs" />
+    <Compile Include="xlib\framework\xFileManager.cs" />
+    <Compile Include="xlib\framework\xHttp.cs" />
+    <Compile Include="xlib\framework\xIEventListener.cs" />
+    <Compile Include="xlib\framework\xMainApplication.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="xlib\framework\xScreen.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="xlib\framework\xVector.cs" />
+    <Compile Include="xlib\framework\xVectorInt.cs" />
+    <Compile Include="xlib\ui\xFillBackground.cs" />
+    <Compile Include="xlib\ui\ListViewEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="xlib\ui\xBaseControl.cs" />
+    <Compile Include="xlib\ui\xButton.cs">
+    </Compile>
+    <Compile Include="xlib\ui\xCanvas.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="xlib\ui\xCheckbox.cs" />
+    <Compile Include="xlib\ui\xContainer.cs">
+    </Compile>
+    <Compile Include="xlib\ui\xGraphics.cs" />
+    <Compile Include="xlib\ui\xLabel.cs" />
+    <Compile Include="xlib\ui\xListView.cs" />
+    <Compile Include="xlib\ui\xListViewItem.cs">
+    </Compile>
+    <Compile Include="xlib\ui\xPicture.cs" />
+    <Compile Include="xlib\ui\xScrollView.cs" />
+    <Compile Include="xlib\ui\xSlider.cs" />
+    <Compile Include="xlib\ui\xSplitter.cs" />
+    <Compile Include="xlib\ui\xTabControl.cs" />
+    <Compile Include="xlib\ui\xTabPage.cs" />
+    <Compile Include="xlib\ui\xTextField.cs" />
+    <Compile Include="xlib\utils\VTDictionary.cs" />
+    <Compile Include="xlib\utils\xFloat.cs" />
+    <Compile Include="xlib\utils\xResourceManager.cs" />
+    <Compile Include="xlib\utils\Utils.cs" />
+    <Compile Include="xlib\utils\xTimer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Icon1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="res\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

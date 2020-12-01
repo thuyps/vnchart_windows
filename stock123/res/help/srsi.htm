@@ -1,0 +1,81 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+
+<style>
+
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h2>Stochastics of RSI - StochRSI</h2>
+
+StochRSI áp d&#7909;ng công th&#7913;c tính Stochastics cho &#273;&#432;&#7901;ng RSI. Do &#273;ó nó là &#273;&#7891; th&#7883; ch&#7881; báo c&#7911;a m&#7897;t ch&#7881; báo báo khác - RSI. Giá tr&#7883; c&#7911;a StochRSI dao &#273;&#7897;ng trong kho&#7843;ng 0 và 1.
+
+<h2>Công th&#7913;c</h2>
+<p>
+ <div class="box"><pre style="font-family:monospace">
+
+StochRSI[i] = (RSI[i] - LowestLowRSI(n)) / (HighestHighRSI(n) - LowestLowRSI(n)
+
+</pre></div>
+</p>
+N&#7871;u "n" là 14 ngày thì
+<br>
+- StochRSI[i]: giá tr&#7883; StochRSI t&#7841;i th&#7901;i &#273;i&#7875;m hi&#7879;n t&#7841;i
+<br>
+- HighestHighRSI(n): giá tr&#7883; cao nh&#7845;t c&#7911;a RSI trong vòng 14 ngày tr&#432;&#7899;c
+<br>
+- LowestLowRSI(n): giá tr&#7883; th&#7845;p nh&#7845;t c&#7911;a RSI trong vòng 14 ngày tr&#432;&#7899;c
+
+<h2>Di&#7877;n gi&#7843;i</h2>
+C&#7847;n nh&#7899; r&#7857;ng StochRSI là m&#7897;t ch&#7881; báo dao &#273;&#7897;ng c&#7911;a ch&#7881; báo dao &#273;&#7897;ng RSI. Do &#273;ó giá tr&#7883; c&#7911;a nó ph&#7843;n ánh s&#7921; dao &#273;&#7897;ng c&#7911;a RSI ch&#7913; không ph&#7843;i s&#7921; dao &#273;&#7897;ng c&#7911;a &#273;&#432;&#7901;ng giá, vì th&#7871; &#273;&#7891; th&#7883; c&#7911;a nó khác xa so v&#7899;i &#273;&#432;&#7901;ng giá.
+<br>
+<img src="srsi001.png" alt="Minh hoa" v:shapes="Picture_x0020_178">
+<br>
+<br>
+StochRSI c&#361;ng ch&#7881; ra hai th&#7901;i &#273;i&#7875;m Quá bán và Quá mua. N&#7871;u StochRSI cao h&#417;n 0.8 thì là Quá mua, ng&#432;&#7907;c l&#7841;i n&#7871;u th&#7845;p h&#417;n 0.2 thì th&#7883; tr&#432;&#7901;ng là Quá bán. StochRSI cho bi&#7871;t &#273;ang là uptrend n&#7871;u nó liên t&#7909;c n&#7857;m trên &#273;&#432;&#7901;ng chính gi&#7919;a 0.5, ng&#432;&#7907;c l&#7841;i StochRSI liên t&#7909;c n&#7857;m d&#432;&#7899;i &#273;&#432;&#7901;ng 0.5 cho th&#7845;y th&#7883; tr&#432;&#7901;ng &#273;ang là downtrend. Do StochRSI r&#7845;t nh&#7841;y c&#7843;m &#273;&#7889;i v&#7899;i thay &#273;&#7893;i c&#7911;a giá nên h&#432;&#7899;ng, &#273;&#7897; l&#7899;n c&#7911;a &#273;&#7897; th&#7883; liên t&#7909;c thay &#273;&#7893;i, do &#273;ó thông th&#432;&#7901;ng ng&#432;&#7901;i ta s&#7917; d&#7909;ng m&#7897;t &#273;&#432;&#7901;ng trung bình d&#7877; dàng h&#417;n trong nh&#7853;n bi&#7871;t xu h&#432;&#7899;ng c&#7911;a nó.
+
+<h2>Quá bán</h2>
+Hình d&#432;&#7899;i &#273;ây minh h&#7885;a m&#7897;t s&#7889; th&#7901;i &#273;i&#7875;m Quá bán trong xu h&#432;&#7899;ng uptrend c&#7911;a Boeing. Tình tr&#7841;ng Quá bán nhanh chóng k&#7871;t thúc khi StochRSI c&#7855;t &#273;&#432;&#7901;ng 0.5 cho th&#7845;y xu h&#432;&#7899;ng uptrend &#273;&#432;&#7907;c ti&#7871;p t&#7909;c
+<br>
+<img src="srsi002.png" alt="Minh hoa" v:shapes="Picture_x0020_178">
+<br>
+<br>
+<h2>Quá mua</h2>
+Hình d&#432;&#7907;u minh h&#7885;a m&#7897;t s&#7889; th&#7901;i &#273;i&#7875;m th&#7883; tr&#432;&#7901;ng r&#417;i vào tình tr&#7841;ng Quá mua trong m&#7897;t xu h&#432;&#7899;ng downtrend. Tình tr&#7841;ng Quá mua k&#7871;t thúc khi StochRSI c&#7855;t &#273;&#432;&#7901;ng 0.5 và &#273;i xu&#7889;ng d&#432;&#7899;i cho th&#7845;y xu h&#432;&#7899;ng downtrend v&#7851;n ti&#7871;p t&#7909;c.
+<br>
+<img src="srsi003.png" alt="Minh hoa" v:shapes="Picture_x0020_178">
+<br>
+<br>
+
+<h2>Xác &#273;&#7883;nh xu h&#432;&#7899;ng</h2>
+Do StochRSI là m&#7897;t ch&#7881; báo quá nh&#7841;y v&#7899;i thay &#273;&#7893;i c&#7911;a giá nên nó th&#432;&#7901;ng xuyên báo Quá bán/Quá mua. Vì th&#7871; ng&#432;&#7901;i ta th&#432;&#7901;ng dùng m&#7897;t &#273;&#432;&#7901;ng SMA 5 ngày c&#7911;a StochRSI &#273;&#7875; d&#7877; dàng h&#417;n trong vi&#7879;c xác &#273;&#7883;nh xu h&#432;&#7899;ng. Và s&#7917; d&#7909;ng giao c&#7855;t c&#7911;a SMA và StochRSI nh&#432; là m&#7897;t &#273;i&#7875;m tín hi&#7879;u.
+<br>
+<img src="srsi004.png" alt="Minh hoa" v:shapes="Picture_x0020_178">
+<br>
+<br>
+<br>
+<img src="srsi005.png" alt="Minh hoa" v:shapes="Picture_x0020_178">
+<br>
+<br>
+<br>
+<img src="srsi006.png" alt="Minh hoa" v:shapes="Picture_x0020_178">
+<br>
+<br>
+
+</div>
+
+</body>
+
+</html>

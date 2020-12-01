@@ -1,0 +1,117 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Text;
+
+using xlib.framework;
+using xlib.utils;
+using xlib.ui;
+using stock123.app;
+using stock123.app.data;
+
+namespace stock123.app.chart
+{
+    class ChartWilliamR: ChartBase
+    {
+        short[] mChartEMA;
+        short[] mPricelines = new short[10];
+        public ChartWilliamR(Font f)
+            : base(f)
+        {
+            mChartType = CHART_WILLIAMR;
+        }
+
+        override public void render(xGraphics g)
+        {
+            int mH = getH();
+            int mW = getW();
+
+            if (isHiding())
+                return;
+            Share share = mContext.getSelectedDrawableShare(3);
+
+            if (share == null)
+                return;
+            if (detectShareCursorChanged())
+            {
+                share.calcWilliamR();
+
+                mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
+
+                pricesToYs(Share.pWilliamR, share.mBeginIdx, mChartLineXY, mChartLineLength, -100, 0);
+                float[] tmp = { -20, -50, -80 };
+                pricesToYs(tmp, 0, mPricelines, 3, -100, 0);
+
+                if (mContext.mOptWR_EMA > 0)
+                {
+                    mChartEMA = allocMem(mChartEMA, mChartLineLength * 2);
+                    if (mContext.mOptWR_EMA_ON[0])
+                    {
+                        Share.EMA(Share.pWilliamR, share.getCandleCount(), (int)mContext.mOptWR_EMA, share.pEMAIndicator);
+                    }
+                    else
+                    {
+                        Share.SMA(Share.pWilliamR, 0, share.getCandleCount(), (int)mContext.mOptWR_EMA, share.pEMAIndicator);
+                    }
+                    pricesToYs(share.pEMAIndicator, share.mBeginIdx, mChartEMA, mChartLineLength, -100, 0);
+                }
+            }
+
+            if (mChartLineLength == 0)
+                return;
+
+            //========================
+            if (mShouldDrawGrid)
+                drawGrid(g);
+            //===============================================
+            String[] ss = { "-20", "-50", "-80" };
+
+            g.setColor(C.COLOR_GRAY_DARK);
+            for (int i = 0; i < 3; i++)
+            {
+                g.setColor(C.COLOR_GRAY_DARK);
+                g.drawLine(0, mPricelines[2 * i + 1], getW() - 20, mPricelines[2 * i + 1]);
+
+                g.setColor(C.COLOR_FADE_YELLOW0);
+                g.drawString(mFont, ss[i], getW() - 33, mPricelines[i * 2 + 1], xGraphics.VCENTER);
+            }
+
+            //  williamR
+            g.setColor(0xffff8000);
+            g.drawLines(mChartLineXY, mChartLineLength, 1.5f);
+
+            if (mContext.mOptWR_EMA > 0)
+            {
+                g.setColor(C.COLOR_MAGENTA);
+                g.drawLines(mChartEMA, mChartLineLength, 1.0f);
+            }
+
+            renderCursor(g);
+        }
+
+        override public xVector getTitles()
+        {
+            xVector v = new xVector(1);
+            Share share = mContext.getSelectedDrawableShare(3);
+            if (share != null)
+            {
+                int idx = share.getCursor();
+                float vs;
+                String s;
+
+                vs = Share.pWilliamR[idx];
+
+                if (mContext.mOptWR_EMA > 0)
+                {
+                    s = String.Format("William%R{0}={1:F1}    MA={2:F1}", (int)mContext.mOptWilliamRPeriod, vs, share.pEMAIndicator[idx]);
+                }
+                else
+                {
+                    s = String.Format("William%R{0}={1:F1}", (int)mContext.mOptWilliamRPeriod, vs);
+                }
+                v.addElement(new stTitle(s, C.COLOR_WHITE));
+            }
+            return v;
+        }
+    }
+}
