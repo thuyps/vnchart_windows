@@ -893,8 +893,6 @@ namespace stock123.app
             xDataInput di = xFileManager.readFile(FILE_COMMON_SHARE_GROUP, false);
             stShareGroup g;
 
-            stShareGroup vn30 = null;
-
             if (di != null && di.readInt() == FILE_VERSION)
             {
                 int cnt = di.readInt();
@@ -904,20 +902,10 @@ namespace stock123.app
                     g = new stShareGroup();
                     g.load(di);
 
-                    if (g.getName().Contains("VN30"))
-                    {
-                        vn30 = g;
-                    }
-
                     mShareGroups.addElement(g);
                 }
             }
 
-            if (vn30 != null)
-            {
-                mShareGroups.removeElement(vn30);
-                mShareGroups.insertElementAt(vn30, 0);
-            }
 
             mShareGroupsSpecial.removeAllElements();
 
