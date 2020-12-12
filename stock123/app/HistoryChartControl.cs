@@ -801,7 +801,7 @@ namespace stock123.app
                 return;
             }
 
-            CompanyInfo inf = new CompanyInfo(share.mID);
+            CompanyInfo inf = new CompanyInfo(share.mID, false);
             inf.dontShowName();
             inf.setFont(mContext.getFontSmall());
             //inf.setFontColor(C.COLOR_ORANGE);

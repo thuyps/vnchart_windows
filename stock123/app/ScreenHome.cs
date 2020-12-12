@@ -2124,13 +2124,16 @@ namespace stock123.app
             mRightPanel.removeAllControls();
 
             xTabControl tc = xTabControl.createTabControl();
+            tc.setSize(mRightPanel.getW(), mRightPanel.getH() - 10);//mRealtimeMoneyChart.getBottom() + 20);
             mRightPanel.addControl(tc);
             xTabPage page1 = new xTabPage("Đồ thị phiên");
             xTabPage page2 = new xTabPage("Danh sách lệnh");
+            //xTabPage page3 = new xTabPage("Thông tin tài chính");
             tc.addPage(page1);
             tc.addPage(page2);
+            //tc.addPage(page3);
             //==============================page 1's content================================
-            float unitH = (mRightPanel.getH() - 6 * mContext.getFontText().Height) / 10;
+            float unitH = (mRightPanel.getH() - 20) / 10;
             float candleH = 2.5f * unitH;
             float realtimeChartH = 4 * unitH;
             float moneyPriceH = 3.5f * unitH;
@@ -2161,12 +2164,24 @@ namespace stock123.app
             mRealtimeChart.setSize(mRightPanel.getW() - 10, (int)realtimeChartH);
             mRealtimeChart.setPosition(0, mTodayCandle.getBottom() + 4);
             //----------money - price
+            int infoW = 210;
             if (mRealtimeMoneyChart == null)
             {
                 mRealtimeMoneyChart = new ChartMoney(mContext.mCurrentShare.mID);
                 mRealtimeMoneyChart.setPosition(0, mRealtimeChart.getBottom() + 4);
             }
-            mRealtimeMoneyChart.setSize(mRealtimeChart.getW(), (int)moneyPriceH);
+            //mRealtimeMoneyChart.setSize(mRealtimeChart.getW(), (int)moneyPriceH);
+            int moneyW = tc.getW() - infoW - 4;
+            if (moneyW < 80)
+            {
+                moneyW = 80;
+                infoW = tc.getW() - moneyW - 4;
+            }
+            if (infoW < 0)
+            {
+                infoW = 1;
+            }
+            mRealtimeMoneyChart.setSize(moneyW, (int)moneyPriceH);
             mRealtimeMoneyChart.setShareID(mContext.mCurrentTradeHistory.mShareID);
             //==========================
             mControlsShouldInvalideAfterNetDone.addElement(mTodayCandle);
@@ -2178,19 +2193,19 @@ namespace stock123.app
             page1.addControl(mRealtimeChart);
             page1.addControl(mRealtimeMoneyChart);
             //==============================page 2================================
-            tc.setSize(mRightPanel.getW(), mRealtimeMoneyChart.getBottom() + 20);
+
             TradeHistory trade = mContext.getTradeHistory(mContext.mCurrentShare.mID);
             mRealtimeTradeList = new RealtimeTradeListDetail(trade, tc.getW() - 30, tc.getH() - 10);
             page2.addControl(mRealtimeTradeList.getListCtrl());
             //====================================================================
             y = tc.getBottom() + 4;
             //  info
-            CompanyInfo ci = new CompanyInfo(mContext.mCurrentTradeHistory.getCodeID());
-            ci.setSize(mRightPanel.getW(), 200);
-            ci.setPosition(0, y);
-            ci.dontShowName();
+            CompanyInfo ci = new CompanyInfo(mContext.mCurrentTradeHistory.getCodeID(), true);
+            ci.setSize(infoW, 300);
+            ci.setPosition(mRealtimeMoneyChart.getRight()+4, mRealtimeMoneyChart.getY());
             ci.init();
-            mRightPanel.addControl(ci);
+            page1.addControl(ci);
+            //page3.addControl(ci);
         }
 
         void invalidateCharts()

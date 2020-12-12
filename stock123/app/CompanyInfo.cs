@@ -18,13 +18,15 @@ namespace stock123.app
         uint mFontColor = C.COLOR_BLACK;
         Font mFont;
         bool mIsCompaq = false;
-        public CompanyInfo(int shareID)
+        bool mIsFullDescription;
+        public CompanyInfo(int shareID, bool fullDesc)
             : base()
         {
             mContext = Context.getInstance();
             mShareID = shareID;
             mShowCompanyName = true;
             mFont = mContext.getFontText();
+            mIsFullDescription = fullDesc;
         }
 
         public void compaq()
@@ -39,6 +41,161 @@ namespace stock123.app
 
             mIsInited = true;
 
+            if (mIsFullDescription)
+            {
+                createFullDesc();
+            }
+            else
+            {
+                createShortDesc();
+            }
+        }
+
+        void createFullDesc(){
+            Font f;
+            xLabel l;
+            int x = 2;
+            int y = 8;
+            int w = getW();
+            String s;
+
+            stCompanyInfo inf = mContext.mShareManager.getCompanyInfo(mShareID);
+            if (inf == null)
+                return;
+            mShowCompanyName = true;
+            if (mShowCompanyName)
+            {
+                f = mContext.getFontTextB();
+                l = xLabel.createMultiLineLabel(inf.company_name, f, getW());
+                addControl(l);
+                l.setTextColor(mFontColor);
+                y = l.getBottom() + 10;
+            }
+            StringBuilder sb = Utils.sb;
+            sb.Length = 0;
+            f = mContext.getFontSmall();// Text();
+            //if (mFont != null)
+            //  f = mFont;
+
+            //  EPS
+            sb.AppendFormat("EPS: {0:F1} K", (float)(inf.EPS) / 1000);
+            l = xLabel.createSingleLabel(sb.ToString(), f, w);
+            l.setPosition(x, y);
+            l.setTextColor(mFontColor);
+            addControl(l);
+            y = l.getBottom();
+
+            //  P/E
+            sb.Length = 0;
+            sb.AppendFormat("P/E: {0:F1}", (float)inf.PE/100);
+            l = xLabel.createSingleLabel(sb.ToString(), f, w);
+            l.setPosition(x, y);
+            l.setTextColor(mFontColor);
+            addControl(l);
+
+            y = l.getBottom();
+          
+            //  Beta
+            sb.Length = 0;
+            sb.AppendFormat("Beta: {0:F2}", (float)inf.Beta / 100);
+            l = xLabel.createSingleLabel(sb.ToString(), f, w);
+            l.setPosition(x, y);
+            l.setTextColor(mFontColor);
+            addControl(l);
+
+            y = l.getBottom();
+
+            //  book value            
+            sb.Length = 0;
+            sb.AppendFormat("Giá sổ sách: {0:F1} K", (float)(inf.book_value / 10));
+            l = xLabel.createSingleLabel(sb.ToString(), f, w);
+            l.setPosition(x, y);
+            l.setTextColor(mFontColor);
+            addControl(l);
+
+            y = l.getBottom();
+
+            //  KLTB 10 phien
+            sb.Length = 0;
+            Share share = mContext.mShareManager.getShare(mShareID);
+            if (share == null)
+                return;
+            int cnt = share.getCandleCount();
+            int nums = cnt > 10 ? 10 : cnt;
+            int total = 0;
+            for (int i = 0; i < nums; i++)
+            {
+                int volume = share.getVolume(cnt - i - 1);
+                total += volume;
+            }
+            if (nums == 0) nums = 1;
+            total = total / nums;
+            s = Utils.formatNumber((int)total);
+            sb.Length = 0;
+            sb.AppendFormat("Vol TB 10 phiên={0}", s);
+            l = xLabel.createSingleLabel(sb.ToString(), f, w);
+            l.setPosition(x, y);
+            l.setTextColor(mFontColor);
+            addControl(l);
+            y = l.getBottom();
+
+            //  KLCP luu hanh
+            sb.Length = 0;
+            sb.AppendFormat("KL lưu hành: {0:F2} tr; ", (inf.volume / 1000.0f));
+            l = xLabel.createSingleLabel(sb.ToString(), f, w);
+            l.setPosition(x, y);
+            l.setTextColor(mFontColor);
+            addControl(l);
+            y = l.getBottom();
+
+            //  Von hoa tt
+            stPriceboardState ps = mContext.mPriceboard.getPriceboard(mShareID);
+            float price = 0;
+            double vonhoa = 0;
+            if (ps != null)
+            {
+                price = ps.getCurrentPrice();
+                if (price == 0)
+                    price = ps.getRef();
+                vonhoa = price;
+                vonhoa = vonhoa * inf.volume;
+                vonhoa = vonhoa / 1000;
+            }
+            else
+            {
+
+            }
+
+            sb.Length = 0;
+            sb.AppendFormat("Vốn hóa: {0:F2} tỉ", vonhoa);
+            l = xLabel.createSingleLabel(sb.ToString(), f, w);
+            l.setPosition(x, y);
+            l.setTextColor(mFontColor);
+            addControl(l);
+
+            y = l.getBottom();
+            //  ROA
+            sb.Length = 0;
+            sb.AppendFormat("ROA: {0:F1} %", (float)inf.ROA);
+            l = xLabel.createSingleLabel(sb.ToString(), f, w);
+            l.setPosition(x, y);
+            l.setTextColor(mFontColor);
+            addControl(l);
+           
+            y = l.getBottom();
+
+            //  ROE
+            sb.Length = 0;
+            sb.AppendFormat("ROE: {0:F1} %", (float)inf.ROE);
+            l = xLabel.createSingleLabel(sb.ToString(), f, w);
+            l.setPosition(x, y);
+            l.setTextColor(mFontColor);
+            addControl(l);
+
+            setSize(getW(), l.getBottom());
+        }
+
+        void createShortDesc(){
             Font f;
             xLabel l;
             int x = 0;
@@ -57,7 +214,6 @@ namespace stock123.app
                 l.setTextColor(mFontColor);
                 y = l.getBottom() + 2;
             }
-
             StringBuilder sb = Utils.sb;
             sb.Length = 0;
             f = mContext.getFontSmall();// Text();
@@ -65,7 +221,7 @@ namespace stock123.app
               //  f = mFont;
   
             //  EPS
-            sb.AppendFormat("EPS={0:F1} K; P/E={1:F1}; Beta={2:F2}", (float)(inf.EPS)/1000, (float)(inf.PE)/100, (float)(inf.Beta)/100);
+            sb.AppendFormat("EPS: {0:F1} K; P/E: {1:F1};", (float)(inf.EPS)/1000, (float)(inf.PE)/100);
             l = xLabel.createSingleLabel(sb.ToString(), f, w);
             l.setPosition(x, y);
             l.setTextColor(mFontColor);

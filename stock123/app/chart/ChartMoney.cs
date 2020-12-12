@@ -166,6 +166,59 @@ namespace stock123.app.chart
                 lastVol = vol;
             }
 
+            int tryCnt = 0;
+            while (v.size() > 10)
+            {
+                tryCnt++;
+                if (tryCnt > 100)
+                {
+                    break;
+                }
+                sortBlocks(v);
+
+                //  find the closest blocks
+                float smallest = 0;
+                int smallestIdx = -1;
+                for (int i = 1; i < v.size(); i++)
+                {
+                    MoneyVol m1 = (MoneyVol)v.elementAt(i);
+                    MoneyVol m0 = (MoneyVol)v.elementAt(i - 1);
+
+                    if (smallest == 0)
+                    {
+                        smallest = Math.Abs(m1.price - m0.price);
+                        smallestIdx = i;
+                    }
+
+                    if (Math.Abs(m1.price - m0.price) < smallest)
+                    {
+                        smallest = Math.Abs(m1.price - m0.price);
+                        smallestIdx = i;
+                    }
+                }
+
+                if (smallestIdx > 0)
+                {
+                    MoneyVol m1 = (MoneyVol)v.elementAt(smallestIdx);
+                    MoneyVol m0 = (MoneyVol)v.elementAt(smallestIdx - 1);
+
+                    v.removeElementAt(smallestIdx);
+                    v.removeElementAt(smallestIdx - 1);
+
+                    if (m1.volume > m0.volume)
+                    {
+                        m1.volume += m0.volume;
+                        v.addElement(m1);
+                    }
+                    else
+                    {
+                        m0.volume += m1.volume;
+                        v.addElement(m0);
+                    }
+                }
+            }
+
+            /*
             while (v.size() > 10)   //  too many
             {
                 xVector vv = new xVector(20);
@@ -203,6 +256,7 @@ namespace stock123.app.chart
 
                 v = vv;
             }
+             */
 
             sortBlocks(v);
             return v;
