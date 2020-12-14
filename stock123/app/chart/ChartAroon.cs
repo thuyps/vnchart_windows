@@ -39,7 +39,7 @@ namespace stock123.app.chart
 
             if (isHiding())
                 return;
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare();
             if (share == null)
                 return;
 
@@ -59,7 +59,7 @@ namespace stock123.app.chart
             int maxPrice = 80;
             if (detectShareCursorChanged())
             {
-                Share s = mContext.getSelectedDrawableShare();
+                Share s = getShare();
                 s.calcARoon(mAroonUp, mAroonDown, mAroonOscillator, (int)mContext.mOptAroonPeriod);
 
                 mAroonUpXY = allocMem(mAroonUpXY, mChartLineLength * 2);
@@ -102,7 +102,7 @@ namespace stock123.app.chart
         {
             if (detectShareCursorChanged())
             {
-                Share s = mContext.getSelectedDrawableShare();
+                Share s = getShare();
                 s.calcARoon(mAroonUp, mAroonDown, mAroonOscillator, (int)mContext.mOptAroonPeriod);
 
                 mAroonOscillatorXY = allocMem(mAroonOscillatorXY, mChartLineLength * 2);
@@ -137,7 +137,7 @@ namespace stock123.app.chart
 
         public override string getTitle()
         {
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare();
             if (share != null)
             {
                 int idx = share.getCursor();
@@ -168,7 +168,7 @@ namespace stock123.app.chart
             /*
             xVector v = new xVector();
 
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             if (share == null)
                 return null;
 

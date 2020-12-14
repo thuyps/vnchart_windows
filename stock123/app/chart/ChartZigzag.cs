@@ -25,7 +25,7 @@ namespace stock123.app.chart
 
         public void calcZigzag()
         {
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
             if (share == null)
                 return;
             if (mZigzag != null && mCurrentShare == share && mCurrentZigzagPercent == mContext.mOptZigzagPercent)
@@ -48,7 +48,7 @@ namespace stock123.app.chart
                 return;
 
 
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
             if (share == null)
                 return;
 

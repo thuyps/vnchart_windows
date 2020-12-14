@@ -34,7 +34,7 @@ namespace stock123.app.chart
         {
             if (isHiding())
                 return;
-            if (mContext.getSelectedDrawableShare(3) == null)
+            if (getShare(3) == null)
                 return;
             if (detectShareCursorChanged())
             {
@@ -96,20 +96,22 @@ namespace stock123.app.chart
             int i;
             int cnt;
 
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             s.calcMACD();
 
+            Share share = s;
+
             //======================
-            his = Share.pMACDHistogram;
+            his = share.pMACDHistogram;
             for (i = 0; i < s.getCandleCount(); i++)
             {
-                his[i] = Share.pMACD[i] - Share.pMACDSignal9[i];
+                his[i] = share.pMACD[i] - share.pMACDSignal9[i];
             }
             //===========================
 
-            macd = Share.pMACD;
-            signal = Share.pMACDSignal9;
-            his = Share.pMACDHistogram;
+            macd = share.pMACD;
+            signal = share.pMACDSignal9;
+            his = share.pMACDHistogram;
 
             cnt = mChartLineLength;
 
@@ -213,12 +215,12 @@ namespace stock123.app.chart
             xVector v = new xVector(5);
             StringBuilder sb = Utils.sb;
 
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
 
             int idx = share.getCursor();
-            float v1 = Share.pMACDHistogram[idx];
-            float v2 = Share.pMACD[idx];
-            float v3 = Share.pMACDSignal9[idx];
+            float v1 = share.pMACDHistogram[idx];
+            float v2 = share.pMACD[idx];
+            float v3 = share.pMACDSignal9[idx];
 
             sb.Length = 0;
             //  macd

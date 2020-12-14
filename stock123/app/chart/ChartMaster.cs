@@ -36,6 +36,7 @@ namespace stock123.app.chart
 
         public xVector mAttachedCharts = new xVector(10);
         public xVector mOverlayAttachedCharts = new xVector(10);
+        Drawer mDrawer;
         //=========================================
 
         public ChartMaster(Font f):base(f)
@@ -58,7 +59,7 @@ namespace stock123.app.chart
             if (isHiding())
                 return;
 
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
             if (share == null || share.mCode == null || share.mCode.Length == 0 || share.getCandleCount() < 10)
             {
                 return;
@@ -74,16 +75,16 @@ namespace stock123.app.chart
             //g.setColor(Constants.COLOR_BLACK);
             //g.clear();
 
-            if (mContext.getSelectedDrawableShare(3) == null)
+            if (getShare(3) == null)
                 return;
 
             if (isAttachedOn(CHART_PAST_1_YEAR))
             {
-                mContext.getSelectedDrawableShare().calcYearOfPast(1);
+                getShare().calcYearOfPast(1);
             }
             if (isAttachedOn(CHART_PAST_2_YEARS))
             {
-                mContext.getSelectedDrawableShare().calcYearOfPast(2);
+                getShare().calcYearOfPast(2);
             }
 
             if (mChartType == CHART_LINE)
@@ -155,7 +156,7 @@ namespace stock123.app.chart
         {
             int mX = 0;
             int mY = 0;
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
             if (share == null)
                 return;
 
@@ -233,7 +234,7 @@ namespace stock123.app.chart
         {
             int mX = 0;
             int mY = 0;
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
             if (share == null)
                 return;
 
@@ -262,7 +263,7 @@ namespace stock123.app.chart
             if (candleW % 2 == 0) candleW++;
             int candleWHalf = candleW / 2 + 1;
 
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             int b = s.mBeginIdx;
             int e = s.mEndIdx;
 
@@ -370,7 +371,7 @@ namespace stock123.app.chart
         {
             int mX = 0;
             int mY = 0;
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
             if (share == null)
                 return;
 
@@ -399,7 +400,7 @@ namespace stock123.app.chart
             if (candleW % 2 == 0) candleW++;
             int candleWHalf = candleW / 2 + 1;
 
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             int b = s.mBeginIdx;
             int e = s.mEndIdx;
 
@@ -535,7 +536,7 @@ namespace stock123.app.chart
         {
             int mX = 0;
             int mY = 0;
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
             if (share == null)
                 return;
 
@@ -564,7 +565,7 @@ namespace stock123.app.chart
             if (candleW % 2 == 0) candleW++;
             int candleWHalf = candleW / 2 + 1;
 
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             int b = s.mBeginIdx;
             int e = s.mEndIdx;
 
@@ -665,7 +666,7 @@ namespace stock123.app.chart
         {
             int mX = 0;
             int mY = 0;
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
             if (share == null)
                 return;
 
@@ -694,7 +695,7 @@ namespace stock123.app.chart
             if (candleW % 2 == 0) candleW++;
             int candleWHalf = candleW / 2 + 1;
 
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             int b = s.mBeginIdx;
             int e = s.mEndIdx;
 
@@ -797,7 +798,7 @@ namespace stock123.app.chart
                 return;
 
             //	candle cursor
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             if (share == null)
                 return;
             int selCandleIdx = share.mSelectedCandle;
@@ -824,13 +825,13 @@ namespace stock123.app.chart
         {
             if (mHasFibonacci)
             {
-                if (Drawer.getInstance().onMouseDoubleClick(x, y))
+                if (mDrawer.onMouseDoubleClick(x, y))
                 {
                     return;
                 }
             }
 
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             if (share != null)
             {
                 if (share.focusAtSelected())
@@ -856,7 +857,7 @@ namespace stock123.app.chart
             }
             //=================================
 
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             if (s == null)
                 return;
 
@@ -865,12 +866,14 @@ namespace stock123.app.chart
             {
                 if (isKeyPressing(System.Windows.Forms.Keys.Control))
                 {
-                    if (!Drawer.getInstance().isShow())
-                        Drawer.getInstance().show(true);
+                    if (!mDrawer.isShow())
+                    {
+                        mDrawer.show(true);
+                    }
                 }
-                if (Drawer.getInstance().isShow())
+                if (mDrawer.isShow())
                 {
-                    if (Drawer.getInstance().onMouseDown(x, y))
+                    if (mDrawer.onMouseDown(x, y))
                     {
                         if (mListener != null)
                             mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, null);
@@ -898,7 +901,7 @@ namespace stock123.app.chart
             mMouseX = x;
             mMouseY = y;
 
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             if (s == null)
                 return;
 
@@ -918,9 +921,9 @@ namespace stock123.app.chart
 
             if (mHasFibonacci)
             {
-                if (Drawer.getInstance().isShow())
+                if (mDrawer.isShow())
                 {
-                    if (Drawer.getInstance().onMouseMove(x, y))
+                    if (mDrawer.onMouseMove(x, y))
                     {
                         if (mListener != null)
                             mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, null);
@@ -965,15 +968,15 @@ namespace stock123.app.chart
                 return;
             }
             mOnMouseDown = false;
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             if (s == null)
                 return;
 
             if (mHasFibonacci)
             {
-                if (Drawer.getInstance().isShow())
+                if (mDrawer.isShow())
                 {
-                    if (Drawer.getInstance().onMouseUp(x, y))
+                    if (mDrawer.onMouseUp(x, y))
                     {
                         if (mListener != null)
                             mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, null);
@@ -986,7 +989,7 @@ namespace stock123.app.chart
 
         public void attachChart(int chart)
         {
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             if (share == null)
                 return;
 
@@ -1056,7 +1059,7 @@ namespace stock123.app.chart
 
         public void showAttachChart(int chart)
         {
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             if (share == null)
                 return;
             for (int i = 0; i < mAttachedCharts.size(); i++)
@@ -1090,7 +1093,7 @@ namespace stock123.app.chart
         //  bollinger, psar or ichimoku
         public void toggleAttachChart(int chart)
         {
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             if (share == null)
                 return;
             for (int i = 0; i < mAttachedCharts.size(); i++)
@@ -1231,7 +1234,7 @@ namespace stock123.app.chart
         {
             Console.WriteLine("=============Key: " + key);
             //  key delete
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             if (share == null)
                 return;
 
@@ -1269,7 +1272,7 @@ namespace stock123.app.chart
         void renderCursorCrossHair(xGraphics g)
         {
             g.setColor(C.COLOR_FADE_YELLOW0);
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             //g.drawVerticalLine(mMouseX, 0, getH());
             //  vertical line
             int sel = share.getCursor();
@@ -1337,7 +1340,7 @@ namespace stock123.app.chart
                 //  info
                 int bc = (int)xToCandleIdx(min);
                 int ec = (int)xToCandleIdx(max);
-                Share share = mContext.getSelectedDrawableShare();
+                Share share = getShare();
                 if (share != null)
                 {
                     if (ec > share.mEndIdx)
@@ -1441,10 +1444,10 @@ namespace stock123.app.chart
         public void setIsMasterChart(bool master)
         {
             mIsMasterChart = master;
-            if (master)
-                mDrawer = Drawer.getInstance();
-            else
-                mDrawer = null;
+            //if (master)
+                //mDrawer = Drawer.getInstance();
+            //else
+                //mDrawer = null;
         }
 
         public override void setChartType(int type)
@@ -1476,6 +1479,11 @@ namespace stock123.app.chart
                     c.clearModifyKey();
                 }
             }
+        }
+
+        public void setDrawer(Drawer drawer)
+        {
+            mDrawer = drawer;
         }
     }
 }

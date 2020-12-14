@@ -35,7 +35,7 @@ namespace stock123.app.chart
 
         void calcVolumeByPrice()
         {
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             if (share.getCandleCount() < 5)
                 return;
 
@@ -93,9 +93,9 @@ namespace stock123.app.chart
         {
             if (isHiding())
                 return;
-            if (mContext.getSelectedDrawableShare(3) == null)
+            if (getShare(3) == null)
                 return;
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             int mX = 0;
             int mY = 0;
             if (detectShareCursorChanged())
@@ -142,7 +142,7 @@ namespace stock123.app.chart
 
         public override String getTitle()
         {
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
             if (share != null)
             {
                 int idx = share.getCursor();

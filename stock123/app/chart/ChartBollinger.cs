@@ -36,10 +36,10 @@ namespace stock123.app.chart
         {
             if (isHiding())
                 return;
-            if (mContext.getSelectedDrawableShare(3) == null)
+            if (getShare(3) == null)
                 return;
 
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             if (share == null)
                 return;
 
@@ -52,8 +52,8 @@ namespace stock123.app.chart
                 mCenterXY = allocMem(mCenterXY, mChartLineLength * 2 + 10);
                 mBBLine = allocMem(mBBLine, mChartLineLength * 4 + 10);
 
-                pricesToYs(Share.pBBUpper, share.mBeginIdx, mBBUpperXY, mChartLineLength, share.getLowestPrice(), share.getHighestPrice());
-                pricesToYs(Share.pBBLower, share.mBeginIdx, mBBLowerXY, mChartLineLength, share.getLowestPrice(), share.getHighestPrice());
+                pricesToYs(share.pBBUpper, share.mBeginIdx, mBBUpperXY, mChartLineLength, share.getLowestPrice(), share.getHighestPrice());
+                pricesToYs(share.pBBLower, share.mBeginIdx, mBBLowerXY, mChartLineLength, share.getLowestPrice(), share.getHighestPrice());
 
                 int j = 0;
 
@@ -102,8 +102,8 @@ namespace stock123.app.chart
             {
                 g.setColor(0xffffa0a0);
 
-                String s1 = formatPrice(Share.pBBUpper[cur]);
-                String s2 = formatPrice(Share.pBBLower[cur]);
+                String s1 = formatPrice(share.pBBUpper[cur]);
+                String s2 = formatPrice(share.pBBLower[cur]);
                 StringBuilder sb = Utils.sb;
                 sb.Length = 0;
                 sb.AppendFormat("BB({0},{1}) U:{2}     L:{3}", (int)mContext.mOptBBPeriod, (int)mContext.mOptBBD, s1, s2);

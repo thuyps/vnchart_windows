@@ -35,7 +35,7 @@ namespace stock123.app.chart
             {
                 mHi = -1000000;
                 mLo = 1000000;
-                Share s = mContext.getSelectedDrawableShare();
+                Share s = getShare();
 
                 int period = (int)mContext.mOptCFMPeriod;
 
@@ -79,7 +79,7 @@ namespace stock123.app.chart
 
         public override string getTitle()
         {
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
             if (share != null)
             {
                 int idx = share.getCursor();
@@ -106,7 +106,7 @@ namespace stock123.app.chart
             /*
             xVector v = new xVector();
 
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             if (share == null)
                 return null;
 

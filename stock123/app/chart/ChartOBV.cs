@@ -30,7 +30,7 @@ namespace stock123.app.chart
 
             if (isHiding())
                 return;
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
 
             if (share == null)
                 return;
@@ -45,11 +45,11 @@ namespace stock123.app.chart
 
                 for (int i = share.mBeginIdx; i <= share.mEndIdx; i++)
                 {
-                    if (Share.pOBV[i] > max) max = Share.pOBV[i];
-                    if (Share.pOBV[i] < min) min = Share.pOBV[i];
+                    if (share.pOBV[i] > max) max = share.pOBV[i];
+                    if (share.pOBV[i] < min) min = share.pOBV[i];
                 }
 
-                pricesToYs(Share.pOBV, share.mBeginIdx, mChartLineXY, mChartLineLength, min, max);
+                pricesToYs(share.pOBV, share.mBeginIdx, mChartLineXY, mChartLineLength, min, max);
 
                 if (mContext.mOptOBV_EMA > 0)
                 {
@@ -57,13 +57,13 @@ namespace stock123.app.chart
 
                     if (mContext.mOptOBV_EMA_ON[0])
                     {
-                        Share.EMA(Share.pOBV, share.getCandleCount(), (int)mContext.mOptOBV_EMA, Share.pTMP);
+                        Share.EMA(share.pOBV, share.getCandleCount(), (int)mContext.mOptOBV_EMA, share.pTMP);
                     }
                     else
                     {
-                        Share.SMA(Share.pOBV, 0, share.getCandleCount(), (int)mContext.mOptOBV_EMA, Share.pTMP);
+                        Share.SMA(share.pOBV, 0, share.getCandleCount(), (int)mContext.mOptOBV_EMA, share.pTMP);
                     }
-                    pricesToYs(Share.pTMP, share.mBeginIdx, mChartEMA, mChartLineLength, min, max);
+                    pricesToYs(share.pTMP, share.mBeginIdx, mChartEMA, mChartLineLength, min, max);
                 }
             }
 

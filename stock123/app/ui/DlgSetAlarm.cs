@@ -19,10 +19,12 @@ namespace stock123.app.ui
         stAlarm mAlarm;
         Context mContext;
         HistoryChartControl mChart;
-        public DlgSetAlarm(stAlarm a)
+        Share mShare;
+        public DlgSetAlarm(Share share, stAlarm a)
         {
             InitializeComponent();
 
+            mShare = share;
             mAlarm = a;
             this.Text = "Alarm: " + a.code;
 
@@ -52,10 +54,12 @@ namespace stock123.app.ui
             //================================
             mContext = Context.getInstance();
             mContext.setCurrentShare(a.code);
-            if (mContext.getSelectedDrawableShare() != null)
+            if (mShare != null)
             {
-                if (!mContext.getSelectedDrawableShare().loadShareFromFile(true))
-                    mContext.getSelectedDrawableShare().loadShareFromCommonData(true);
+                if (!mShare.loadShareFromFile(true))
+                {
+                    mShare.loadShareFromCommonData(true);
+                }
             }
             //================================
             lb_UpperPercent.Text = "-";
@@ -63,7 +67,7 @@ namespace stock123.app.ui
             updatePercentLabel(mAlarm.lowerPrice, lb_LowerPercent);
             updatePercentLabel(mAlarm.upperPrice, lb_UpperPercent);
             //================================
-            HistoryChartControl chart = new HistoryChartControl("panel1", panel_Chart.Width, panel_Chart.Height, false);
+            HistoryChartControl chart = new HistoryChartControl(share, "panel1", panel_Chart.Width, panel_Chart.Height, false);
             chart.setListener(this);
             mChart = chart;
 

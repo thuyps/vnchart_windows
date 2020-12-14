@@ -105,6 +105,12 @@
     <Compile Include="app\chart\C.cs" />
     <Compile Include="app\Context.cs" />
     <Compile Include="app\AlarmItem.cs" />
+    <Compile Include="app\ScreenRoot.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="app\ScreenHistoryChart.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="app\data\AlarmManager.cs" />
     <Compile Include="app\data\AppConfig.cs" />
     <Compile Include="app\data\FilterManager.cs" />
@@ -156,7 +162,7 @@
     <Compile Include="app\ScreenHome.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="app\ScreenSearch.cs">
+    <Compile Include="app\ViewHistoryChart.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="app\table\RowNormalShare.cs" />

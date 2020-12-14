@@ -28,7 +28,7 @@ namespace stock123.app.chart
 
             if (isHiding())
                 return;
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
 
             if (share == null)
                 return;
@@ -38,7 +38,7 @@ namespace stock123.app.chart
 
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
 
-                pricesToYs(Share.pWilliamR, share.mBeginIdx, mChartLineXY, mChartLineLength, -100, 0);
+                pricesToYs(share.pWilliamR, share.mBeginIdx, mChartLineXY, mChartLineLength, -100, 0);
                 float[] tmp = { -20, -50, -80 };
                 pricesToYs(tmp, 0, mPricelines, 3, -100, 0);
 
@@ -47,11 +47,11 @@ namespace stock123.app.chart
                     mChartEMA = allocMem(mChartEMA, mChartLineLength * 2);
                     if (mContext.mOptWR_EMA_ON[0])
                     {
-                        Share.EMA(Share.pWilliamR, share.getCandleCount(), (int)mContext.mOptWR_EMA, share.pEMAIndicator);
+                        Share.EMA(share.pWilliamR, share.getCandleCount(), (int)mContext.mOptWR_EMA, share.pEMAIndicator);
                     }
                     else
                     {
-                        Share.SMA(Share.pWilliamR, 0, share.getCandleCount(), (int)mContext.mOptWR_EMA, share.pEMAIndicator);
+                        Share.SMA(share.pWilliamR, 0, share.getCandleCount(), (int)mContext.mOptWR_EMA, share.pEMAIndicator);
                     }
                     pricesToYs(share.pEMAIndicator, share.mBeginIdx, mChartEMA, mChartLineLength, -100, 0);
                 }
@@ -92,14 +92,14 @@ namespace stock123.app.chart
         override public xVector getTitles()
         {
             xVector v = new xVector(1);
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
             if (share != null)
             {
                 int idx = share.getCursor();
                 float vs;
                 String s;
 
-                vs = Share.pWilliamR[idx];
+                vs = share.pWilliamR[idx];
 
                 if (mContext.mOptWR_EMA > 0)
                 {

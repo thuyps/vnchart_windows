@@ -230,20 +230,11 @@ namespace xlib.framework
 
         public int getToolbarH()
         {
-            if (mainToolbar != null)
-            {
-                //return mainToolbar.PreferredSize.Height;
-                return 52;
-            }
             return 0;
         }
 
         public int getStatusbarH()
         {
-            if (mainStatusBar != null)
-            {
-                return mainStatusBar.PreferredSize.Height;
-            }
             return 0;
         }
 

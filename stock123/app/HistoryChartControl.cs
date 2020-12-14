@@ -31,23 +31,25 @@ namespace stock123.app
         string mName;
 
         Drawer mDrawer;
+        Share mShare;
 
         xVector mSubCharts = new xVector(10);
         xBaseControl mZoomingChart = null;
 
         int mChartType;
 
-        public HistoryChartControl(string name, int w, int h, bool isSecondPanel)
+        public HistoryChartControl(Share share, string name, int w, int h, bool isSecondPanel)
             : base()
         {
             mChartType = Share.CANDLE_DAILY;
             setSize(w, h);
             mIsSecondPanel = isSecondPanel;
 
-            mContext = Context.getInstance();
-            Share share = mContext.getSelectedDrawableShare(0);
+            setShare(share);
 
-            mDrawer = Drawer.getInstance();
+            mContext = Context.getInstance();
+
+            mDrawer = new Drawer();
 
             int x = 0;
 
@@ -405,7 +407,7 @@ namespace stock123.app
             if (evt == C.EVT_FOCUS_AT_CURSOR)
             {
                 int[] scopes = { Share.SCOPE_1WEEKS, Share.SCOPE_1MONTH, Share.SCOPE_3MONTHS, Share.SCOPE_6MONTHS, Share.SCOPE_1YEAR, Share.SCOPE_2YEAR, Share.SCOPE_5YEAR, Share.SCOPE_ALL };
-                Share share = mContext.getSelectedDrawableShare();
+                Share share = mShare;
                 if (share != null)
                 {
                     createChartRangeControls(share.getCursorScope(), mTimingRange);
@@ -414,7 +416,7 @@ namespace stock123.app
 
             if (evt == xBaseControl.EVT_BUTTON_CLICKED)
             {
-                Share share = mContext.getSelectedDrawableShare();
+                Share share = mShare;
                 //  daily/weekly/monthly
                 if (aIntParameter == C.ID_WEEKLY_CHART && share != null)
                 {
@@ -534,7 +536,7 @@ namespace stock123.app
             }
             if (mSubCharts.size() > 0)
             {
-                Share share = mContext.getSelectedDrawableShare();
+                Share share = mShare;
     
                 //  adjust master chart position first
                 if (mTimingRange != null)
@@ -584,7 +586,7 @@ namespace stock123.app
 
         protected xContainer createChartRangeControls(int currentRange, xContainer c)
         {
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = mShare;
             if (share.isRealtime())
             {
                 return createChartRangeControlsRT(share.mCandleType, c);
@@ -670,7 +672,7 @@ namespace stock123.app
 
         protected xContainer createChartRangeControlsRT(int candleType, xContainer c)
         {
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = mShare;
             c.removeAllControls();
 
             xLabel l;
@@ -740,6 +742,8 @@ namespace stock123.app
             cl.setIsMasterChart(true);
             cl.setSize(w, h);
             cl.setPosition(0, 0);
+
+            cl.setDrawer(mDrawer);
 
             cl.mShouldDrawCursor = true;
             cl.mShouldDrawDateSeparator = true;
@@ -830,7 +834,7 @@ namespace stock123.app
 
         void processToolStripEvent(ToolStripItemClickedEventArgs e, int idx)
         {
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = mShare;
             if (share == null)
                 return;
             if (idx == C.ID_TS_SMA1 || idx == C.ID_TS_SMA2)
@@ -1485,6 +1489,11 @@ namespace stock123.app
                     mMainChart.invalidate();
                 }
             }
+        }
+
+        public void setShare(Share share)
+        {
+            mShare = share;
         }
     }
 }

@@ -29,7 +29,7 @@ namespace stock123.app.chart
 
             if (isHiding())
                 return;
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
 
             if (share == null)
                 return;
@@ -39,13 +39,13 @@ namespace stock123.app.chart
 
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
 
-                pricesToYs(Share.pStochRSI, share.mBeginIdx, mChartLineXY, mChartLineLength, -0.1f, 1.1f);
+                pricesToYs(share.pStochRSI, share.mBeginIdx, mChartLineXY, mChartLineLength, -0.1f, 1.1f);
                 float[] tmp = { 0, 0.2f, 0.5f, 0.8f, 1};
                 pricesToYs(tmp, 0, mPricelines, 5, -0.1f, 1.1f);
 
                 //  SMA
                 mChartLineXY2 = allocMem(mChartLineXY2, mChartLineLength * 2);
-                pricesToYs(Share.pStochRSISMA, share.mBeginIdx, mChartLineXY2, mChartLineLength, -0.1f, 1.1f);
+                pricesToYs(share.pStochRSISMA, share.mBeginIdx, mChartLineXY2, mChartLineLength, -0.1f, 1.1f);
             }
 
             if (mChartLineLength == 0)
@@ -87,7 +87,7 @@ namespace stock123.app.chart
         override public xVector getTitles()
         {
             xVector v = new xVector(1);
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
             if (share != null)
             {
                 int idx = share.getCursor();
@@ -95,7 +95,7 @@ namespace stock123.app.chart
                 StringBuilder sb = Utils.sb;
                 sb.Length = 0;
 
-                vs = Share.pStochRSI[idx];
+                vs = share.pStochRSI[idx];
 
                 sb.AppendFormat("StochRSI({0:F0})={1:F1}", mContext.mOptStochRSIPeriod, vs);
                 v.addElement(new stTitle(sb.ToString(), C.COLOR_ORANGE));

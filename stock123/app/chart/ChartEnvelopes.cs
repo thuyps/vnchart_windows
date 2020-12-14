@@ -30,10 +30,10 @@ namespace stock123.app.chart
         {
             if (isHiding())
                 return;
-            if (mContext.getSelectedDrawableShare(3) == null)
+            if (getShare(3) == null)
                 return;
 
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             if (share == null)
                 return;
 
@@ -42,7 +42,7 @@ namespace stock123.app.chart
                 share.calcEnvelop();
 
                 float[] percent = { 110, 105, 102.5f, 100, 97.5f, 95.0f, 90 };
-                float[] p = Share.pTMP;
+                float[] p = share.pTMP;
                 float min = share.getLowestPrice();
                 float max = share.getHighestPrice();
                 for (int i = 0; i < 7; i++)
@@ -51,7 +51,7 @@ namespace stock123.app.chart
 
                     for (int j = 0; j < mChartLineLength; j++)
                     {
-                        p[j] = (percent[i]*Share.pSMA_Envelop[share.mBeginIdx + j])/100;
+                        p[j] = (percent[i] * share.pSMA_Envelop[share.mBeginIdx + j]) / 100;
                     }
 
                     pricesToYs(p, 0, mLines[i], mChartLineLength, min, max);

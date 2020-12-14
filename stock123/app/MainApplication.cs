@@ -61,9 +61,9 @@ namespace stock123.app
         override public void createScreens()
         {
             mScreens = new xScreen[20];
-            mScreens[SCREEN_HOME] = new ScreenHome();
-            mScreens[SCREEN_HELP] = new ScreenHelp();
-            mScreens[SCREEN_SEARCH] = new ScreenSearch();
+            mScreens[SCREEN_HOME] = new ScreenRoot();
+            //mScreens[SCREEN_HELP] = new ScreenHelp();
+            //mScreens[SCREEN_SEARCH] = new ScreenHistoryChart();
             //mScreens[SCREEN_MINIMIZED] = new ScreenMinimized();
         }
 

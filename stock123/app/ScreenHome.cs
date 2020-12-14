@@ -1322,6 +1322,7 @@ namespace stock123.app
                 }
                 if (aIntParameter == C.ID_PRICEBOARD_TABLE)
                 {
+                    /*
                     if (mIsGlobalPriceboard)
                     {
                         RowGlobalQuote r = (RowGlobalQuote)aParameter;
@@ -1334,12 +1335,13 @@ namespace stock123.app
 
                         mNetProtocol.cancelNetwork();
 
-                        ScreenSearch scr = (ScreenSearch)MainApplication.getInstance().getScreen(MainApplication.SCREEN_SEARCH);
-                        scr.mScreenType = ScreenSearch.TYPE_CHART;
+                        ViewHistoryChart scr = (ViewHistoryChart)MainApplication.getInstance().getScreen(MainApplication.SCREEN_SEARCH);
+                        scr.mScreenType = ViewHistoryChart.TYPE_CHART;
                         goNextScreen(MainApplication.SCREEN_SEARCH);
                         mNetState = STATE_NORMAL;
                     }
                     else
+                     */
                     {
                         RowPriceboard r = (RowPriceboard)aParameter;
                         int shareId = r.mShareID;
@@ -2644,15 +2646,19 @@ namespace stock123.app
 
         void goChartScreen(int shareID)
         {
+            /*
             doNotRecreateHomeScreen = true;
             if (shareID != -1)
             {
                 mContext.setCurrentShare(shareID);
             }
 
-            ScreenSearch scr = (ScreenSearch)MainApplication.getInstance().getScreen(MainApplication.SCREEN_SEARCH);
-            scr.mScreenType = ScreenSearch.TYPE_CHART;
+            ViewHistoryChart scr = (ViewHistoryChart)MainApplication.getInstance().getScreen(MainApplication.SCREEN_SEARCH);
+            scr.mScreenType = ViewHistoryChart.TYPE_CHART;
             goNextScreen(MainApplication.SCREEN_SEARCH);
+             * */
+            Share share = mContext.mShareManager.getShare(shareID);
+            ScreenRoot.instance().createNewHistory(share);
         }
 
         void processSettingDlg(int dlgResult)
@@ -2938,8 +2944,8 @@ namespace stock123.app
                 }
                 else if (mNetState == STATE_GLOBAL_QUOTE_DATA)
                 {
-                    ScreenSearch scr = (ScreenSearch)MainApplication.getInstance().getScreen(MainApplication.SCREEN_SEARCH);
-                    scr.mScreenType = ScreenSearch.TYPE_CHART;
+                    ViewHistoryChart scr = (ViewHistoryChart)MainApplication.getInstance().getScreen(MainApplication.SCREEN_SEARCH);
+                    scr.mScreenType = ViewHistoryChart.TYPE_CHART;
                     goNextScreen(MainApplication.SCREEN_SEARCH);
                     mNetState = STATE_NORMAL;
                 }

@@ -2153,10 +2153,10 @@ namespace stock123.app.data
                 if (share.getCandleCount() > 10)
                 {
                     share.calcRSI(0);
-                    if (Share.pRSI[share.getCandleCount()-1] <= 31)
+                    if (share.pRSI[share.getCandleCount() - 1] <= 31)
                     {
                         v.addElement(share);
-                        share.mSortParam = Share.pRSI[share.getCandleCount()-1];
+                        share.mSortParam = share.pRSI[share.getCandleCount() - 1];
                         share.mCompareText = null;
                     }
                 }
@@ -2181,10 +2181,10 @@ namespace stock123.app.data
                 if (share.getCandleCount() > 10)
                 {
                     share.calcMFI(0);
-                    if (Share.pMFI[share.getCandleCount() - 1] <= 31)
+                    if (share.pMFI[share.getCandleCount() - 1] <= 31)
                     {
                         v.addElement(share);
-                        share.mSortParam = Share.pMFI[share.getCandleCount() - 1];
+                        share.mSortParam = share.pMFI[share.getCandleCount() - 1];
                         share.mCompareText = null;
                     }
                 }
@@ -2209,10 +2209,10 @@ namespace stock123.app.data
                 if (share.getCandleCount() > 10)
                 {
                     share.calcROC(0);
-                    if (Share.pROC[share.getCandleCount() - 1] <= -10)
+                    if (share.pROC[share.getCandleCount() - 1] <= -10)
                     {
                         v.addElement(share);
-                        share.mSortParam = -Share.pROC[share.getCandleCount() - 1];
+                        share.mSortParam = -share.pROC[share.getCandleCount() - 1];
                         share.mCompareText = null;
                     }
                 }
@@ -2380,7 +2380,7 @@ namespace stock123.app.data
                     if (share.isBullishDiverRSI())
                     {
                         v.addElement(share);
-                        share.mSortParam = Share.pMFI[share.getCandleCount() - 1];
+                        share.mSortParam = share.pMFI[share.getCandleCount() - 1];
                         share.mCompareText = null;
                     }
                 }
@@ -2413,7 +2413,7 @@ namespace stock123.app.data
                     if (share.isBullishDiverROC())
                     {
                         v.addElement(share);
-                        share.mSortParam = Share.pMFI[share.getCandleCount() - 1];
+                        share.mSortParam = share.pMFI[share.getCandleCount() - 1];
                         share.mCompareText = null;
                     }
                 }
@@ -2445,7 +2445,7 @@ namespace stock123.app.data
                     if (share.isBullishDiverMFI())
                     {
                         v.addElement(share);
-                        share.mSortParam = Share.pMFI[share.getCandleCount() - 1];
+                        share.mSortParam = share.pMFI[share.getCandleCount() - 1];
                         share.mCompareText = null;
                     }
                 }

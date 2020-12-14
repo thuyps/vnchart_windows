@@ -41,7 +41,7 @@ namespace stock123.app.chart
             //g.setColor(Constants.COLOR_BLACK);
             //g.clear();
 
-            if (mContext.getSelectedDrawableShare(3) == null)
+            if (getShare(3) == null)
                 return;
 
             if (mChartType == CHART_COMPARING_SECOND_SHARE)
@@ -122,7 +122,7 @@ namespace stock123.app.chart
         override public xVector getTitles()
         {
             xVector v = new xVector(3);
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
             StringBuilder sb = Utils.sb;
             sb.Length = 0;
             if (share != null)
@@ -134,9 +134,9 @@ namespace stock123.app.chart
                 }
                 else if (mChartType == CHART_RSI)
                 {
-                    sb.AppendFormat("RSI({0})={1:F1}", mContext.mOptRSIPeriod[0], Share.pRSI[idx]);
+                    sb.AppendFormat("RSI({0})={1:F1}", mContext.mOptRSIPeriod[0], share.pRSI[idx]);
                     if (mHasSecondChart)
-                        sb.AppendFormat("    RSI#2({0:F1})={1}", mContext.mOptRSIPeriod[1], Share.pRSISecond[idx]);
+                        sb.AppendFormat("    RSI#2({0:F1})={1}", mContext.mOptRSIPeriod[1], share.pRSISecond[idx]);
                     if (mContext.mOptRSI_EMA > 0)
                     {
                         sb.AppendFormat("    MA({0})={1:F1}", mContext.mOptRSI_EMA, share.pEMAIndicator[idx]);
@@ -146,9 +146,9 @@ namespace stock123.app.chart
                 }
                 else if (mChartType == CHART_MFI)
                 {
-                    sb.AppendFormat("MFI({0})={1:F1}", mContext.mOptMFIPeriod[0], Share.pMFI[idx]);
+                    sb.AppendFormat("MFI({0})={1:F1}", mContext.mOptMFIPeriod[0], share.pMFI[idx]);
                     if (mHasSecondChart)
-                        sb.AppendFormat("    MFI#2({0})={1:F1}", mContext.mOptMFIPeriod[1], Share.pMFISecond[idx]);
+                        sb.AppendFormat("    MFI#2({0})={1:F1}", mContext.mOptMFIPeriod[1], share.pMFISecond[idx]);
 
                     if (mContext.mOptMFI_EMA > 0)
                     {
@@ -163,9 +163,9 @@ namespace stock123.app.chart
                 }
                 else if (mChartType == CHART_ROC)
                 {
-                    sb.AppendFormat("ROC({0}): {1:F2}%", mContext.mOptROC[0], Share.pROC[idx]);
+                    sb.AppendFormat("ROC({0}): {1:F2}%", mContext.mOptROC[0], share.pROC[idx]);
                     if (mHasSecondChart)
-                        sb.AppendFormat("    ROC#2({0}): {1:F2}%", mContext.mOptROC[1], Share.pROCSecond[idx]);
+                        sb.AppendFormat("    ROC#2({0}): {1:F2}%", mContext.mOptROC[1], share.pROCSecond[idx]);
 
                     if (mContext.mOptROC_EMA > 0)
                     {
@@ -176,35 +176,35 @@ namespace stock123.app.chart
                 }
                 else if (mChartType == CHART_NVI)
                 {
-                    sb.AppendFormat("NVI={0:F1}", Share.pNVI[idx]);
+                    sb.AppendFormat("NVI={0:F1}", share.pNVI[idx]);
                     v.addElement(new stTitle(sb.ToString(), C.COLOR_WHITE));
                     if (mContext.mOptNVI_EMA[0] > 0)
                     {
                         sb.Length = 0;
-                        sb.AppendFormat("     MA({0}): {1:F1}", (int)mContext.mOptNVI_EMA[0], Share.pNVI_EMA1[idx]);
+                        sb.AppendFormat("     MA({0}): {1:F1}", (int)mContext.mOptNVI_EMA[0], share.pNVI_EMA1[idx]);
                         v.addElement(new stTitle(sb.ToString(), C.COLOR_MAGENTA));
                     }
                     if (mContext.mOptNVI_EMA[1] > 0)
                     {
                         sb.Length = 0;
-                        sb.AppendFormat("     MA({0}): {1:F1}", (int)mContext.mOptNVI_EMA[1], Share.pNVI_EMA2[idx]);
+                        sb.AppendFormat("     MA({0}): {1:F1}", (int)mContext.mOptNVI_EMA[1], share.pNVI_EMA2[idx]);
                         v.addElement(new stTitle(sb.ToString(), C.COLOR_BLUE_LIGHT));
                     }                    
                 }
                 else if (mChartType == CHART_PVI)
                 {
-                    sb.AppendFormat("PVI={0:F1}", Share.pPVI[idx]);
+                    sb.AppendFormat("PVI={0:F1}", share.pPVI[idx]);
                     v.addElement(new stTitle(sb.ToString(), C.COLOR_WHITE));
                     if (mContext.mOptPVI_EMA[0] > 0)
                     {
                         sb.Length = 0;
-                        sb.AppendFormat("     MA({0}): {1:F1}", (int)mContext.mOptPVI_EMA[0], Share.pPVI_EMA1[idx]);
+                        sb.AppendFormat("     MA({0}): {1:F1}", (int)mContext.mOptPVI_EMA[0], share.pPVI_EMA1[idx]);
                         v.addElement(new stTitle(sb.ToString(), C.COLOR_MAGENTA));
                     }
                     if (mContext.mOptPVI_EMA[1] > 0)
                     {
                         sb.Length = 0;
-                        sb.AppendFormat("     MA({0}): {1:F1}", (int)mContext.mOptPVI_EMA[1], Share.pPVI_EMA2[idx]);
+                        sb.AppendFormat("     MA({0}): {1:F1}", (int)mContext.mOptPVI_EMA[1], share.pPVI_EMA2[idx]);
                         v.addElement(new stTitle(sb.ToString(), C.COLOR_BLUE_LIGHT));
                     }
                 }
@@ -214,11 +214,11 @@ namespace stock123.app.chart
                     v.addElement(new stTitle(sb.ToString(), C.COLOR_WHITE));
 
                     sb.Length = 0;
-                    sb.AppendFormat("{0:F2}", Share.pTrix[idx]);
+                    sb.AppendFormat("{0:F2}", share.pTrix[idx]);
                     v.addElement(new stTitle(sb.ToString(), C.COLOR_GREEN));
 
                     sb.Length = 0;
-                    sb.AppendFormat("{0:F2}", Share.pTrixEMA[idx]);
+                    sb.AppendFormat("{0:F2}", share.pTrixEMA[idx]);
                     v.addElement(new stTitle(sb.ToString(), C.COLOR_MAGENTA));
                 }
                 else if (mChartType == CHART_ADL)
@@ -228,14 +228,14 @@ namespace stock123.app.chart
                 else if (mChartType == CHART_PVT)
                 {
                     sb.Length = 0;
-                    String s = Utils.formatNumber((int)Share.pPVT[idx]);
+                    String s = Utils.formatNumber((int)share.pPVT[idx]);
                     sb.Length = 0;
                     sb.AppendFormat("PVT={0}", s);
                     v.addElement(new stTitle(sb.ToString(), C.COLOR_WHITE));
                     if (mContext.mOptPVT > 0)
                     {
                         sb.Length = 0;
-                        s = Utils.formatNumber((int)Share.pPVT_EMA1[idx]);
+                        s = Utils.formatNumber((int)share.pPVT_EMA1[idx]);
                         sb.Length = 0;
                         sb.AppendFormat("     MA({0}): {1:F1}", (int)mContext.mOptPVT, s);
                         v.addElement(new stTitle(sb.ToString(), C.COLOR_MAGENTA));
@@ -243,19 +243,19 @@ namespace stock123.app.chart
                 }
                 else if (mChartType == CHART_CCI)
                 {
-                    sb.AppendFormat("CCI (k:{0:F3}, {1}): {2:F2}", mContext.mOptCCIConstant, (int)mContext.mOptCCIPeriod, Share.pCCI[idx]);
+                    sb.AppendFormat("CCI (k:{0:F3}, {1}): {2:F2}", mContext.mOptCCIConstant, (int)mContext.mOptCCIPeriod, share.pCCI[idx]);
 
                     v.addElement(new stTitle(sb.ToString(), C.COLOR_WHITE));
                 }
                 else if (mChartType == CHART_MASSINDEX)
                 {
-                    sb.AppendFormat("MASS ({0}, {1}): {2:F1}", mContext.mOptMassIndexDifferent, (int)mContext.mOptMassIndexSum, Share.pMassIndex[idx]);
+                    sb.AppendFormat("MASS ({0}, {1}): {2:F1}", mContext.mOptMassIndexDifferent, (int)mContext.mOptMassIndexSum, share.pMassIndex[idx]);
 
                     v.addElement(new stTitle(sb.ToString(), C.COLOR_WHITE));
                 }
                 else if (mChartType == CHART_ATR)
                 {
-                    sb.AppendFormat("ATR ({0}): {1:F2}", mContext.mOptATRLoopback, Share.pATR[idx]);
+                    sb.AppendFormat("ATR ({0}): {1:F2}", mContext.mOptATRLoopback, share.pATR[idx]);
 
                     v.addElement(new stTitle(sb.ToString(), C.COLOR_WHITE));
                 }
@@ -270,12 +270,14 @@ namespace stock123.app.chart
             int mY = 0;
             if (detectShareCursorChanged())
             {
-                Share s = mContext.getSelectedDrawableShare();
+                Share s = getShare();
                 s.calcRSI(0);
+
+                Share share = s;
 
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
 
-                pricesToYs(Share.pRSI, s.mBeginIdx, mChartLineXY, mChartLineLength, 0, 100);
+                pricesToYs(share.pRSI, s.mBeginIdx, mChartLineXY, mChartLineLength, 0, 100);
                 float[] tmp = { 30, 50, 70 };
                 pricesToYs(tmp, 0, mPricelines, 3, 0, 100);
 
@@ -286,7 +288,7 @@ namespace stock123.app.chart
 
                     mChartLineXY2 = allocMem(mChartLineXY2, mChartLineLength * 2);
 
-                    pricesToYs(Share.pRSISecond, s.mBeginIdx, mChartLineXY2, mChartLineLength, 0, 100);
+                    pricesToYs(share.pRSISecond, s.mBeginIdx, mChartLineXY2, mChartLineLength, 0, 100);
                 }
                 //==============================
                 if (mContext.mOptRSI_EMA > 0)
@@ -295,11 +297,11 @@ namespace stock123.app.chart
 
                     if (mContext.mOptRSI_EMA_ON[0])
                     {
-                        Share.EMA(Share.pRSI, s.getCandleCount(), (int)mContext.mOptRSI_EMA, s.pEMAIndicator);
+                        Share.EMA(share.pRSI, s.getCandleCount(), (int)mContext.mOptRSI_EMA, s.pEMAIndicator);
                     }
                     else
                     {
-                        Share.SMA(Share.pRSI, 0, s.getCandleCount(), (int)mContext.mOptRSI_EMA, s.pEMAIndicator);
+                        Share.SMA(share.pRSI, 0, s.getCandleCount(), (int)mContext.mOptRSI_EMA, s.pEMAIndicator);
                     }
                     pricesToYs(s.pEMAIndicator, s.mBeginIdx, mChartEMA, mChartLineLength, 0, 100);
                 }
@@ -344,12 +346,14 @@ namespace stock123.app.chart
 
             if (detectShareCursorChanged())
             {
-                Share s = mContext.getSelectedDrawableShare();
+                Share s = getShare();
                 s.calcMFI(0);
+
+                Share share = s;
 
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
 
-                pricesToYs(Share.pMFI, s.mBeginIdx, mChartLineXY, mChartLineLength, 0, 100);
+                pricesToYs(share.pMFI, s.mBeginIdx, mChartLineXY, mChartLineLength, 0, 100);
                 float[] tmp = { 20, 50, 80 };
                 pricesToYs(tmp, 0, mPricelines, 3, 0, 100);
 
@@ -359,7 +363,7 @@ namespace stock123.app.chart
                     s.calcMFI(1);
 
                     mChartLineXY2 = allocMem(mChartLineXY2, mChartLineLength * 2);
-                    pricesToYs(Share.pMFISecond, s.mBeginIdx, mChartLineXY2, mChartLineLength, 0, 100);
+                    pricesToYs(share.pMFISecond, s.mBeginIdx, mChartLineXY2, mChartLineLength, 0, 100);
                 }
                 //==============================
                 if (mContext.mOptMFI_EMA > 0)
@@ -368,11 +372,11 @@ namespace stock123.app.chart
 
                     if (mContext.mOptMFI_EMA_ON[0])
                     {
-                        Share.EMA(Share.pMFI, s.getCandleCount(), (int)mContext.mOptMFI_EMA, s.pEMAIndicator);
+                        Share.EMA(share.pMFI, s.getCandleCount(), (int)mContext.mOptMFI_EMA, s.pEMAIndicator);
                     }
                     else
                     {
-                        Share.SMA(Share.pMFI, 0, s.getCandleCount(), (int)mContext.mOptMFI_EMA, s.pEMAIndicator);
+                        Share.SMA(share.pMFI, 0, s.getCandleCount(), (int)mContext.mOptMFI_EMA, s.pEMAIndicator);
                     }
                     pricesToYs(s.pEMAIndicator, s.mBeginIdx, mChartEMA, mChartLineLength, 0, 100);
                 }
@@ -412,9 +416,11 @@ namespace stock123.app.chart
             int mX = 0;
             int mY = 0;
 
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             if (s == null)
                 return;
+
+            Share share = s;
 
             if (detectShareCursorChanged())
             {
@@ -428,11 +434,11 @@ namespace stock123.app.chart
                 hi = -10000;
                 for (int i = 0; i < mChartLineLength; i++)
                 {
-                    if (Share.pChaikinOscillator[i + s.mBeginIdx] > hi) hi = Share.pChaikinOscillator[i + s.mBeginIdx];
-                    if (Share.pChaikinOscillator[i + s.mBeginIdx] < lo) lo = Share.pChaikinOscillator[i + s.mBeginIdx];
+                    if (share.pChaikinOscillator[i + s.mBeginIdx] > hi) hi = share.pChaikinOscillator[i + s.mBeginIdx];
+                    if (share.pChaikinOscillator[i + s.mBeginIdx] < lo) lo = share.pChaikinOscillator[i + s.mBeginIdx];
 
-                    if (Share.pChaikinOscillatorSecond[i + s.mBeginIdx] > hi) hi = Share.pChaikinOscillatorSecond[i + s.mBeginIdx];
-                    if (Share.pChaikinOscillatorSecond[i + s.mBeginIdx] < lo) lo = Share.pChaikinOscillatorSecond[i + s.mBeginIdx];
+                    if (share.pChaikinOscillatorSecond[i + s.mBeginIdx] > hi) hi = share.pChaikinOscillatorSecond[i + s.mBeginIdx];
+                    if (share.pChaikinOscillatorSecond[i + s.mBeginIdx] < lo) lo = share.pChaikinOscillatorSecond[i + s.mBeginIdx];
                 }
 
                 float max = (Utils.ABS_FLOAT(hi) > Utils.ABS_FLOAT(lo)) ? Utils.ABS_FLOAT(hi) : Utils.ABS_FLOAT(lo);
@@ -442,24 +448,24 @@ namespace stock123.app.chart
                 //============================================
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
 
-                pricesToYs(Share.pChaikinOscillator, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
+                pricesToYs(share.pChaikinOscillator, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
 
                 if (mHasSecondChart)
                 {
                     mChartLineXY2 = allocMem(mChartLineXY2, mChartLineLength * 2);
 
-                    pricesToYs(Share.pChaikinOscillatorSecond, s.mBeginIdx, mChartLineXY2, mChartLineLength, lo, hi);
+                    pricesToYs(share.pChaikinOscillatorSecond, s.mBeginIdx, mChartLineXY2, mChartLineLength, lo, hi);
                 }
                 if (mContext.mOptChaikinOscillatorEMA > 0)
                 {
                     mChartEMA = allocMem(mChartEMA, mChartLineLength * 2);
                     if (mContext.mOptChaikinOscillatorEMA_ON[0])
                     {
-                        Share.EMA(Share.pChaikinOscillator, s.getCandleCount(), (int)mContext.mOptChaikinOscillatorEMA, s.pEMAIndicator);
+                        Share.EMA(share.pChaikinOscillator, s.getCandleCount(), (int)mContext.mOptChaikinOscillatorEMA, s.pEMAIndicator);
                     }
                     else
                     {
-                        Share.SMA(Share.pChaikinOscillator, 0, s.getCandleCount(), (int)mContext.mOptChaikinOscillatorEMA, s.pEMAIndicator);
+                        Share.SMA(share.pChaikinOscillator, 0, s.getCandleCount(), (int)mContext.mOptChaikinOscillatorEMA, s.pEMAIndicator);
                     }
                     pricesToYs(s.pEMAIndicator, s.mBeginIdx, mChartEMA, mChartLineLength, lo, hi);
                 }
@@ -470,11 +476,11 @@ namespace stock123.app.chart
 
             for (int i = 0; i < mChartLineLength; i++)
             {
-                if (Share.pChaikinOscillator[i + s.mBeginIdx] > hi) hi = Share.pChaikinOscillator[i + s.mBeginIdx];
-                if (Share.pChaikinOscillator[i + s.mBeginIdx] < lo) lo = Share.pChaikinOscillator[i + s.mBeginIdx];
+                if (share.pChaikinOscillator[i + s.mBeginIdx] > hi) hi = share.pChaikinOscillator[i + s.mBeginIdx];
+                if (share.pChaikinOscillator[i + s.mBeginIdx] < lo) lo = share.pChaikinOscillator[i + s.mBeginIdx];
 
-                if (Share.pChaikinOscillatorSecond[i + s.mBeginIdx] > hi) hi = Share.pChaikinOscillatorSecond[i + s.mBeginIdx];
-                if (Share.pChaikinOscillatorSecond[i + s.mBeginIdx] < lo) lo = Share.pChaikinOscillatorSecond[i + s.mBeginIdx];
+                if (share.pChaikinOscillatorSecond[i + s.mBeginIdx] > hi) hi = share.pChaikinOscillatorSecond[i + s.mBeginIdx];
+                if (share.pChaikinOscillatorSecond[i + s.mBeginIdx] < lo) lo = share.pChaikinOscillatorSecond[i + s.mBeginIdx];
             }
 
             g.setColor(C.COLOR_FADE_YELLOW);
@@ -497,7 +503,7 @@ namespace stock123.app.chart
             g.setColor(C.COLOR_ORANGE);
             sb = Utils.getSB();
             int idx = s.getCursor();
-            sb.AppendFormat("Chaikin({0},{1}): {2}", (int)mContext.mOptChaikin0[0], (int)mContext.mOptChaikin1[0], Share.pChaikinOscillator[idx]);
+            sb.AppendFormat("Chaikin({0},{1}): {2}", (int)mContext.mOptChaikin0[0], (int)mContext.mOptChaikin1[0], share.pChaikinOscillator[idx]);
             g.drawString(mFont, sb.ToString(), 2, 1, xGraphics.LEFT | xGraphics.TOP);
             g.drawLines(mChartLineXY, mChartLineLength, 2.0f);
 
@@ -515,7 +521,7 @@ namespace stock123.app.chart
             {
                 g.setColor(C.COLOR_SECOND_CHART);
                 sb = Utils.getSB();
-                sb.AppendFormat("Chaikin#2({0},{1}): {2}", (int)mContext.mOptChaikin0[1], (int)mContext.mOptChaikin1[1], Share.pChaikinOscillatorSecond[idx]);
+                sb.AppendFormat("Chaikin#2({0},{1}): {2}", (int)mContext.mOptChaikin0[1], (int)mContext.mOptChaikin1[1], share.pChaikinOscillatorSecond[idx]);
                 g.drawString(mFont, sb.ToString(), 200, 1, xGraphics.LEFT | xGraphics.TOP);
 
                 g.drawLines(mChartLineXY2, mChartLineLength, 1.5f);
@@ -532,9 +538,11 @@ namespace stock123.app.chart
             int mX = 0;
             int mY = 0;
 
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             if (s == null)
                 return;
+
+            Share share = s;
 
             if (detectShareCursorChanged())
             {
@@ -545,16 +553,16 @@ namespace stock123.app.chart
 
                 for (int i = 0; i < mChartLineLength; i++)
                 {
-                    if (Share.pADL[i + s.mBeginIdx] > hi) hi = Share.pADL[i + s.mBeginIdx];
-                    if (Share.pADL[i + s.mBeginIdx] < lo) lo = Share.pADL[i + s.mBeginIdx];                }
+                    if (share.pADL[i + s.mBeginIdx] > hi) hi = share.pADL[i + s.mBeginIdx];
+                    if (share.pADL[i + s.mBeginIdx] < lo) lo = share.pADL[i + s.mBeginIdx];                }
                 //============================================
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
                 mChartLineXY2 = allocMem(mChartLineXY2, mChartLineLength * 2);
                 mChartLineXY3 = allocMem(mChartLineXY3, mChartLineLength * 2);
 
-                pricesToYs(Share.pADL, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
-                pricesToYs(Share.pADL_SMA0, s.mBeginIdx, mChartLineXY2, mChartLineLength, lo, hi);
-                pricesToYs(Share.pADL_SMA1, s.mBeginIdx, mChartLineXY3, mChartLineLength, lo, hi);
+                pricesToYs(share.pADL, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
+                pricesToYs(share.pADL_SMA0, s.mBeginIdx, mChartLineXY2, mChartLineLength, lo, hi);
+                pricesToYs(share.pADL_SMA1, s.mBeginIdx, mChartLineXY3, mChartLineLength, lo, hi);
             }
 
             if (mShouldDrawGrid)
@@ -595,9 +603,11 @@ namespace stock123.app.chart
             int mX = 0;
             int mY = 0;
             int i = 0;
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             if (s == null)
                 return;
+
+            Share share = s;
             if (detectShareCursorChanged())
             {
                 s.calcROC(0);
@@ -611,11 +621,11 @@ namespace stock123.app.chart
                 hi = 14;
                 for (i = s.mBeginIdx; i <= s.mEndIdx; i++)
                 {
-                    if (Share.pROC[i] < lo) lo = Share.pROC[i];
-                    if (Share.pROC[i] > hi) hi = Share.pROC[i];
+                    if (share.pROC[i] < lo) lo = share.pROC[i];
+                    if (share.pROC[i] > hi) hi = share.pROC[i];
 
-                    if (Share.pROCSecond[i] < lo) lo = Share.pROCSecond[i];
-                    if (Share.pROCSecond[i] > hi) hi = Share.pROCSecond[i];
+                    if (share.pROCSecond[i] < lo) lo = share.pROCSecond[i];
+                    if (share.pROCSecond[i] > hi) hi = share.pROCSecond[i];
                 }
 
                 float max = (Utils.ABS_FLOAT(hi) > Utils.ABS_FLOAT(lo)) ? Utils.ABS_FLOAT(hi) : Utils.ABS_FLOAT(lo);
@@ -623,11 +633,11 @@ namespace stock123.app.chart
                 lo = -max;
 
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
-                pricesToYs(Share.pROC, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
+                pricesToYs(share.pROC, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
                 if (mHasSecondChart)
                 {
                     mChartLineXY2 = allocMem(mChartLineXY2, mChartLineLength * 2);
-                    pricesToYs(Share.pROCSecond, s.mBeginIdx, mChartLineXY2, mChartLineLength, lo, hi);
+                    pricesToYs(share.pROCSecond, s.mBeginIdx, mChartLineXY2, mChartLineLength, lo, hi);
                 }
 
                 //==============================
@@ -637,11 +647,11 @@ namespace stock123.app.chart
 
                     if (mContext.mOptROC_EMA_ON[0])
                     {
-                        Share.EMA(Share.pROC, s.getCandleCount(), (int)mContext.mOptROC_EMA, s.pEMAIndicator);
+                        Share.EMA(share.pROC, s.getCandleCount(), (int)mContext.mOptROC_EMA, s.pEMAIndicator);
                     }
                     else
                     {
-                        Share.SMA(Share.pROC, 0, s.getCandleCount(), (int)mContext.mOptROC_EMA, s.pEMAIndicator);
+                        Share.SMA(share.pROC, 0, s.getCandleCount(), (int)mContext.mOptROC_EMA, s.pEMAIndicator);
                     }
                     pricesToYs(s.pEMAIndicator, s.mBeginIdx, mChartEMA, mChartLineLength, lo, hi);
                 }
@@ -649,8 +659,8 @@ namespace stock123.app.chart
             /*
             for (i = 0; i < mChartLineLength; i++)
             {
-                if (Share.pROC[i + s.mBeginIdx] > hi) hi = Share.pROC[i + s.mBeginIdx];
-                if (Share.pROC[i + s.mBeginIdx] < lo) lo = Share.pROC[i + s.mBeginIdx];
+                if (share.pROC[i + s.mBeginIdx] > hi) hi = share.pROC[i + s.mBeginIdx];
+                if (share.pROC[i + s.mBeginIdx] < lo) lo = share.pROC[i + s.mBeginIdx];
             }
              */
 
@@ -705,9 +715,10 @@ namespace stock123.app.chart
             int mX = 0;
             int mY = 0;
             int i = 0;
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             if (s == null)
                 return;
+            Share share = s;
             if (detectShareCursorChanged())
             {
                 s.calcNVI();
@@ -716,23 +727,23 @@ namespace stock123.app.chart
                 hi = -20000;
                 for (i = s.mBeginIdx; i <= s.mEndIdx; i++)
                 {
-                    if (Share.pNVI[i] < lo) lo = Share.pNVI[i];
-                    if (Share.pNVI[i] > hi) hi = Share.pNVI[i];
+                    if (share.pNVI[i] < lo) lo = share.pNVI[i];
+                    if (share.pNVI[i] > hi) hi = share.pNVI[i];
                 }
                 if (mContext.mOptNVI_EMA[0] > 0)
                 {
                     for (i = s.mBeginIdx; i <= s.mEndIdx; i++)
                     {
-                        if (Share.pNVI_EMA1[i] < lo) lo = Share.pNVI_EMA1[i];
-                        if (Share.pNVI_EMA1[i] > hi) hi = Share.pNVI_EMA1[i];
+                        if (share.pNVI_EMA1[i] < lo) lo = share.pNVI_EMA1[i];
+                        if (share.pNVI_EMA1[i] > hi) hi = share.pNVI_EMA1[i];
                     }
                 }
                 if (mContext.mOptNVI_EMA[1] > 0)
                 {
                     for (i = s.mBeginIdx; i <= s.mEndIdx; i++)
                     {
-                        if (Share.pNVI_EMA2[i] < lo) lo = Share.pNVI_EMA2[i];
-                        if (Share.pNVI_EMA2[i] > hi) hi = Share.pNVI_EMA2[i];
+                        if (share.pNVI_EMA2[i] < lo) lo = share.pNVI_EMA2[i];
+                        if (share.pNVI_EMA2[i] > hi) hi = share.pNVI_EMA2[i];
                     }
                 }
 
@@ -741,20 +752,20 @@ namespace stock123.app.chart
                 //lo = -max;
 
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
-                pricesToYs(Share.pNVI, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
+                pricesToYs(share.pNVI, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
 
                 //==============================
                 if (mContext.mOptNVI_EMA[0] > 0)
                 {
                     mChartEMA = allocMem(mChartEMA, mChartLineLength * 2);
 
-                    pricesToYs(Share.pNVI_EMA1, s.mBeginIdx, mChartEMA, mChartLineLength, lo, hi);
+                    pricesToYs(share.pNVI_EMA1, s.mBeginIdx, mChartEMA, mChartLineLength, lo, hi);
                 }
                 if (mContext.mOptNVI_EMA[1] > 0)
                 {
                     mChartEMA2 = allocMem(mChartEMA2, mChartLineLength * 2);
 
-                    pricesToYs(Share.pNVI_EMA2, s.mBeginIdx, mChartEMA2, mChartLineLength, lo, hi);
+                    pricesToYs(share.pNVI_EMA2, s.mBeginIdx, mChartEMA2, mChartLineLength, lo, hi);
                 }
             }
 
@@ -817,9 +828,10 @@ namespace stock123.app.chart
             int mX = 0;
             int mY = 0;
             int i = 0;
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             if (s == null)
                 return;
+            Share share = s;
             if (detectShareCursorChanged())
             {
                 s.calcPVI();
@@ -828,23 +840,23 @@ namespace stock123.app.chart
                 hi = -20000;
                 for (i = s.mBeginIdx; i <= s.mEndIdx; i++)
                 {
-                    if (Share.pPVI[i] < lo) lo = Share.pPVI[i];
-                    if (Share.pPVI[i] > hi) hi = Share.pPVI[i];
+                    if (share.pPVI[i] < lo) lo = share.pPVI[i];
+                    if (share.pPVI[i] > hi) hi = share.pPVI[i];
                 }
                 if (mContext.mOptPVI_EMA[0] > 0)
                 {
                     for (i = s.mBeginIdx; i <= s.mEndIdx; i++)
                     {
-                        if (Share.pPVI_EMA1[i] < lo) lo = Share.pPVI_EMA1[i];
-                        if (Share.pPVI_EMA1[i] > hi) hi = Share.pPVI_EMA1[i];
+                        if (share.pPVI_EMA1[i] < lo) lo = share.pPVI_EMA1[i];
+                        if (share.pPVI_EMA1[i] > hi) hi = share.pPVI_EMA1[i];
                     }
                 }
                 if (mContext.mOptPVI_EMA[1] > 0)
                 {
                     for (i = s.mBeginIdx; i <= s.mEndIdx; i++)
                     {
-                        if (Share.pPVI_EMA2[i] < lo) lo = Share.pPVI_EMA2[i];
-                        if (Share.pPVI_EMA2[i] > hi) hi = Share.pPVI_EMA2[i];
+                        if (share.pPVI_EMA2[i] < lo) lo = share.pPVI_EMA2[i];
+                        if (share.pPVI_EMA2[i] > hi) hi = share.pPVI_EMA2[i];
                     }
                 }
 
@@ -853,20 +865,20 @@ namespace stock123.app.chart
                 //lo = -max;
 
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
-                pricesToYs(Share.pPVI, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
+                pricesToYs(share.pPVI, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
 
                 //==============================
                 if (mContext.mOptPVI_EMA[0] > 0)
                 {
                     mChartEMA = allocMem(mChartEMA, mChartLineLength * 2);
 
-                    pricesToYs(Share.pPVI_EMA1, s.mBeginIdx, mChartEMA, mChartLineLength, lo, hi);
+                    pricesToYs(share.pPVI_EMA1, s.mBeginIdx, mChartEMA, mChartLineLength, lo, hi);
                 }
                 if (mContext.mOptPVI_EMA[1] > 0)
                 {
                     mChartEMA2 = allocMem(mChartEMA2, mChartLineLength * 2);
 
-                    pricesToYs(Share.pPVI_EMA2, s.mBeginIdx, mChartEMA2, mChartLineLength, lo, hi);
+                    pricesToYs(share.pPVI_EMA2, s.mBeginIdx, mChartEMA2, mChartLineLength, lo, hi);
                 }
             }
 
@@ -926,12 +938,13 @@ namespace stock123.app.chart
 
         protected void drawChartThuyPS(xGraphics g)
         {
+            /*
             int mX = 0;
             int mY = 0;
             int i = 0;
             float min = 10000000;
             float max = 0;
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             if (s == null)
                 return;
             if (detectShareCursorChanged())
@@ -945,26 +958,26 @@ namespace stock123.app.chart
                 max = 0;
                 for (i = s.mBeginIdx; i <= s.mEndIdx; i++)
                 {
-                    if (Share.pSMAThuyPS[i] > max) max = Share.pSMAThuyPS[i];
-                    if (Share.pSMAThuyPS[i] < min) min = Share.pSMAThuyPS[i];
+                    if (share.pSMAThuyPS[i] > max) max = share.pSMAThuyPS[i];
+                    if (share.pSMAThuyPS[i] < min) min = share.pSMAThuyPS[i];
 
-                    if (Share.pSMAThuyPS1[i] > max) max = Share.pSMAThuyPS1[i];
-                    if (Share.pSMAThuyPS1[i] < min) min = Share.pSMAThuyPS1[i];
+                    if (share.pSMAThuyPS1[i] > max) max = share.pSMAThuyPS1[i];
+                    if (share.pSMAThuyPS1[i] < min) min = share.pSMAThuyPS1[i];
                 }
 
                 min = 0;
                 max = 100;
-                pricesToYs(Share.pSMAThuyPS, s.mBeginIdx, mChartLineXY, mChartLineLength, min, max);
-                pricesToYs(Share.pSMAThuyPS1, s.mBeginIdx, mChartLineXY2, mChartLineLength, min, max);
+                pricesToYs(share.pSMAThuyPS, s.mBeginIdx, mChartLineXY, mChartLineLength, min, max);
+                pricesToYs(share.pSMAThuyPS1, s.mBeginIdx, mChartLineXY2, mChartLineLength, min, max);
             }
 
             for (i = s.mBeginIdx; i <= s.mEndIdx; i++)
             {
-                if (Share.pSMAThuyPS[i] > max) max = Share.pSMAThuyPS[i];
-                if (Share.pSMAThuyPS[i] < min) min = Share.pSMAThuyPS[i];
+                if (share.pSMAThuyPS[i] > max) max = share.pSMAThuyPS[i];
+                if (share.pSMAThuyPS[i] < min) min = share.pSMAThuyPS[i];
 
-                if (Share.pSMAThuyPS1[i] > max) max = Share.pSMAThuyPS1[i];
-                if (Share.pSMAThuyPS1[i] < min) min = Share.pSMAThuyPS1[i];
+                if (share.pSMAThuyPS1[i] > max) max = share.pSMAThuyPS1[i];
+                if (share.pSMAThuyPS1[i] < min) min = share.pSMAThuyPS1[i];
             }
             min = 0;
             max = 100;
@@ -988,6 +1001,7 @@ namespace stock123.app.chart
             g.drawLines(mChartLineXY2, mChartLineLength, 1.5f);
 
             renderCursor(g);
+             */
         }
 
         protected void drawChartTrix(xGraphics g)
@@ -995,9 +1009,10 @@ namespace stock123.app.chart
             int mX = 0;
             int mY = 0;
             int i = 0;
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             if (s == null)
                 return;
+            Share share = s;
             if (detectShareCursorChanged())
             {
                 s.calcTrix();
@@ -1006,18 +1021,18 @@ namespace stock123.app.chart
                 hi = -100;
                 for (i = s.mBeginIdx; i <= s.mEndIdx; i++)
                 {
-                    if (Share.pTrix[i] < lo) lo = Share.pTrix[i];
-                    if (Share.pTrix[i] > hi) hi = Share.pTrix[i];
+                    if (share.pTrix[i] < lo) lo = share.pTrix[i];
+                    if (share.pTrix[i] > hi) hi = share.pTrix[i];
                 }
                 float max = (Utils.ABS_FLOAT(hi) > Utils.ABS_FLOAT(lo)) ? Utils.ABS_FLOAT(hi) : Utils.ABS_FLOAT(lo);
                 hi = max;
                 lo = -max;
                 //-------------TRIX-------------------
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
-                pricesToYs(Share.pTrix, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
+                pricesToYs(share.pTrix, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
                 //-------------EMA--------------------
                 mChartLineXY2 = allocMem(mChartLineXY2, mChartLineLength * 2);
-                pricesToYs(Share.pTrixEMA, s.mBeginIdx, mChartLineXY2, mChartLineLength, lo, hi);
+                pricesToYs(share.pTrixEMA, s.mBeginIdx, mChartLineXY2, mChartLineLength, lo, hi);
 
                 float[] tmp = { 0};
                 pricesToYs(tmp, 0, mPricelines, 1, lo, hi);
@@ -1090,19 +1105,19 @@ namespace stock123.app.chart
 
         void drawChartPastOfYears(xGraphics g)
         {
-            if (mContext.getSelectedDrawableShare(2) == null)
+            if (getShare(2) == null)
                 return;
 
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
 
             float[] p = null;
             if (mChartType == CHART_PAST_1_YEAR)
             {
-                p = Share.pPastPrice1;
+                p = share.pPastPrice1;
             }
             else
             {
-                p = Share.pPastPrice2;
+                p = share.pPastPrice2;
             }
             if (detectShareCursorChanged())		//	share's cursor has been changed
             {
@@ -1171,10 +1186,10 @@ namespace stock123.app.chart
 
         void drawChartOfSecondShare(xGraphics g)
         {
-            if (mContext.getSelectedDrawableShare(2) == null)
+            if (getShare(2) == null)
                 return;
 
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
 
             if (detectShareCursorChanged())		//	share's cursor has been changed
             {
@@ -1185,8 +1200,8 @@ namespace stock123.app.chart
 
                 for (int i = share.mBeginIdx; i < share.mEndIdx; i++)
                 {
-                    if (Share.pComparingPrice[i] > hi) hi = Share.pComparingPrice[i];
-                    if (Share.pComparingPrice[i] < lo) lo = Share.pComparingPrice[i];
+                    if (share.pComparingPrice[i] > hi) hi = share.pComparingPrice[i];
+                    if (share.pComparingPrice[i] < lo) lo = share.pComparingPrice[i];
                 }
 
                 hi = hi + hi / 20.0f;
@@ -1199,7 +1214,7 @@ namespace stock123.app.chart
 
                 int idx = share.mBeginIdx;
 
-                pricesToYs(Share.pComparingPrice, idx, mChartLineXY, mChartLineLength, lo, hi);
+                pricesToYs(share.pComparingPrice, idx, mChartLineXY, mChartLineLength, lo, hi);
             }
 
             if ((mChartLineXY[0] != 0 || mChartLineXY[1] != 0))
@@ -1218,7 +1233,7 @@ namespace stock123.app.chart
                 //g.setColor(mContext.mOptSMAColor[mSMAIdx, 0]);
                 StringBuilder sb = Utils.sb;
                 sb.Length = 0;
-                sb.AppendFormat(" {0}: {1:F2}", share.mCompare2ShareCode, Share.pComparingPrice[share.getCursor()]);
+                sb.AppendFormat(" {0}: {1:F2}", share.mCompare2ShareCode, share.pComparingPrice[share.getCursor()]);
                 String sz = sb.ToString();
                 g.setColor((int)((0xff << 24) | color));
                 g.drawString(mFont, sz, x, y, 0);
@@ -1227,10 +1242,10 @@ namespace stock123.app.chart
 
         protected void drawChartSMA3(xGraphics g)
         {
-            if (mContext.getSelectedDrawableShare(2) == null)
+            if (getShare(2) == null)
                 return;
 
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             int d1 = mSMAPeriod;
 
             if (detectShareCursorChanged())		//	share's cursor has been changed
@@ -1243,8 +1258,8 @@ namespace stock123.app.chart
                 mChartLineXY[1] = 0;
 
                 int idx = share.mBeginIdx;
-                if (Share.pSMA1[0] != -1)
-                    pricesToYs(Share.pSMA1, idx, mChartLineXY, mChartLineLength, share.getLowestPrice(), share.getHighestPrice());
+                if (share.pSMA1[0] != -1)
+                    pricesToYs(share.pSMA1, idx, mChartLineXY, mChartLineLength, share.getLowestPrice(), share.getHighestPrice());
             }
 
             //  render title
@@ -1264,7 +1279,7 @@ namespace stock123.app.chart
                 g.drawLines(mChartLineXY, mChartLineLength, 1.5f);
                 //  title
                 //g.setColor(mContext.mOptSMAColor[mSMAIdx, 0]);
-                sb.AppendFormat("{0} ({1}): {2:F2}", ss, d1, Share.pSMA1[share.getCursor()]);
+                sb.AppendFormat("{0} ({1}): {2:F2}", ss, d1, share.pSMA1[share.getCursor()]);
                 sz = sb.ToString();
                 g.drawString(mFont, sz, x, y, 0);
 
@@ -1274,10 +1289,10 @@ namespace stock123.app.chart
 
         protected void drawChartSMA(xGraphics g)
         {
-            if (mContext.getSelectedDrawableShare(2) == null)
+            if (getShare(2) == null)
                 return;
 
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             int d1 = (int)mContext.mOptSMA[mSMAIdx, 0];
             int d2 = (int)mContext.mOptSMA[mSMAIdx, 1];
             int d3 = (int)mContext.mOptSMA[mSMAIdx, 2];
@@ -1320,16 +1335,16 @@ namespace stock123.app.chart
                 mChartLineXY5[1] = 0;
 
                 int idx = share.mBeginIdx;
-                if (Share.pSMA1[0] != -1)
-                    pricesToYs(Share.pSMA1, idx, mChartLineXY, mChartLineLength, share.getLowestPrice(), share.getHighestPrice());
-                if (Share.pSMA2[0] != -1)
-                    pricesToYs(Share.pSMA2, idx, mChartLineXY2, mChartLineLength, share.getLowestPrice(), share.getHighestPrice());
-                if (Share.pSMA3[0] != -1)
-                    pricesToYs(Share.pSMA3, idx, mChartLineXY3, mChartLineLength, share.getLowestPrice(), share.getHighestPrice());
-                if (Share.pSMA4[0] != -1)
-                    pricesToYs(Share.pSMA4, idx, mChartLineXY4, mChartLineLength, share.getLowestPrice(), share.getHighestPrice());
-                if (Share.pSMA5[0] != -1)
-                    pricesToYs(Share.pSMA5, idx, mChartLineXY5, mChartLineLength, share.getLowestPrice(), share.getHighestPrice());
+                if (share.pSMA1[0] != -1)
+                    pricesToYs(share.pSMA1, idx, mChartLineXY, mChartLineLength, share.getLowestPrice(), share.getHighestPrice());
+                if (share.pSMA2[0] != -1)
+                    pricesToYs(share.pSMA2, idx, mChartLineXY2, mChartLineLength, share.getLowestPrice(), share.getHighestPrice());
+                if (share.pSMA3[0] != -1)
+                    pricesToYs(share.pSMA3, idx, mChartLineXY3, mChartLineLength, share.getLowestPrice(), share.getHighestPrice());
+                if (share.pSMA4[0] != -1)
+                    pricesToYs(share.pSMA4, idx, mChartLineXY4, mChartLineLength, share.getLowestPrice(), share.getHighestPrice());
+                if (share.pSMA5[0] != -1)
+                    pricesToYs(share.pSMA5, idx, mChartLineXY5, mChartLineLength, share.getLowestPrice(), share.getHighestPrice());
             }
 
             //  render title
@@ -1370,7 +1385,7 @@ namespace stock123.app.chart
                 g.drawLines(mChartLineXY, mChartLineLength, mContext.mOptSMAThickness[mSMAIdx, 0]);
                 //  title
                 //g.setColor(mContext.mOptSMAColor[mSMAIdx, 0]);
-                sb.AppendFormat("{0} {1}({2}): {3:F2}", ss, 1, smaDays[0], Share.pSMA1[share.getCursor()]);
+                sb.AppendFormat("{0} {1}({2}): {3:F2}", ss, 1, smaDays[0], share.pSMA1[share.getCursor()]);
                 sz = sb.ToString();
                 g.drawString(mFont, sz, x, y, 0);
 
@@ -1387,7 +1402,7 @@ namespace stock123.app.chart
                 //  title
                 //g.setColor(mContext.mOptSMAColor[mSMAIdx, 1]);
                 sb.Length = 0;
-                sb.AppendFormat("{0} {1}({2}): {3:F2}", ss, 2, smaDays[1], Share.pSMA2[share.getCursor()]);
+                sb.AppendFormat("{0} {1}({2}): {3:F2}", ss, 2, smaDays[1], share.pSMA2[share.getCursor()]);
                 sz = sb.ToString();
                 g.drawString(mFont, sz, x, y, 0);
 
@@ -1402,7 +1417,7 @@ namespace stock123.app.chart
                 //  title
                 //g.setColor(mContext.mOptSMAColor[mSMAIdx, 2]);
                 sb.Length = 0;
-                sb.AppendFormat("{0} {1}({2}):{3:F2}", ss, 3, smaDays[2], Share.pSMA3[share.getCursor()]);
+                sb.AppendFormat("{0} {1}({2}):{3:F2}", ss, 3, smaDays[2], share.pSMA3[share.getCursor()]);
                 sz = sb.ToString();
                 g.drawString(mFont, sz, x, y, 0);
                 y -= mFont.Height;
@@ -1416,7 +1431,7 @@ namespace stock123.app.chart
                 //  title
                 //g.setColor(mContext.mOptSMAColor[mSMAIdx, 2]);
                 sb.Length = 0;
-                sb.AppendFormat("{0} {1}({2}):{3:F2}", ss, 4, smaDays[3], Share.pSMA4[share.getCursor()]);
+                sb.AppendFormat("{0} {1}({2}):{3:F2}", ss, 4, smaDays[3], share.pSMA4[share.getCursor()]);
                 sz = sb.ToString();
                 g.drawString(mFont, sz, x, y, 0);
                 y -= mFont.Height;
@@ -1431,7 +1446,7 @@ namespace stock123.app.chart
                 //  title
                 //g.setColor(mContext.mOptSMAColor[mSMAIdx, 2]);
                 sb.Length = 0;
-                sb.AppendFormat("{0} {1}({2}):{3:F2}", ss, 5, smaDays[4], Share.pSMA5[share.getCursor()]);
+                sb.AppendFormat("{0} {1}({2}):{3:F2}", ss, 5, smaDays[4], share.pSMA5[share.getCursor()]);
                 sz = sb.ToString();
                 g.drawString(mFont, sz, x, y, 0);
             }
@@ -1453,9 +1468,10 @@ namespace stock123.app.chart
             int mX = 0;
             int mY = 0;
             int i = 0;
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             if (s == null)
                 return;
+            Share share = s;
             if (detectShareCursorChanged())
             {
                 s.calcPVT();
@@ -1464,29 +1480,29 @@ namespace stock123.app.chart
                 hi = -1;
                 for (i = s.mBeginIdx; i <= s.mEndIdx; i++)
                 {
-                    if (lo == -1) lo = Share.pPVT[i];
-                    if (hi == -1) hi = Share.pPVT[i];
-                    if (Share.pPVT[i] < lo) lo = Share.pPVT[i];
-                    if (Share.pPVT[i] > hi) hi = Share.pPVT[i];
+                    if (lo == -1) lo = share.pPVT[i];
+                    if (hi == -1) hi = share.pPVT[i];
+                    if (share.pPVT[i] < lo) lo = share.pPVT[i];
+                    if (share.pPVT[i] > hi) hi = share.pPVT[i];
                 }
                 if (mContext.mOptPVT > 0)
                 {
                     for (i = s.mBeginIdx; i <= s.mEndIdx; i++)
                     {
-                        if (Share.pPVT_EMA1[i] < lo) lo = Share.pPVT_EMA1[i];
-                        if (Share.pPVT_EMA1[i] > hi) hi = Share.pPVT_EMA1[i];
+                        if (share.pPVT_EMA1[i] < lo) lo = share.pPVT_EMA1[i];
+                        if (share.pPVT_EMA1[i] > hi) hi = share.pPVT_EMA1[i];
                     }
                 }
 
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
-                pricesToYs(Share.pPVT, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
+                pricesToYs(share.pPVT, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
 
                 //==============================
                 if (mContext.mOptPVT > 0)
                 {
                     mChartEMA = allocMem(mChartEMA, mChartLineLength * 2);
 
-                    pricesToYs(Share.pPVT_EMA1, s.mBeginIdx, mChartEMA, mChartLineLength, lo, hi);
+                    pricesToYs(share.pPVT_EMA1, s.mBeginIdx, mChartEMA, mChartLineLength, lo, hi);
                 }
             }
 
@@ -1543,9 +1559,10 @@ namespace stock123.app.chart
             int mX = 0;
             int mY = 0;
             int i = 0;
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             if (s == null)
                 return;
+            Share share = s;
             if (detectShareCursorChanged())
             {
                 s.calcCCI();
@@ -1554,10 +1571,10 @@ namespace stock123.app.chart
                 hi = -1;
                 for (i = s.mBeginIdx; i <= s.mEndIdx; i++)
                 {
-                    if (lo == -1) lo = Share.pCCI[i];
-                    if (hi == -1) hi = Share.pCCI[i];
-                    if (Share.pCCI[i] < lo) lo = Share.pCCI[i];
-                    if (Share.pCCI[i] > hi) hi = Share.pCCI[i];
+                    if (lo == -1) lo = share.pCCI[i];
+                    if (hi == -1) hi = share.pCCI[i];
+                    if (share.pCCI[i] < lo) lo = share.pCCI[i];
+                    if (share.pCCI[i] > hi) hi = share.pCCI[i];
                 }
                 if (hi > 300) hi = 300;
                 if (hi < 100) hi = 100;
@@ -1566,7 +1583,7 @@ namespace stock123.app.chart
                 if (lo > -100) lo = -100;
 
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
-                pricesToYs(Share.pCCI, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
+                pricesToYs(share.pCCI, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
             }
 
             int gapLineH = getH() / 5;
@@ -1613,9 +1630,10 @@ namespace stock123.app.chart
             int mX = 0;
             int mY = 0;
             int i = 0;
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             if (s == null)
                 return;
+            Share share = s;
             if (detectShareCursorChanged())
             {
                 s.calcMassIndex();
@@ -1624,16 +1642,16 @@ namespace stock123.app.chart
                 hi = -1;
                 for (i = s.mBeginIdx; i <= s.mEndIdx; i++)
                 {
-                    if (lo == -1) lo = Share.pMassIndex[i];
-                    if (hi == -1) hi = Share.pMassIndex[i];
-                    if (Share.pMassIndex[i] < lo) lo = Share.pMassIndex[i];
-                    if (Share.pMassIndex[i] > hi) hi = Share.pMassIndex[i];
+                    if (lo == -1) lo = share.pMassIndex[i];
+                    if (hi == -1) hi = share.pMassIndex[i];
+                    if (share.pMassIndex[i] < lo) lo = share.pMassIndex[i];
+                    if (share.pMassIndex[i] > hi) hi = share.pMassIndex[i];
                 }
                 if (hi < 28)
                     hi = 28;
 
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
-                pricesToYs(Share.pMassIndex, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
+                pricesToYs(share.pMassIndex, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
             }
 
             int gapLineH = getH() / 5;
@@ -1673,9 +1691,10 @@ namespace stock123.app.chart
             int mX = 0;
             int mY = 0;
             int i = 0;
-            Share s = mContext.getSelectedDrawableShare();
+            Share s = getShare();
             if (s == null)
                 return;
+            Share share = s;
             if (detectShareCursorChanged())
             {
                 s.calcATR();
@@ -1684,18 +1703,18 @@ namespace stock123.app.chart
                 hi = -0x0fffffff;
                 for (i = s.mBeginIdx; i <= s.mEndIdx; i++)
                 {
-                    if (Share.pATR[i] < lo) lo = Share.pATR[i];
-                    if (Share.pATR[i] > hi) hi = Share.pATR[i];
+                    if (share.pATR[i] < lo) lo = share.pATR[i];
+                    if (share.pATR[i] > hi) hi = share.pATR[i];
                 }
 
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
-                pricesToYs(Share.pATR, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
+                pricesToYs(share.pATR, s.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
 /*
                 if (mContext.mOptATR_EMA > 0)
                 {
                     mChartEMA = allocMem(mChartEMA, mChartLineLength * 2);
-                    Share.EMA(Share.pATR, s.getCandleCount(), (int)mContext.mOptATR_EMA, Share.pTMP);
-                    pricesToYs(Share.pTMP, s.mBeginIdx, mChartEMA, mChartLineLength, lo, hi);
+                    Share.EMA(share.pATR, s.getCandleCount(), (int)mContext.mOptATR_EMA, share.pTMP);
+                    pricesToYs(share.pTMP, s.mBeginIdx, mChartEMA, mChartLineLength, lo, hi);
                 }
  */
             }
@@ -1707,7 +1726,7 @@ namespace stock123.app.chart
             //==============================
             g.setColor(C.COLOR_ORANGE);
             g.drawLines(mChartLineXY, mChartLineLength, 1.5f);
-            drawPriceLines(g, Share.pATR);
+            drawPriceLines(g, share.pATR);
 /*
             if (AppContext.getInstance().mOptATR_EMA > 0)
             {

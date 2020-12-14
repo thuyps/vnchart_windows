@@ -44,7 +44,7 @@ namespace stock123.app.chart
 
             if (isHiding())
                 return;
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
 
             if (share == null)
                 return;
@@ -60,9 +60,9 @@ namespace stock123.app.chart
                 mLineSpanB = allocMem(mLineSpanB, newSize + 1000);
 
                 int idx = share.mBeginIdx;
-                pricesToYs(Share.pTenkansen, idx, mLineTenkansen, mChartLineLength, false);
-                pricesToYs(Share.pKijunsen, idx, mLineKijunsen, mChartLineLength, false);
-                pricesToYs(Share.pChikouSpan, idx, mLineChikou, mChartLineLength, false);
+                pricesToYs(share.pTenkansen, idx, mLineTenkansen, mChartLineLength, false);
+                pricesToYs(share.pKijunsen, idx, mLineKijunsen, mChartLineLength, false);
+                pricesToYs(share.pChikouSpan, idx, mLineChikou, mChartLineLength, false);
                 //  correct the chikou length
                 int chikouCnt = share.getCandleCount() - (int)mContext.mOptIchimokuTime2;
                 mChikouLineLength = mChartLineLength;
@@ -70,8 +70,8 @@ namespace stock123.app.chart
                     mChikouLineLength = chikouCnt - idx;
 
                 int kumoLen = mChartLineLength + (int)mContext.mOptIchimokuTime2;    //  shift 26 days ahead
-                pricesToYs(Share.pSpanA, idx, mLineSpanA, kumoLen, false);
-                pricesToYs(Share.pSpanB, idx, mLineSpanB, kumoLen, false);
+                pricesToYs(share.pSpanA, idx, mLineSpanA, kumoLen, false);
+                pricesToYs(share.pSpanB, idx, mLineSpanB, kumoLen, false);
 
                 //  kumo cloud
                 uint[] colors = { 0x40f06070, 0x40f0f0f0 };   //  bronw/white
@@ -195,7 +195,7 @@ namespace stock123.app.chart
                 int x = 150 + g.getStringWidth(mFont, sz) + 10;
 
                 String sz1;
-                sz1 = formatPrice(Share.pTenkansen[cur]);
+                sz1 = formatPrice(share.pTenkansen[cur]);
                 //  tenkansen
                 g.setColor(0xc0ff00ff);
                 sb.Length = 0;
@@ -205,7 +205,7 @@ namespace stock123.app.chart
                 x += g.getStringWidth(mFont, sz) + 10;
                 //  kijun
                 g.setColor(0xc00050ff);
-                sz1 = formatPrice(Share.pKijunsen[cur]);
+                sz1 = formatPrice(share.pKijunsen[cur]);
                 sb.Length = 0;
                 sb.AppendFormat("Kijun: {0}", sz1);
                 sz = sb.ToString();
@@ -215,7 +215,7 @@ namespace stock123.app.chart
                 g.setColor(0xc0a0a0a0);
                 float chikou = 0;
                 if (cur < share.getCandleCount() - mContext.mOptIchimokuTime2)
-                    chikou = Share.pChikouSpan[cur];
+                    chikou = share.pChikouSpan[cur];
                 sz1 = formatPrice(chikou);
                 sb.Length = 0;
                 sb.AppendFormat("Chikou: {0}", sz1);
@@ -224,7 +224,7 @@ namespace stock123.app.chart
                 x += g.getStringWidth(mFont, sz) + 10;
                 //  spanA
                 g.setColor(0xff00a050);
-                sz1 = formatPrice(Share.pSpanA[cur]);
+                sz1 = formatPrice(share.pSpanA[cur]);
                 sb.Length = 0;
                 sb.AppendFormat("SpanA: {0}", sz1);
                 sz = sb.ToString();
@@ -232,7 +232,7 @@ namespace stock123.app.chart
                 x += g.getStringWidth(mFont, sz) + 10;
                 //  spanB
                 g.setColor(0xb0ff0000);
-                sz1 = formatPrice(Share.pSpanB[cur]);
+                sz1 = formatPrice(share.pSpanB[cur]);
                 sb.Length = 0;
                 sb.AppendFormat("SpanB: {0}", sz1);
                 sz = sb.ToString();

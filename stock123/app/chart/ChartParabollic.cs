@@ -23,10 +23,10 @@ namespace stock123.app.chart
         {
             if (isHiding())
                 return;
-            if (mContext.getSelectedDrawableShare(3) == null)
+            if (getShare(3) == null)
                 return;
 
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             if (detectShareCursorChanged())
             {
                 share.calcPSAR();
@@ -34,7 +34,7 @@ namespace stock123.app.chart
                 int newSize = mChartLineLength * 2;
                 mChartLineXY = allocMem(mChartLineXY, newSize);
 
-                pricesToYs(Share.pPSAR, share.mBeginIdx, mChartLineXY, mChartLineLength, false);
+                pricesToYs(share.pPSAR, share.mBeginIdx, mChartLineXY, mChartLineLength, false);
             }
 
             if (mChartLineLength == 0)
@@ -48,7 +48,7 @@ namespace stock123.app.chart
             uint color;
             for (int i = 0; i < mChartLineLength; i++)
             {
-                if (Share.pSAR_SignalUp[share.mBeginIdx + i])	//	is up
+                if (share.pSAR_SignalUp[share.mBeginIdx + i])	//	is up
                 {
                     color = 0xff00ff00;
                 }
@@ -63,12 +63,12 @@ namespace stock123.app.chart
             int cur = share.getCursor();
             if (mShouldDrawValue && cur >= 0 && cur < share.getCandleCount())
             {
-                if (Share.pSAR_SignalUp[cur])
+                if (share.pSAR_SignalUp[cur])
                     g.setColor(0xff00a000);
                 else
                     g.setColor(0xffa00000);
 
-                String s = formatPrice(Share.pPSAR[cur]);
+                String s = formatPrice(share.pPSAR[cur]);
                 StringBuilder sb = Utils.sb;
                 sb.Length = 0;
                 sb.AppendFormat("PSAR({0:F2},{1:F2}) {2}", mContext.mOptPSAR_alpha_max, mContext.mOptPSAR_alpha, s);

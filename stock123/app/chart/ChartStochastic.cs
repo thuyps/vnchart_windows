@@ -37,7 +37,7 @@ namespace stock123.app.chart
 
             if (isHiding())
                 return;
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
 
             if (share == null)
                 return;
@@ -51,13 +51,13 @@ namespace stock123.app.chart
 
                 if (mIsFastStochastic)
                 {
-                    pricesToYs(Share.pStochasticFastK, share.mBeginIdx, mK, mChartLineLength, 0, 100);
-                    pricesToYs(Share.pStochasticFastD, share.mBeginIdx, mD, mChartLineLength, 0, 100);
+                    pricesToYs(share.pStochasticFastK, share.mBeginIdx, mK, mChartLineLength, 0, 100);
+                    pricesToYs(share.pStochasticFastD, share.mBeginIdx, mD, mChartLineLength, 0, 100);
                 }
                 else
                 {
-                    pricesToYs(Share.pStochasticSlowK, share.mBeginIdx, mK, mChartLineLength, 0, 100);
-                    pricesToYs(Share.pStochasticSlowD, share.mBeginIdx, mD, mChartLineLength, 0, 100);
+                    pricesToYs(share.pStochasticSlowK, share.mBeginIdx, mK, mChartLineLength, 0, 100);
+                    pricesToYs(share.pStochasticSlowD, share.mBeginIdx, mD, mChartLineLength, 0, 100);
                 }
 
                 float[] tmp = { 20, 50, 80 };
@@ -96,7 +96,7 @@ namespace stock123.app.chart
         }
         override public xVector getTitles()
         {
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
             xVector v = new xVector(3);
             if (share != null)
             {
@@ -107,8 +107,8 @@ namespace stock123.app.chart
 
                 if (mIsFastStochastic)
                 {
-                    k = Share.pStochasticFastK[idx];
-                    d = Share.pStochasticFastD[idx];
+                    k = share.pStochasticFastK[idx];
+                    d = share.pStochasticFastD[idx];
                     int periodK = (int)mContext.mOptStochasticFastKPeriod;
                     int periodD = (int)mContext.mOptStochasticFastSMA;
 
@@ -125,8 +125,8 @@ namespace stock123.app.chart
                 }
                 else
                 {
-                    k = Share.pStochasticSlowK[idx];
-                    d = Share.pStochasticSlowD[idx];
+                    k = share.pStochasticSlowK[idx];
+                    d = share.pStochasticSlowD[idx];
                     int periodK = (int)mContext.mOptStochasticSlowKPeriod;
                     int smooth = (int)mContext.mOptStochasticSlowKSmoothK;
                     int sma = (int)mContext.mOptStochasticSlowSMA;

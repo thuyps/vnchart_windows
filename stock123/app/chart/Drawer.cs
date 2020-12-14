@@ -83,17 +83,7 @@ namespace stock123.app.chart
 
             loadFibonaccie();
         }
-        static Drawer mInstance = null;
-        public static Drawer getInstance()
-        {
-            if (mInstance == null)
-            {
-                mInstance = new Drawer();
-            }
-
-            return mInstance;
-        }
-
+        
         public void setFont(Font f) 
         { 
             mFont = f; 
@@ -104,7 +94,7 @@ namespace stock123.app.chart
             if (!mShow)
                 return;
 
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare(3);
             if (share == null)
                 return;
 
@@ -1332,5 +1322,16 @@ namespace stock123.app.chart
             if (mShare != null)
                 removeSaved(mShare.mCode);
         }
+
+        Share getShare(int days)
+        {
+            return getShare();
+        }
+
+        Share getShare()
+        {
+            return mShare;
+        }
     }
+
 }

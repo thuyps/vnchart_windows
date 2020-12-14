@@ -35,7 +35,7 @@ namespace stock123.app.chart
 
             if (isHiding())
                 return;
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare();
             if (share == null)
                 return;
 
@@ -51,9 +51,9 @@ namespace stock123.app.chart
                 mLinePDI = allocMem(mLinePDI, newSize);
 
                 idx = share.mBeginIdx;
-                pricesToYs(Share.pPLUS_DI, idx, mLinePDI, mChartLineLength, 0, maxPrice);
-                pricesToYs(Share.pMINUS_DI, idx, mLineMDI, mChartLineLength, 0, maxPrice);
-                pricesToYs(Share.pADX, idx, mChartLineXY, mChartLineLength, 0, maxPrice);
+                pricesToYs(share.pPLUS_DI, idx, mLinePDI, mChartLineLength, 0, maxPrice);
+                pricesToYs(share.pMINUS_DI, idx, mLineMDI, mChartLineLength, 0, maxPrice);
+                pricesToYs(share.pADX, idx, mChartLineXY, mChartLineLength, 0, maxPrice);
 
                 float ry = (float)mDrawingH / maxPrice;
                 mY20 = (int)(CHART_BORDER_SPACING_Y + mDrawingH - 20 * ry);
@@ -101,13 +101,13 @@ namespace stock123.app.chart
 
         public override string getTitle()
         {
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare();
             if (share != null)
             {
                 int idx = share.getCursor();
-                int adx = (int)Share.pADX[idx];
-                int pdi = (int)Share.pPLUS_DI[idx];
-                int mdi = (int)Share.pMINUS_DI[idx];
+                int adx = (int)share.pADX[idx];
+                int pdi = (int)share.pPLUS_DI[idx];
+                int mdi = (int)share.pMINUS_DI[idx];
 
                 StringBuilder sb = Utils.sb;
                 sb.Length = 0;
@@ -122,14 +122,14 @@ namespace stock123.app.chart
         {
             xVector v = new xVector();
 
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             if (share == null)
                 return null;
 
             int idx = share.getCursor();
-            int adx = (int)Share.pADX[idx];
-            int pdi = (int)Share.pPLUS_DI[idx];
-            int mdi = (int)Share.pMINUS_DI[idx];
+            int adx = (int)share.pADX[idx];
+            int pdi = (int)share.pPLUS_DI[idx];
+            int mdi = (int)share.pMINUS_DI[idx];
 
             StringBuilder sb = Utils.sb;
             sb.Length = 0;

@@ -21,6 +21,7 @@ namespace stock123.app
         public xContainer mClientContainer;
         public xContainer mStatusBar;
         public int mPreviousScreen;
+        protected Share mShare;
         public ScreenBase()
             : base()
         {
@@ -554,7 +555,7 @@ namespace stock123.app
 
         public void settingAlarm(stAlarm a)
         {
-            DlgSetAlarm dlg = new DlgSetAlarm(a);
+            DlgSetAlarm dlg = new DlgSetAlarm(mShare, a);
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 a.date = Utils.getDateAsInt();

@@ -146,6 +146,7 @@ namespace stock123.app.chart
         protected Drawer mDrawer;
         public bool mShouldDrawTitle = true;
         public bool mShouldDrawPriceLabelOnRight = true;
+        protected Share mShare;
         //=================================================================
         public ChartBase(Font f)
             : base(null)
@@ -184,7 +185,7 @@ namespace stock123.app.chart
         //======================================
         protected void drawPriceLines(xGraphics g)
         {
-            if (mContext.getSelectedDrawableShare(3) == null)
+            if (getShare() == null)
                 return;
 
             for (int i = 0; i < 5; i++)
@@ -207,10 +208,10 @@ namespace stock123.app.chart
 
         protected void drawPriceLines(xGraphics g, float[] prices)
         {
-            if (mContext.getSelectedDrawableShare(3) == null)
+            if (getShare() == null)
                 return;
 
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             float hi = -100000;
             float lo = 100000;
             for (int i = share.mBeginIdx; i <= share.mEndIdx; i++)
@@ -256,10 +257,10 @@ namespace stock123.app.chart
             if (!mShouldDrawDateSeparator)
                 return;
 
-            if (mContext.getSelectedDrawableShare(3) == null)
+            if (getShare() == null)
                 return;
 
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
 
             if (share.isRealtime())
             {
@@ -395,7 +396,7 @@ namespace stock123.app.chart
             int mX = 0;
             int mY = 0;
             int mH = getH();
-            if (mContext.getSelectedDrawableShare(3) == null)
+            if (getShare() == null)
                 return;
 
             if (y > mY && y < mY + mH)
@@ -433,7 +434,7 @@ namespace stock123.app.chart
         {
             if (mChartLineLength == 0)
             {
-                Share share = mContext.getSelectedDrawableShare();
+                Share share = getShare();
                 if (share != null)
                     mChartLineLength = share.mEndIdx - share.mBeginIdx + 1;
             }
@@ -447,7 +448,7 @@ namespace stock123.app.chart
         {
             if (mChartLineLength == 0)
             {
-                Share share = mContext.getSelectedDrawableShare();
+                Share share = getShare();
                 if (share != null)
                     mChartLineLength = share.mEndIdx - share.mBeginIdx + 1;
             }
@@ -462,9 +463,9 @@ namespace stock123.app.chart
             int mX = 0;
             int mY = 0;
             int mH = getH();
-            if (mContext.getSelectedDrawableShare(3) == null)
+            if (getShare() == null)
                 return 0;
-            int deltaC = candle - mContext.getSelectedDrawableShare(3).mBeginIdx;
+            int deltaC = candle - getShare().mBeginIdx;
             int dx = candlesToDx(deltaC);
 
             return (mX + CHART_BORDER_SPACING_X + dx + mContext.mChartDrawingStart);
@@ -549,7 +550,7 @@ namespace stock123.app.chart
         {
             int mH = getH();
             int mY = 0;
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare();
 
             if (share == null)
                 return false;
@@ -615,7 +616,7 @@ namespace stock123.app.chart
         //=============================================
         protected void pricesToYs(float[] price, int offset, short[] xy, int len, bool detectLowHi)
         {
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare();
             if (share == null)
                 return;
 
@@ -658,7 +659,7 @@ namespace stock123.app.chart
         }
         protected void pricesToYs(float[] price, int offset, short[] xy, int len, float price_low, float price_hi)
         {
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare();
             if (share == null)
                 return;
 
@@ -687,7 +688,7 @@ namespace stock123.app.chart
         {
             if (!mShouldDrawCursor)
                 return;
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare();
             if (share == null)
                 return;
 
@@ -735,7 +736,7 @@ namespace stock123.app.chart
             int mH = getH();
 
             //	candle cursor
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare();
             if (share == null)
                 return;
             int selCandleIdx = share.mSelectedCandle;
@@ -764,7 +765,7 @@ namespace stock123.app.chart
         }
         virtual protected void refreshCandleLabels(int candleIdx)
         {
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = getShare();
             if (share == null)
                 return;
             if (candleIdx < share.getCandleCount())
@@ -921,12 +922,12 @@ namespace stock123.app.chart
             int mX = 0;
             int mY = 0;
             int mH = getH();
-            if (mContext.getSelectedDrawableShare(3) == null)
+            if (getShare() == null)
                 return 0;
 
             int dx = x - mContext.mChartDrawingStart - mX - CHART_BORDER_SPACING_X;
 
-            float candle = mContext.getSelectedDrawableShare(3).mBeginIdx;
+            float candle = getShare().mBeginIdx;
             candle += ((float)dx / getCandleW());
 
             return candle;
@@ -938,7 +939,7 @@ namespace stock123.app.chart
             int mY = 0;
             int mH = getH();
 
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare();
             if (share == null)
                 return 0;
 
@@ -965,9 +966,9 @@ namespace stock123.app.chart
             int mX = 0;
             int mY = 0;
             int mH = getH();
-            if (mContext.getSelectedDrawableShare(3) == null)
+            if (getShare() == null)
                 return 0;
-            float deltaC = candle - mContext.getSelectedDrawableShare(3).mBeginIdx;
+            float deltaC = candle - getShare().mBeginIdx;
             int dx = candlesToDx(deltaC);
 
             return (mX + CHART_BORDER_SPACING_X + dx + mContext.mChartDrawingStart);
@@ -978,7 +979,7 @@ namespace stock123.app.chart
             int mY = 0;
             int mH = getH();
 
-            Share share = mContext.getSelectedDrawableShare(3);
+            Share share = getShare();
             if (share == null)
                 return 0;
 
@@ -1010,7 +1011,7 @@ namespace stock123.app.chart
         {
             if (!mIsHoldingMouse)
                 return;
-            if (mContext.getSelectedDrawableShare() == null)
+            if (getShare() == null)
                 return;
 
             mLastY = y;
@@ -1033,12 +1034,12 @@ namespace stock123.app.chart
 
             mLastX = x - remainX;
 
-            mContext.getSelectedDrawableShare().mModifiedKey2++;
+            getShare().mModifiedKey2++;
 
             if (mContext.mChartDrawingStart > 0)
                 mContext.mChartDrawingStart = 0;
 
-            if (mContext.getSelectedDrawableShare() != null && movedCandles != 0)
+            if (getShare() != null && movedCandles != 0)
             {
                 //	add gap to the right
                 if (mContext.mChartDrawingStart < 0)
@@ -1047,9 +1048,9 @@ namespace stock123.app.chart
                 }
                 else
                 {
-                    if (mContext.getSelectedDrawableShare().canMove(-movedCandles))
+                    if (getShare().canMove(-movedCandles))
                     {
-                        mContext.getSelectedDrawableShare().moveCursor(-movedCandles);
+                        getShare().moveCursor(-movedCandles);
                     }
                     else
                         mContext.mChartDrawingStart += dx;
@@ -1307,6 +1308,19 @@ namespace stock123.app.chart
 
                 g.fillShapes(mChartLineColorArea, j);
             }
+        }
+        public Share getShare(int days)
+        {
+            return getShare();
+        }
+        public Share getShare()
+        {
+            if (mShare == null && mContext.mShareManager.getVnindexCnt() > 0)
+            {
+                mShare = mContext.mShareManager.getVnindexShareAt(0);
+            }
+
+            return mShare;
         }
     }
 }

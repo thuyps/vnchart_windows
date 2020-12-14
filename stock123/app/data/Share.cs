@@ -44,114 +44,114 @@ namespace stock123.app.data
         static int CANDLE_SIZE_NETWORK = 28;
         //===============for drawing chart: 52K===============
         public static int MAX_CANDLE_CHART_COUNT = 10000;
-        public static float[] pSMA1 = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pSMA2 = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pSMA3 = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pSMA4 = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pSMA5 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pSMA1 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pSMA2 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pSMA3 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pSMA4 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pSMA5 = new float[MAX_CANDLE_CHART_COUNT];
 
-        public static float[] pPastPrice1 = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pPastPrice2 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pPastPrice1 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pPastPrice2 = new float[MAX_CANDLE_CHART_COUNT];
 
-        public static float[] pEMA = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pRSI = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pWilliamR = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pRSISecond = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pStochRSI = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pStochRSISMA = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pEMA = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pRSI = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pWilliamR = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pRSISecond = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pStochRSI = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pStochRSISMA = new float[MAX_CANDLE_CHART_COUNT];
         //=====for macd=====
-        public static float[] pMACD = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pMACDSignal9 = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pMACDHistogram = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pMFI = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pMFISecond = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pPSAR = new float[MAX_CANDLE_CHART_COUNT];
-        public static bool[] pSAR_SignalUp = new bool[MAX_CANDLE_CHART_COUNT];
+        public float[] pMACD = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pMACDSignal9 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pMACDHistogram = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pMFI = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pMFISecond = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pPSAR = new float[MAX_CANDLE_CHART_COUNT];
+        public bool[] pSAR_SignalUp = new bool[MAX_CANDLE_CHART_COUNT];
 
-        public static float[] pVSTOP = new float[MAX_CANDLE_CHART_COUNT];
-        public static bool[] pVSTOP_SignalUp = new bool[MAX_CANDLE_CHART_COUNT];
+        public float[] pVSTOP = new float[MAX_CANDLE_CHART_COUNT];
+        public bool[] pVSTOP_SignalUp = new bool[MAX_CANDLE_CHART_COUNT];
 
         public float[] pEMAIndicator = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pTMP = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pTMP1 = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pTMP2 = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pTMP3 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pTMP = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pTMP1 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pTMP2 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pTMP3 = new float[MAX_CANDLE_CHART_COUNT];
 
-        public static double[] pDouble1 = new double[MAX_CANDLE_CHART_COUNT];
-        public static double[] pDouble2 = new double[MAX_CANDLE_CHART_COUNT];
+        public double[] pDouble1 = new double[MAX_CANDLE_CHART_COUNT];
+        public double[] pDouble2 = new double[MAX_CANDLE_CHART_COUNT];
 
-        public static float[] pBBUpper = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pBBLower = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pBBUpper = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pBBLower = new float[MAX_CANDLE_CHART_COUNT];
 
-        public static float[] pADX = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pPLUS_DI = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pMINUS_DI = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pADX = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pPLUS_DI = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pMINUS_DI = new float[MAX_CANDLE_CHART_COUNT];
 
-        public static float[] pTrix = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pTrixEMA = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pTrix = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pTrixEMA = new float[MAX_CANDLE_CHART_COUNT];
 
-        public static float[] pSMA_Envelop = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pSMA_Envelop = new float[MAX_CANDLE_CHART_COUNT];
 
         //========ichimoku=========
-        public static float[] pTenkansen = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pKijunsen = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pChikouSpan = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pSpanA = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pSpanB = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pTenkansen = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pKijunsen = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pChikouSpan = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pSpanA = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pSpanB = new float[MAX_CANDLE_CHART_COUNT];
         //=========stochastic========
-        public static float[] pStochasticFastK = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pStochasticFastD = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pStochasticSlowK = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pStochasticSlowD = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pStochasticFastK = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pStochasticFastD = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pStochasticSlowK = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pStochasticSlowD = new float[MAX_CANDLE_CHART_COUNT];
 
-        public static float[] pChaikinOscillator = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pChaikinOscillatorSecond = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pChaikinOscillator = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pChaikinOscillatorSecond = new float[MAX_CANDLE_CHART_COUNT];
 
-        public static float[] pADL = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pADL_SMA0 = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pADL_SMA1 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pADL = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pADL_SMA0 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pADL_SMA1 = new float[MAX_CANDLE_CHART_COUNT];
 
-        public static float[] pROC = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pROCSecond = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pROC = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pROCSecond = new float[MAX_CANDLE_CHART_COUNT];
 
-        public static float[] pSMAVolume = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pSMAVolume = new float[MAX_CANDLE_CHART_COUNT];
         //  thuyps
-        public static float[] pSMAThuyPS = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pSMAThuyPS1 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pSMAThuyPS = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pSMAThuyPS1 = new float[MAX_CANDLE_CHART_COUNT];
 
-        public static float[] pOBV = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pOBV = new float[MAX_CANDLE_CHART_COUNT];
 
-        public static float[] pNVI = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pNVI_EMA1 = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pNVI_EMA2 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pNVI = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pNVI_EMA1 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pNVI_EMA2 = new float[MAX_CANDLE_CHART_COUNT];
 
-        public static float[] pPVI = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pPVI_EMA1 = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pPVI_EMA2 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pPVI = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pPVI_EMA1 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pPVI_EMA2 = new float[MAX_CANDLE_CHART_COUNT];
         //  new
-        public static float[] pPVT = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pPVT_EMA1 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pPVT = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pPVT_EMA1 = new float[MAX_CANDLE_CHART_COUNT];
 
-        public static float[] pCCI = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pCCI = new float[MAX_CANDLE_CHART_COUNT];
 
         //public static float[] pVSTOP = new float[MAX_CANDLE_CHART_COUNT];
         //public static bool[] pVSTOP_SignalUp = new bool[MAX_CANDLE_CHART_COUNT];
 
-        public static float[] pMassIndex = new float[MAX_CANDLE_CHART_COUNT];
-        public static float[] pATR = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pMassIndex = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pATR = new float[MAX_CANDLE_CHART_COUNT];
         
-        public static float[] pComparingPrice = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pComparingPrice = new float[MAX_CANDLE_CHART_COUNT];
         //===============================================
         //  shared memory
-        static public int[] mSharedCVolume;
-        static float[] mSharedCOpen;
-        static public float[] mSharedCClose;
-        static float[] mSharedCHighest;
-        static float[] mSharedCLowest;
-        static float[] mSharedCRef;
-        static int[] mSharedCDate;
-        static int[] mSharedNNMua;    //  volume
-        static int[] mSharedNNBan;
+        public int[] mSharedCVolume;
+        float[] mSharedCOpen;
+        public float[] mSharedCClose;
+        float[] mSharedCHighest;
+        float[] mSharedCLowest;
+        float[] mSharedCRef;
+        int[] mSharedCDate;
+        int[] mSharedNNMua;    //  volume
+        int[] mSharedNNBan;
         bool mIsUsingSharedMemory;
 
         //================================================
@@ -652,7 +652,247 @@ namespace stock123.app.data
 
             return mCandleCnt > 0;
         }
+                //public static float[] pVSTOP = new float[MAX_CANDLE_CHART_COUNT];
+        //public static bool[] pVSTOP_SignalUp = new bool[MAX_CANDLE_CHART_COUNT];
 
+        void initIndicatorMemory(int indicator)
+        {
+            bool realloc = false;
+            int maxCandle = getCandleCnt() + 1024;
+            if (pTMP != null && pTMP.Length < maxCandle)
+            {
+                realloc = true;
+            }
+            switch (indicator)
+            {
+                case ChartBase.CHART_ADL:
+                    if (pADL == null || realloc)
+                    {
+                        pADL = new float[maxCandle];
+                        pADL_SMA0 = new float[maxCandle];
+                        pADL_SMA1 = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_ADX:
+                    if (pADX != null || realloc){
+                        pADX = new float[maxCandle];
+                        pPLUS_DI = new float[maxCandle];
+                        pMINUS_DI = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_AROON:
+                case ChartBase.CHART_AROON_OSCILLATOR:
+                    break;
+                case ChartBase.CHART_ATR:
+                    if (realloc || pATR == null)
+                    {
+                        pATR = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_BOLLINGER:
+                    if (realloc || pBBUpper == null)
+                    {
+                        pBBUpper = new float[maxCandle];
+                        pBBLower = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_CANDLE:
+                case ChartBase.CHART_CANDLE_HEIKEN:
+                    break;
+                case ChartBase.CHART_CCI:
+                    if (realloc || pCCI == null)
+                    {
+                        pCCI = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_CFM:
+                    break;
+                case ChartBase.CHART_CHAIKIN:
+                    if (realloc || pChaikinOscillator == null)
+                    {
+                        pChaikinOscillator = new float[maxCandle];
+                        pChaikinOscillatorSecond = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_ENVELOP:
+                    if (realloc || pSMA_Envelop == null)
+                    {
+                        pSMA_Envelop = new float[maxCandle];
+                    }
+                    break;
+
+                case ChartBase.CHART_ICHIMOKU:
+                    if (realloc || pTenkansen == null)
+                    {
+                        pTenkansen = new float[maxCandle];
+                        pKijunsen = new float[maxCandle];
+                        pChikouSpan = new float[maxCandle];
+                        pSpanA = new float[maxCandle];
+                        pSpanB = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_MACD:
+                    if (realloc || pMACD == null)
+                    {
+                        pMACD = new float[maxCandle];
+                        pMACDSignal9 = new float[maxCandle];
+                        pMACDHistogram = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_MAE:
+                    break;
+                case ChartBase.CHART_MASSINDEX:
+                    if (realloc || pMassIndex == null)
+                    {
+                        pMassIndex = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_MFI:
+                    if (realloc || pMFI == null)
+                    {
+                        pMFI = new float[maxCandle];
+                        pMFISecond = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_NVI:
+                    if (realloc || pNVI == null)
+                    {
+                        pNVI = new float[maxCandle];
+                        pNVI_EMA1 = new float[maxCandle];
+                        pNVI_EMA2 = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_OBV:
+                    if (realloc || pOBV == null)
+                    {
+                        pOBV = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_OHLC:
+                    break;
+                case ChartBase.CHART_COMPARING_SECOND_SHARE:
+                    if (realloc || pComparingPrice == null)
+                    {
+                        pComparingPrice = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_PAST_1_YEAR:
+                    if (realloc || pPastPrice1 == null)
+                    {
+                        pComparingPrice = new float[maxCandle];
+                        pPastPrice1 = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_PAST_2_YEARS:
+                    if (realloc || pPastPrice2 == null)
+                    {
+                        pComparingPrice = new float[maxCandle];
+                        pPastPrice2 = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_PSAR:
+                    if (realloc || pPSAR == null)
+                    {
+                        pPSAR = new float[maxCandle];
+                        pSAR_SignalUp = new bool[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_PVI:
+                    if (realloc || pPVI == null)
+                    {
+                        pPVI = new float[maxCandle];
+                        pPVI_EMA1 = new float[maxCandle];
+                        pPVI_EMA2 = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_PVO:
+                    break;
+                case ChartBase.CHART_PVT:
+                    if (realloc || pPVT == null)
+                    {
+                        pPVT = new float[maxCandle];
+                        pPVT_EMA1 = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_ROC:
+                    if (realloc || pROC == null)
+                    {
+                        pROC = new float[maxCandle];
+                        pROCSecond = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_RSI:
+                    if (realloc || pRSI == null)
+                    {
+                        pRSI = new float[maxCandle];
+                        pRSISecond = new float[maxCandle];
+                    }
+
+                    break;
+                case ChartBase.CHART_SMA:
+                    if (realloc || pSMA1 == null)
+                    {
+                        pSMA1 = new float[maxCandle];
+                        pSMA2 = new float[maxCandle];
+                        pSMA3 = new float[maxCandle];
+                        pSMA4 = new float[maxCandle];
+                        pSMA5 = new float[maxCandle];
+                        pEMA = new float[maxCandle];
+                        pEMAIndicator = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_STOCHASTIC_FAST:
+                case ChartBase.CHART_STOCHASTIC_SLOW:
+                case ChartBase.CHART_STOCHRSI:
+                    if (realloc || pStochRSI == null)
+                    {
+                        pStochRSI = new float[maxCandle];
+                        pStochRSISMA = new float[maxCandle];
+                        pStochasticFastK = new float[maxCandle];
+                        pStochasticFastD = new float[maxCandle];
+                        pStochasticSlowK = new float[maxCandle];
+                        pStochasticSlowD = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_TRIX:
+                    if (realloc || pTrix == null)
+                    {
+                        pTrix = new float[maxCandle];
+                        pTrixEMA = new float[maxCandle];
+                    }
+                    break;
+
+                case ChartBase.CHART_VSTOP:
+                    if (realloc || pVSTOP == null)
+                    {
+                        pVSTOP = new float[maxCandle];
+                        pVSTOP_SignalUp = new bool[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_WILLIAMR:
+                    if (realloc || pWilliamR == null)
+                    {
+                        pWilliamR = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_ZIGZAG:
+                    break;
+            }
+
+            if (pTMP == null || realloc)
+            {
+                pTMP = new float[maxCandle];
+                pTMP1 = new float[maxCandle];
+                pTMP2 = new float[maxCandle];
+
+                pTMP3 = new float[maxCandle];
+                pDouble1 = new double[maxCandle];
+                pDouble2 = new double[maxCandle];
+
+                pSMAVolume = new float[maxCandle];
+            }
+
+        }
 
         public void allocShareMemory(bool useSharedMemory)
         {
@@ -1819,6 +2059,8 @@ namespace stock123.app.data
 
         public void calcSMA(int period1, int period2, int period3, int period4, int period5)
         {
+            initIndicatorMemory(ChartBase.CHART_SMA);
+
             if (mIsCalcSMA)
                 return;
             mIsCalcSMA = true;
@@ -1930,6 +2172,8 @@ namespace stock123.app.data
 
         public void calcRSI(int rsiIDX)
         {
+            initIndicatorMemory(ChartBase.CHART_RSI);
+
             int cnt = getCandleCount();
             if (cnt < 4)
                 return;
@@ -2075,6 +2319,8 @@ namespace stock123.app.data
 
         public void calcStochRSI()
         {
+            initIndicatorMemory(ChartBase.CHART_STOCHRSI);
+
             if (mIsCalcStochRSI)
                 return;
 
@@ -2120,6 +2366,8 @@ namespace stock123.app.data
 
         public void calcOBV()
         {
+            initIndicatorMemory(ChartBase.CHART_OBV);
+
             if (mIsCalcOBV)
                 return;
 
@@ -2677,6 +2925,8 @@ namespace stock123.app.data
 
         public void calcMACD()
         {
+            initIndicatorMemory(ChartBase.CHART_MACD);
+
             int cnt = getCandleCount();
             if (cnt < 10)
             {
@@ -2784,6 +3034,7 @@ namespace stock123.app.data
 
         public void calcBollinger()
         {
+            initIndicatorMemory(ChartBase.CHART_BOLLINGER);
             if (mIsCalcBollinger)
             	return;
 
@@ -2859,6 +3110,8 @@ namespace stock123.app.data
          */
         public void calcPSAR()
         {
+            initIndicatorMemory(ChartBase.CHART_PSAR);
+
             int cnt = getCandleCount();
             if (cnt < 10)
                 return;
@@ -3001,6 +3254,8 @@ namespace stock123.app.data
 
         public void calcVSTOP()
         {
+            initIndicatorMemory(ChartBase.CHART_VSTOP);
+
             int periodTR = (int)Context.getInstance().mOptVSTOP_ATR_Loopback;  //  20
             float MULT = Context.getInstance().mOptVSTOP_MULT;// 2.0f;
             
@@ -3104,6 +3359,8 @@ namespace stock123.app.data
          */
         public void calcMFI(int mfiIDX)
         {
+            initIndicatorMemory(ChartBase.CHART_MFI);
+
             int cnt = getCandleCount();
 
             if (mIsCalcMFI)
@@ -3359,6 +3616,7 @@ namespace stock123.app.data
         //  formular: http://www.dinosaurtech.com/2007/average-directional-movement-index-adx-formula-in-c-2/
         public void calcADX()
         {
+            initIndicatorMemory(ChartBase.CHART_ADX);
             if (getCandleCount() < 3)
                 return;
 
@@ -3927,6 +4185,8 @@ namespace stock123.app.data
 
         public void calcIchimoku()
         {
+            initIndicatorMemory(ChartBase.CHART_ICHIMOKU);
+
             if (mIsCalcIchimoku)
                 return;
             mIsCalcIchimoku = true;
@@ -4044,6 +4304,8 @@ namespace stock123.app.data
 
         public void calcStochastic()
         {
+            initIndicatorMemory(ChartBase.CHART_STOCHASTIC_FAST);
+
             if (mIsCalcStochastic)
                 return;
             mIsCalcStochastic = true;
@@ -4084,6 +4346,8 @@ namespace stock123.app.data
 
         public void calcStochasticFull()
         {
+            initIndicatorMemory(ChartBase.CHART_STOCHASTIC_FAST);
+
             //if (mIsCalcStochastic)
                 //return;
             //mIsCalcStochastic = true;
@@ -4122,6 +4386,8 @@ namespace stock123.app.data
 
         public void calcWilliamR()
         {
+            initIndicatorMemory(ChartBase.CHART_WILLIAMR);
+
             float recentClose;
             float lowestLow;
             float highestHi;
@@ -4764,6 +5030,8 @@ namespace stock123.app.data
 
         public void calcChaikinOscillator(int chaikinIDX)
         {
+            initIndicatorMemory(ChartBase.CHART_CHAIKIN);
+
             int cnt = getCandleCount();
             if (cnt < 4)
                 return;
@@ -4848,6 +5116,8 @@ namespace stock123.app.data
 
         public void calcADL()
         {
+            initIndicatorMemory(ChartBase.CHART_ADL);
+
             int cnt = getCandleCount();
             if (cnt < 4)
                 return;
@@ -4900,6 +5170,8 @@ namespace stock123.app.data
 
         public void calcROC(int rocIDX)
         {
+            initIndicatorMemory(ChartBase.CHART_ROC);
+
             int cnt = getCandleCount();
             
             int period = (int)Context.getInstance().mOptROC[rocIDX];
@@ -4939,6 +5211,8 @@ namespace stock123.app.data
 
         public void calcNVI()
         {
+            initIndicatorMemory(ChartBase.CHART_NVI);
+
             int cnt = getCandleCount();
 
             if (mIsCalcNVI || cnt == 0)
@@ -4989,6 +5263,8 @@ namespace stock123.app.data
 
         public void calcPVI()
         {
+            initIndicatorMemory(ChartBase.CHART_PVI);
+
             int cnt = getCandleCount();
 
             if (mIsCalcPVI || cnt == 0)
@@ -5148,6 +5424,8 @@ namespace stock123.app.data
 
         public float[] calcSMAVolume(int off, int end)
         {
+            initIndicatorMemory(ChartBase.CHART_VOLUME);
+
             if (mIsCalcSMAVolume)
                 return pSMAVolume;
             off -= (int)Context.getInstance().mOptSMAVolume;
@@ -5374,6 +5652,8 @@ namespace stock123.app.data
 
         public void calcTrix()
         {
+            initIndicatorMemory(ChartBase.CHART_TRIX);
+
             int cnt = getCandleCount();
             if (cnt < 5)
                 return;
@@ -5405,6 +5685,8 @@ namespace stock123.app.data
 
         public void calcEnvelop()
         {
+            initIndicatorMemory(ChartBase.CHART_ENVELOP);
+
             int cnt = getCandleCount();
             if (cnt < 5)
                 return;
@@ -5691,6 +5973,8 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
 */
         public void calcCCI()
         {
+            initIndicatorMemory(ChartBase.CHART_CCI);
+
     	    int cnt = getCandleCount();
             if (cnt < 3)
                 return;
@@ -5738,6 +6022,8 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
 
         public void calcPVT()
         {
+            initIndicatorMemory(ChartBase.CHART_PVT);
+
             /*
              * Calculate the Percentage Change in closing price: 
                ( Closing Price [today] - Closing Price [yesterday] ) / Closing Price [yesterday]
@@ -5865,6 +6151,8 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
 
         public void calcMassIndex()
         {
+            initIndicatorMemory(ChartBase.CHART_MASSINDEX);
+
             pMassIndex[0] = 0;
             int periodOfDifferent = (int)Context.getInstance().mOptMassIndexDifferent;
             int periodOfSum = (int)Context.getInstance().mOptMassIndexSum;
@@ -6071,6 +6359,8 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
 
         public void calcATR()
         {
+            initIndicatorMemory(ChartBase.CHART_ATR);
+
             int period = (int)Context.getInstance().mOptATRLoopback;
             if (period <= 0 || period > 100)
                 period = 14;
@@ -6080,6 +6370,8 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
 
         public void calcComparingShare()
         {
+            initIndicatorMemory(ChartBase.CHART_COMPARING_SECOND_SHARE);
+
             if (mIsCalcComparingShare){
                 return;
             }
@@ -6102,6 +6394,9 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
 
         public void calcYearOfPast(int yearOfPast)
         {
+            initIndicatorMemory(ChartBase.CHART_PAST_1_YEAR);
+            initIndicatorMemory(ChartBase.CHART_PAST_2_YEARS);
+
             if (yearOfPast == 1)
                 mIs1YearChartOn = true;
             if (yearOfPast == 2)
@@ -6240,6 +6535,8 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
         				
         public void calcCFM(int period, float[] cfm)
         {
+            initIndicatorMemory(ChartBase.CHART_CFM);
+
     	    if (period == 0)
     		    period = 20;
     	    int cnt = getCandleCount();
