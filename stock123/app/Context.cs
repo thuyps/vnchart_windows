@@ -267,7 +267,7 @@ namespace stock123.app
 
         public int mChartDrawingStart = 0;
 
-        public Share mCurrentShare;
+        private Share mCurrentShare;
         public Share mRealtimeShare = new Share();
         public ShareManager mShareManager;
         public Priceboard mPriceboard;
@@ -571,19 +571,14 @@ namespace stock123.app
              */
         }
 
-        public Share getSelectedDrawableShare()
+        public void setSelectedShare(Share share)
         {
-            return getSelectedDrawableShare(0);
+            mCurrentShare = share;
         }
 
-        public Share getSelectedDrawableShare(int hasAtLeastCandleCnt){
-            if (mCurrentShare == null)
-                return null;
-
-            if (mCurrentShare.getCandleCount() >= hasAtLeastCandleCnt)
-                return mCurrentShare;
-
-            return null;
+        public Share getSelectedShare()
+        {
+            return mCurrentShare;
         }
 
         public TradeHistory getTradeHistory(){

@@ -84,7 +84,7 @@ namespace stock123.app
 
         protected xContainer createChartRangeControls(int sel, xContainer c)
         {
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = mContext.getSelectedShare();
             int currentRange = 0;
             if (share != null)
             {

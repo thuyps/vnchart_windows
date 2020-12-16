@@ -65,12 +65,8 @@ namespace stock123.app.chart
                 return;
             }
 
-            if (mContext.mCurrentShare != mCurrentShare)
-            {
-                //mCurrentShare = mContext.mCurrentShare;
-                if (mHasFibonacci && mDrawer != null)
-                    mDrawer.initFibonaccie(this, mContext.getFontSmall(), mContext.mCurrentShare);
-            }
+            if (mHasFibonacci && mDrawer != null)
+                mDrawer.initFibonaccie(this, mContext.getFontSmall(), getShare());
 
             //g.setColor(Constants.COLOR_BLACK);
             //g.clear();

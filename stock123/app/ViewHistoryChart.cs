@@ -17,7 +17,7 @@ namespace stock123.app
     {
         public const int TYPE_SEARCH = 0;
         public const int TYPE_CHART = 1;
-        public int mScreenType = TYPE_SEARCH;
+        public int mScreenType = TYPE_CHART;
 
         const int SUB_CHART_H_DEFAULT = 150;
         const int SUB_CHART_H_MIN = 100;
@@ -79,7 +79,7 @@ namespace stock123.app
             mCurrentSort = -1;
             mSortTopToBottom = true;
 
-            Share share = mContext.mCurrentShare;
+            Share share = mShare;
             mNetState = NETSTATE_NORMAL;
 
             mNetProtocol = mContext.createNetProtocol();
@@ -124,9 +124,9 @@ namespace stock123.app
                     }
                 }
             }
-            //if (mContext.mCurrentShare != null)
+            //if (mShare != null)
             //{
-                //reloadShare(mContext.mCurrentShare);
+                //reloadShare(mShare);
             //}
 
             updateUI();
@@ -136,7 +136,7 @@ namespace stock123.app
         {
             mScreenType = TYPE_SEARCH;
 
-            mContext.getSelectedDrawableShare().mIsComparingChart = false;
+            mShare.mIsComparingChart = false;
 
             removeAllControls();
 
@@ -165,12 +165,12 @@ namespace stock123.app
             {
                 mNetState = NETSTATE_GET_GLOBAL_QUOTE;
                 gNetProtocol = new g_NetProtocol(this);
-                date = mContext.mCurrentShare.getLastCandleDate();
+                date = mShare.getLastCandleDate();
                 if (date == 0)
                     date = C.DATE_BEGIN;
-                gNetProtocol.getOfflineShareData(mContext.mCurrentShare.mCode, date);
+                gNetProtocol.getOfflineShareData(mShare.mCode, date);
 
-                if (mContext.mCurrentShare.getCandleCount() == 0)
+                if (mShare.getCandleCount() == 0)
                 {
                     mNetworkContacting = new DlgContactingServer();
                     mNetworkContacting.Show();
@@ -181,7 +181,7 @@ namespace stock123.app
                 mNetState = NETSTATE_GET_QUOTE_DATA;
                 mNetProtocol.resetRequest();
 
-                date = mContext.mCurrentShare.getTrueLastCandleDate();
+                date = mShare.getTrueLastCandleDate();
                 if (date == 0)
                 {
                     date = C.DATE_BEGIN;
@@ -192,11 +192,11 @@ namespace stock123.app
                     date = Utils.dateFromNumber(l - 5);
                 }
 
-                mNetProtocol.requestGet1ShareData(mContext.mCurrentShare.mID, date);
+                mNetProtocol.requestGet1ShareData(mShare.mID, date);
 
                 mNetProtocol.flushRequest();
 
-                if (mContext.mCurrentShare.getCandleCount() == 0)
+                if (mShare.getCandleCount() == 0)
                 {
                     mNetworkContacting = new DlgContactingServer();
                     mNetworkContacting.Show();
@@ -371,12 +371,12 @@ namespace stock123.app
             {
                 mContext.selectDefaultShare();
             }
-            reloadShare(mContext.mCurrentShare, true);
+            reloadShare(mShare, true);
         }
 
         public void createRightPanel()
         {
-            Share share = mContext.mCurrentShare;
+            Share share = mShare;
             if (share == null)
                 return;
 
@@ -512,7 +512,7 @@ namespace stock123.app
             }
             if (buttonID == C.ID_SETUP_INDICATOR_PARAMETER)
             {
-                FormSettingParameters dlg = new FormSettingParameters(this);
+                FormSettingParameters dlg = new FormSettingParameters(mShare, this);
                 dlg.ShowDialog();
             }
             if (buttonID == C.ID_SPLIT_VIEW)
@@ -865,7 +865,7 @@ namespace stock123.app
             }
             //================================
          
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = mShare;
 
             if (evt == xBaseControl.EVT_ON_CONTEXT_MENU)
             {
@@ -889,7 +889,7 @@ namespace stock123.app
                     {
                         string code = g.getCodeAt(idx);
                         mContext.setCurrentShare(code);
-                        reloadShare(mContext.getSelectedDrawableShare(), true);
+                        reloadShare(mShare, true);
 
                         mNetState = NETSTATE_GET_QUOTE_DATA_PREPARING;
 
@@ -1530,7 +1530,7 @@ namespace stock123.app
         {
             if (NETSTATE_GET_QUOTE_DATA == mNetState)
             {
-                reloadShare(mContext.getSelectedDrawableShare(), true);
+                reloadShare(mShare, true);
             }
 
             mNetState = NETSTATE_NORMAL;
@@ -1542,9 +1542,9 @@ namespace stock123.app
             }
 
             //createRightPanel();
-            if (mContext.mCurrentShare != null)
+            if (mShare != null)
             {
-                mContext.mCurrentShare.clearCalculations();
+                mShare.clearCalculations();
             }
             refreshCharts();
             setStatusMsg("{Chọn vùng: shift+bấm&rê chuột}, {Vẽ đường: ctrl+bấm&rê chuột}, {Clone trend: ctrl+center point}");
@@ -1632,7 +1632,7 @@ namespace stock123.app
             }
             if (chart != -1)
             {
-                FormSettingParameters dlg = new FormSettingParameters(this);
+                FormSettingParameters dlg = new FormSettingParameters(mShare, this);
                 dlg.setCurrentChart(chart);
                 dlg.ShowDialog();
             }

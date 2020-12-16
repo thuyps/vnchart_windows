@@ -75,7 +75,7 @@ namespace stock123.app
             for (int i = 0; i < mScreens.size(); i++)
             {
                 ScreenBase sc = (ScreenBase)mScreens.elementAt(i);
-                //sc.onTick();
+                sc.onTick();
             }
         }
 

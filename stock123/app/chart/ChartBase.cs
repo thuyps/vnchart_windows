@@ -402,8 +402,10 @@ namespace stock123.app.chart
             if (y > mY && y < mY + mH)
             {
                 int candleIdx = (int)xToCandleIdx(x);
-                if (candleIdx >= 0 && candleIdx < mContext.getSelectedDrawableShare(0).getCandleCount())
-                    mContext.getSelectedDrawableShare(0).selectCandle(candleIdx);
+                if (candleIdx >= 0 && candleIdx < getShare().getCandleCount())
+                {
+                    getShare().selectCandle(candleIdx);
+                }
             }
         }
 
@@ -1309,6 +1311,12 @@ namespace stock123.app.chart
                 g.fillShapes(mChartLineColorArea, j);
             }
         }
+
+        public void setShare(Share share)
+        {
+            mShare = share;
+        }
+
         public Share getShare(int days)
         {
             return getShare();
@@ -1318,6 +1326,11 @@ namespace stock123.app.chart
             if (mShare == null && mContext.mShareManager.getVnindexCnt() > 0)
             {
                 mShare = mContext.mShareManager.getVnindexShareAt(0);
+            }
+
+            if (mShare == null)
+            {
+                mShare = mContext.getSelectedShare();
             }
 
             return mShare;

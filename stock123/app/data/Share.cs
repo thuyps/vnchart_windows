@@ -143,15 +143,15 @@ namespace stock123.app.data
         public float[] pComparingPrice = new float[MAX_CANDLE_CHART_COUNT];
         //===============================================
         //  shared memory
-        public int[] mSharedCVolume;
-        float[] mSharedCOpen;
-        public float[] mSharedCClose;
-        float[] mSharedCHighest;
-        float[] mSharedCLowest;
-        float[] mSharedCRef;
-        int[] mSharedCDate;
-        int[] mSharedNNMua;    //  volume
-        int[] mSharedNNBan;
+        static public int[] mSharedCVolume;
+        static float[] mSharedCOpen;
+        static public float[] mSharedCClose;
+        static float[] mSharedCHighest;
+        static float[] mSharedCLowest;
+        static float[] mSharedCRef;
+        static int[] mSharedCDate;
+        static int[] mSharedNNMua;    //  volume
+        static int[] mSharedNNBan;
         bool mIsUsingSharedMemory;
 
         //================================================

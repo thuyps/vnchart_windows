@@ -182,8 +182,8 @@ namespace stock123.app
             mTimerRequestOpen = new xTimer(3*60*1000);
             mTimerGlobal = new xTimer(2*60 * 1000);
             //-----------------------------------------
-            Share currentShare = mContext.mCurrentShare;
-            if (mContext.mCurrentShare == null)
+            Share currentShare = mContext.getSelectedShare();
+            if (mContext.getSelectedShare() == null)
             {
                 mContext.selectDefaultShare();
 
@@ -233,16 +233,16 @@ namespace stock123.app
             else
                 mContext.selectDefaultShare();
 
-            if (mContext.mCurrentShare != null)
+            if (mContext.getSelectedShare() != null)
             {
-                if (mContext.mCurrentShare.isRealtime())
+                if (mContext.getSelectedShare().isRealtime())
                 {
-                    mContext.setCurrentShare(mContext.mCurrentShare.mID);
+                    mContext.setCurrentShare(mContext.getSelectedShare().mID);
                 }
-                if (mContext.mCurrentShare.isIndex())
-                    mContext.mCurrentShare.loadShareFromFile(true);
+                if (mContext.getSelectedShare().isIndex())
+                    mContext.getSelectedShare().loadShareFromFile(true);
                 else
-                    mContext.mCurrentShare.loadShareFromCommonData(true);
+                    mContext.getSelectedShare().loadShareFromCommonData(true);
             }
         }
 
@@ -460,7 +460,7 @@ namespace stock123.app
                 else
                     mShouldDrawMACD = true;
             }
-            mSubContainer1 = new SubchartsContainer(C.ID_SUBCHART_CONTAINER_0, this, false);
+            mSubContainer1 = new SubchartsContainer(C.ID_SUBCHART_CONTAINER_0, mContext.getSelectedShare(), this, false);
             mSubContainer1.setChart(subChart);
 
             mSubContainer1.hideRemoveButton();
@@ -749,13 +749,13 @@ namespace stock123.app
                         mNetProtocol.requestGet1ShareData(share.mID, date);
                     }
                     //  loadShareFromFile makes mClose,mOpen... incorrect, fix it
-                    if (mContext.getSelectedDrawableShare() != null)
+                    if (mContext.getSelectedShare() != null)
                     {
-                        mContext.getSelectedDrawableShare().clearCalculations();
-                        if (mContext.mCurrentShare.isIndex())
-                            mContext.mCurrentShare.loadShareFromFile(false);
+                        mContext.getSelectedShare().clearCalculations();
+                        if (mContext.getSelectedShare().isIndex())
+                            mContext.getSelectedShare().loadShareFromFile(false);
                         else
-                            mContext.mCurrentShare.loadShareFromCommonData(false);
+                            mContext.getSelectedShare().loadShareFromCommonData(false);
                     }
                     //=========================
                 }
@@ -1163,7 +1163,7 @@ namespace stock123.app
                 return;
             //====================================================
 
-            Share share = mContext.getSelectedDrawableShare();
+            Share share = mContext.getSelectedShare();
             if (evt == xBaseControl.EVT_ON_CONTEXT_MENU)
             {
                 onContextMenu(aIntParameter);
@@ -1176,9 +1176,9 @@ namespace stock123.app
                     share = (Share)aParameter;
                     if (share != null)
                     {
-                        selectShare(share);
+                        //selectShare(share);
 
-                        goChartScreen(-1);//share.mID);
+                        goChartScreen(share.getShareID());//share.mID);
                         mNetState = STATE_NORMAL;
                     }
                 }
@@ -1198,21 +1198,23 @@ namespace stock123.app
                     {
                         selectShare(share.mID);
                     }
+                        /*
                     else
                     {
                         mContext.selectDefaultShare();
                         addRealtimeIndicesControls();
-                        stPriceboardStateIndex pi = mContext.mPriceboard.getPriceboardIndexOfMarket(mContext.mCurrentShare.getMarketID());
+                        stPriceboardStateIndex pi = mContext.mPriceboard.getPriceboardIndexOfMarket(mContext.getSelectedShare().getMarketID());
                         if (pi != null)
                         {
                             mContext.setCurrentShare(pi.id);
-                            if (mContext.mCurrentShare != null)
+                            if (mContext.getSelectedShare() != null)
                             {
-                                mContext.mCurrentShare.loadShareFromFile(true);
+                                mContext.getSelectedShare().loadShareFromFile(true);
                             }
                             invalidateCharts();
                         }
                     }
+                         */
                 }
                 if (aIntParameter == C.ID_ALARM_MANAGER)
                 {
@@ -1258,9 +1260,9 @@ namespace stock123.app
                     if (pi != null)
                     {
                         mContext.setCurrentShare(pi.id);
-                        if (mContext.mCurrentShare != null)
+                        if (mContext.getSelectedShare() != null)
                         {
-                            mContext.mCurrentShare.loadShareFromFile(true);
+                            mContext.getSelectedShare().loadShareFromFile(true);
                         }
                         invalidateCharts();
                     }
@@ -2066,9 +2068,9 @@ namespace stock123.app
             }
 
             if (mRealtimeMoneyChart != null
-                && mContext.mCurrentShare != null
-                && !mContext.mCurrentShare.isIndex()
-                && !mContext.isGlobalQuote(mContext.mCurrentShare))
+                && mContext.getSelectedShare() != null
+                && !mContext.getSelectedShare().isIndex()
+                && !mContext.isGlobalQuote(mContext.getSelectedShare()))
             {
                 //mRealtimeMoneyChart.refreshChart();
             }
@@ -2169,7 +2171,7 @@ namespace stock123.app
             int infoW = 210;
             if (mRealtimeMoneyChart == null)
             {
-                mRealtimeMoneyChart = new ChartMoney(mContext.mCurrentShare.mID);
+                mRealtimeMoneyChart = new ChartMoney(mContext.getSelectedShare().mID);
                 mRealtimeMoneyChart.setPosition(0, mRealtimeChart.getBottom() + 4);
             }
             //mRealtimeMoneyChart.setSize(mRealtimeChart.getW(), (int)moneyPriceH);
@@ -2196,7 +2198,7 @@ namespace stock123.app
             page1.addControl(mRealtimeMoneyChart);
             //==============================page 2================================
 
-            TradeHistory trade = mContext.getTradeHistory(mContext.mCurrentShare.mID);
+            TradeHistory trade = mContext.getTradeHistory(mContext.getSelectedShare().mID);
             mRealtimeTradeList = new RealtimeTradeListDetail(trade, tc.getW() - 30, tc.getH() - 10);
             page2.addControl(mRealtimeTradeList.getListCtrl());
             //====================================================================
@@ -2405,7 +2407,7 @@ namespace stock123.app
                     int shareID = r.mShareID;
                     Share share = mContext.mShareManager.getShare(shareID);
                  */  
-                Share share = mContext.mCurrentShare;// mContext.mShareManager.getShare(shareID);    
+                Share share = mContext.getSelectedShare();// mContext.mShareManager.getShare(shareID);    
                 if (share != null && !share.isIndex() && !mContext.isGlobalQuote(share))    
                 {
                     stShareGroup g = mContext.getCurrentShareGroup();
@@ -2514,7 +2516,7 @@ namespace stock123.app
                         return;
                 */
                     
-                Share share = mContext.mCurrentShare;// mContext.mShareManager.getShare(shareID);
+                Share share = mContext.getSelectedShare();// mContext.mShareManager.getShare(shareID);
                 if (share != null && !share.isIndex() && !mContext.isGlobalQuote(share))
                 {
                     stAlarm a = mContext.mAlarmManager.getAlarm(share.getCode());
@@ -3134,42 +3136,27 @@ namespace stock123.app
             }
         }
 
-        void selectShare(Share share)
+        void selectShare(int shareID)
         {
+            Share share = mContext.mShareManager.getShare(shareID);
             if (share == null)
+            {
                 return;
+            }
             if (share.isRealtime())
             {
                 share.loadShareFromFile(false);
             }
             else
             {
-                if (share.isIndex())
-                    share.loadShareFromFile(true);
-                else
-                    share.loadShareFromCommonData(true);
-
-                TradeHistory trade = mContext.getTradeHistory(share.getID());
-                if (trade != null)
-                {
-                    mContext.setCurrentTradeHistory(trade);
-                    addRealtimeCtrlOfCurrentShare();
-                    ((RealtimeChart)mRealtimeChart).setTrade(trade);
-                }
-
-                mTimer.expireTimer();
-
-                updateItemsAfterNetDone();
-                invalidateCharts();
+                selectShare(share);
             }
-            mContext.setCurrentShare(share);
         }
 
-        void selectShare(int shareId)
+        void selectShare(Share share)
         {
-            if (shareId > 0)
+            if (share != null)
             {
-                Share share = mContext.mShareManager.getShare(shareId);
                 if (share != null)
                 {
                     if (share.isIndex())
@@ -3181,7 +3168,7 @@ namespace stock123.app
                 /*
                 createChartRangeControls(0, mTimingRange);
                 */
-                TradeHistory trade = mContext.getTradeHistory(shareId);
+                TradeHistory trade = mContext.getTradeHistory(share.getShareID());
                 if (trade != null)
                 {
                     mContext.setCurrentTradeHistory(trade);
@@ -3190,6 +3177,31 @@ namespace stock123.app
                 }
 
                 mTimer.expireTimer();
+
+                //===========================
+                if (mTodayCandle != null)
+                {
+                    mTodayCandle.setShare(share);
+                }
+                if (mQuotePoint != null)
+                {
+                    mQuotePoint.setShare(share);
+                }
+
+                if (mRealtimeMoneyChart != null)
+                {
+                    mRealtimeMoneyChart.setShareID(share.getShareID());
+                }
+
+
+                if (mMasterChart != null)
+                {
+                    mMasterChart.setShare(share);
+                }
+                if (mSubContainer1 != null)
+                {
+                    mSubContainer1.setShare(share);
+                }
 
                 updateItemsAfterNetDone();
                 invalidateCharts();
@@ -3200,7 +3212,7 @@ namespace stock123.app
         {
             TodayCandle todayCandle = new TodayCandle();
             todayCandle.setSize(w, h);
-            todayCandle.setShare(mContext.getSelectedDrawableShare());
+            todayCandle.setShare(mContext.getSelectedShare());
 
             return todayCandle;
         }
@@ -3208,7 +3220,7 @@ namespace stock123.app
         QuotePoint createQuotePoint(int w, int h)
         {
             QuotePoint qp = new QuotePoint();
-            qp.setShare(mContext.getSelectedDrawableShare());
+            qp.setShare(mContext.getSelectedShare());
             qp.setSize(w, h);
 
             return qp;

@@ -699,9 +699,10 @@ namespace stock123.app.table
             //=========================
             if (mIsSelected)
             {
-                Context.getInstance().setCurrentShare(getCode());
+                //Context.getInstance().setCurrentShare(getCode());
+                Share share = Context.getInstance().mShareManager.getShare(getCode());
 
-                mListener.onEvent(this, xBaseControl.EVT_BUTTON_CLICKED, C.ID_SELECT_SHARE_CANDLE, Context.getInstance().getSelectedDrawableShare());
+                mListener.onEvent(this, xBaseControl.EVT_BUTTON_CLICKED, C.ID_SELECT_SHARE_CANDLE, share);
             }
             else
             {
@@ -719,7 +720,8 @@ namespace stock123.app.table
             if (Context.getInstance().setCurrentShare(getCode()))
             {
                 mDoubleClicked = true;
-                mListener.onEvent(this, xBaseControl.EVT_ON_MOUSE_DOUBLE_CLICK, C.ID_SELECT_SHARE_CANDLE, Context.getInstance().getSelectedDrawableShare());
+                Share share = Context.getInstance().mShareManager.getShare(getCode());
+                mListener.onEvent(this, xBaseControl.EVT_ON_MOUSE_DOUBLE_CLICK, C.ID_SELECT_SHARE_CANDLE, share);
             }
         }
 

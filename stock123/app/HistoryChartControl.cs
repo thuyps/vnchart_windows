@@ -102,7 +102,7 @@ namespace stock123.app
                     mTimingRange = new xContainer();
                 if (share != null)
                 {   
-                    createChartRangeControls(share.getCursorScope(), mTimingRange);
+                    createChartRangeControls(share, mTimingRange);
                 }
                 mTimingRange.setPosition((CHART_W - mTimingRange.getW()) / 2, mMainContainer.getH() - mTimingRange.getH() - 16);
                 mMainContainer.addControl(mTimingRange);
@@ -119,6 +119,7 @@ namespace stock123.app
             else
             {
             }
+            cl.setShare(mShare);
             cl.setIsMasterChart(true);//isSecondPanel == false);
             mMainContainer.addControl(cl);
 
@@ -410,7 +411,7 @@ namespace stock123.app
                 Share share = mShare;
                 if (share != null)
                 {
-                    createChartRangeControls(share.getCursorScope(), mTimingRange);
+                    createChartRangeControls(share, mTimingRange);
                 }
             }
 
@@ -438,7 +439,7 @@ namespace stock123.app
                     share.setEndDate(endDate);
                     share.setCursorScope(scope);
 
-                    createChartRangeControls(share.getCursorScope(), mTimingRange);
+                    createChartRangeControls(share, mTimingRange);
 
                     mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, null);
                 }
@@ -482,7 +483,7 @@ namespace stock123.app
             }
             if (aIntParameter >= C.ID_CHART_RANGE && aIntParameter < C.ID_CHART_RANGE_END)
             {
-                Share share = mContext.mCurrentShare;
+                Share share = mShare;
                 if (share != null)
                 {
                     int idx = aIntParameter - C.ID_CHART_RANGE;
@@ -512,7 +513,7 @@ namespace stock123.app
                             share.setCursorScope(scope);
                         }
                     }
-                    createChartRangeControls(scope, mTimingRange);
+                    createChartRangeControls(share, mTimingRange);
                     mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, null);
                 }
             }
@@ -584,9 +585,10 @@ namespace stock123.app
             }
         }
 
-        protected xContainer createChartRangeControls(int currentRange, xContainer c)
+        protected xContainer createChartRangeControls(Share share, xContainer c)
         {
-            Share share = mShare;
+            int currentRange = share.getCursorScope();
+
             if (share.isRealtime())
             {
                 return createChartRangeControlsRT(share.mCandleType, c);
@@ -774,16 +776,16 @@ namespace stock123.app
         Share mCurrentShare = null;
         public void invalidateCharts()
         {
-            if (mCurrentShare != mContext.mCurrentShare && mTimingRange != null)
+            if (mCurrentShare != mShare && mTimingRange != null)
             {
-                mCurrentShare = mContext.mCurrentShare;
+                mCurrentShare = mShare;
                 if (mChartType == Share.CANDLE_MONTHLY)
                 {
-                    createChartRangeControls(Context.getInstance().mOptHistoryChartTimeFrame, mTimingRange);
+                    createChartRangeControls(mShare, mTimingRange);
                 }
                 else
                 {
-                    createChartRangeControls(mCurrentShare.getCursorScope(), mTimingRange);
+                    createChartRangeControls(mShare, mTimingRange);
                 }
             }
             mMainChart.invalidate();
@@ -849,8 +851,8 @@ namespace stock123.app
                     DlgSMA dlg = new DlgSMA(sma);
                     if (dlg.ShowDialog() == DialogResult.OK)
                     {
-                        if (mContext.mCurrentShare != null)
-                            mContext.mCurrentShare.mIsCalcSMA = false;
+                        if (mShare != null)
+                            mShare.mIsCalcSMA = false;
                         mContext.saveOptions();
                         mContext.saveOptions2();
                         mMainChart.toggleSMA(sma);
@@ -946,11 +948,11 @@ namespace stock123.app
                 mMainChart.toggleAttachChart(type);
                 if (type == ChartBase.CHART_PAST_1_YEAR)
                 {
-                    mContext.getSelectedDrawableShare().mIs1YearChartOn = mMainChart.isAttachedOn(type);
+                    mShare.mIs1YearChartOn = mMainChart.isAttachedOn(type);
                 }
                 else
                 {
-                    mContext.getSelectedDrawableShare().mIs2YearChartOn = mMainChart.isAttachedOn(type);
+                    mShare.mIs2YearChartOn = mMainChart.isAttachedOn(type);
                 }
                 mMainChart.clearModifyKey();
                 mMainChart.invalidate();
@@ -1252,7 +1254,7 @@ namespace stock123.app
         }
         SubchartsContainer createSubchart(int subchart)
         {
-            SubchartsContainer sub = new SubchartsContainer(0, this, true);
+            SubchartsContainer sub = new SubchartsContainer(0, mShare, this, true);
             sub.setSize(CHART_W, 10);
             sub.setPosition(0, sub.getBottom() + 2);
             sub.setChart(subchart);
@@ -1460,7 +1462,7 @@ namespace stock123.app
         public void onChangedQuote()
         {
             if (mShowingInfo)
-                showInfo(mContext.mCurrentShare);
+                showInfo(mShare);
 
             invalidateCharts();
         }
@@ -1480,8 +1482,8 @@ namespace stock123.app
                 else
                 {
                     mContext.mComparingShareCode = code.ToUpper();
-                    mContext.getSelectedDrawableShare().mCompare2ShareCode = mContext.mComparingShareCode;
-                    mContext.getSelectedDrawableShare().clearCalculations();
+                    mShare.mCompare2ShareCode = mContext.mComparingShareCode;
+                    mShare.clearCalculations();
 
                     mMainChart.showAttachChart(ChartBase.CHART_COMPARING_SECOND_SHARE);
 

@@ -26,12 +26,17 @@ namespace stock123.app.chart
         xButton mDrawGridButton;
         xButton mSecondChartButton;
         xButton mHelpButton;
+
+        Share mShare;
         //=================================
 
-        public SubchartsContainer(int idx, xIEventListener listener, bool add_removable)
+        public SubchartsContainer(int idx, Share share, xIEventListener listener, bool add_removable)
             : base(listener)
         {
             setID(idx);
+
+            mShare = share;
+
             mCurrentChart = null;
             //mSwitchButton = null;
 
@@ -330,7 +335,7 @@ namespace stock123.app.chart
             {
                 if (aIntParameter == C.ID_BUTTON_SETTING_CHART)
                 {
-                    FormSettingParameters dlg = new FormSettingParameters(this);
+                    FormSettingParameters dlg = new FormSettingParameters(mShare, this);
                     dlg.setOptionIDX(0);
                     dlg.setCurrentChart(getSubchartID());
                     dlg.ShowDialog();
@@ -348,7 +353,7 @@ namespace stock123.app.chart
                 {
                     if (!mCurrentChart.isSecondChartDisplaying())
                     {
-                        FormSettingParameters dlg = new FormSettingParameters(this);
+                        FormSettingParameters dlg = new FormSettingParameters(mShare, this);
                         dlg.setOptionIDX(1);
                         dlg.setCurrentChart(getSubchartID());
                         dlg.ShowDialog();                        
@@ -634,6 +639,11 @@ namespace stock123.app.chart
             mHasGrid = grid;
             if (mCurrentChart != null)
                 mCurrentChart.mShouldDrawGrid = grid;
+        }
+
+        public void setShare(Share share)
+        {
+            mShare = share;
         }
     }
 }

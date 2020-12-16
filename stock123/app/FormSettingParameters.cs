@@ -7,6 +7,7 @@ using xlib.framework;
 using xlib.ui;
 using xlib.utils;
 using stock123.app.chart;
+using stock123.app.data;
 
 namespace stock123.app
 {
@@ -24,6 +25,8 @@ namespace stock123.app
         xFloat mValue4 = new xFloat();
         xFloat mValue5 = new xFloat();
         int IDX = 1;
+
+        Share mShare;
 
         int[] mIndicators = {
                 ChartBase.CHART_AROON,
@@ -59,11 +62,12 @@ namespace stock123.app
                 ChartBase.CHART_PVO,
                 ChartBase.CHART_MASSINDEX,
         };
-        public FormSettingParameters(xIEventListener listener)
+        public FormSettingParameters(Share share, xIEventListener listener)
         {
             InitializeComponent();
 
             mListener = listener;
+            mShare = share;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             //==================================
 
@@ -1148,9 +1152,9 @@ namespace stock123.app
             {
                 updateOptionValues();
 
-                if (mContext.getSelectedDrawableShare() != null)
+                if (mShare != null)
                 {
-                    mContext.getSelectedDrawableShare().clearCalculations();
+                    mShare.clearCalculations();
                     mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, 0);
                 }
             }
@@ -1169,9 +1173,9 @@ namespace stock123.app
             if (evt == xBaseControl.EVT_CHECKBOX_VALUE_CHANGED)
             {
                 setupForm();
-                if (mContext.getSelectedDrawableShare() != null)
+                if (mShare != null)
                 {
-                    mContext.getSelectedDrawableShare().clearCalculations();
+                    mShare.clearCalculations();
                     mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, 0);
                 }
             }
@@ -1423,9 +1427,9 @@ namespace stock123.app
                         break;
                 }
 
-                if (mContext.getSelectedDrawableShare() != null)
+                if (mContext.getSelectedShare() != null)
                 {
-                    mContext.getSelectedDrawableShare().clearCalculations();
+                    mContext.getSelectedShare().clearCalculations();
                     mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, 0);
                 }
                 mContext.saveOptions();
