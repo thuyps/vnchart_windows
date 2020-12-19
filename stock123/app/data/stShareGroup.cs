@@ -28,7 +28,7 @@ namespace stock123.app.data
         // GROUP INDEXES
         public static int ID_GROUP_DEFAULT = -1;
         public static int ID_GROUP_FAVOR = 1;
-        public static int ID_GROUP_GLOBAL = 2;
+        //public static int ID_GROUP_GLOBAL = 2;
         public static int ID_GROUP_MOST_INC = 3;
         public static int ID_GROUP_MOST_DEC = 4;
         public static int ID_GROUP_MOST_VOL = 5;

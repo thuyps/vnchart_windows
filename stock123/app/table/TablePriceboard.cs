@@ -39,11 +39,7 @@ namespace stock123.app.table
             for (int i = 0; i <= cnt; i++)
             {
                 int idx = i - 1;
-                int rH = rowH;
-                if (idx == -1)
-                {
-                    rH = 30;
-                }
+                int rH = i == 0? 36: rowH;
 
                 RowNormalShare r;
                 if (g.getType() == stShareGroup.ID_GROUP_INDICES)

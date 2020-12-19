@@ -22,7 +22,7 @@ namespace stock123.app
         xSplitter mSplitter;
         xContainer mMainContainer;
         xContainer mSubContainer;
-        ChartMaster mMainChart;
+        ChartMaster mChartMaster;
 
         xContainer mTimingRange;
         xContainer mInfo;
@@ -123,19 +123,19 @@ namespace stock123.app
             cl.setIsMasterChart(true);//isSecondPanel == false);
             mMainContainer.addControl(cl);
 
-            mMainChart = cl;
+            mChartMaster = cl;
             cl.toggleAttachChart(ChartBase.CHART_BOLLINGER);
-            //mMainChart.loadOption();
+            //mChartMaster.loadOption();
 
             //=========================================================
             xDataInput di = xFileManager.readFile("data\\" + name, false);
             if (di != null && di.readInt() == Context.FILE_VERSION)
             {
                 mainH = di.readInt();
-                mMainChart.load(di);
+                mChartMaster.load(di);
                 //  correct mainH
                 mMainContainer.setSize(mMainContainer.getW(), mainH);
-                mMainChart.setSize(mMainChart.getW(), mainH);
+                mChartMaster.setSize(mChartMaster.getW(), mainH);
                 //=========================
                 subCnt = di.readInt();
                 if (subCnt > 10) subCnt = 10;
@@ -174,7 +174,7 @@ namespace stock123.app
                 }
             }
 
-            mDrawer.initFibonaccie(mMainChart, mContext.getFontSmall(), share);
+            mDrawer.initFibonaccie(mChartMaster, mContext.getFontSmall(), share);
             //====================SUB container
             mSubContainer = new xContainer();
 
@@ -383,7 +383,7 @@ namespace stock123.app
 
         virtual public void onEvent(object sender, int evt, int aIntParameter, object aParameter)
         {
-            if (evt == xBaseControl.EVT_ON_MOUSE_DOUBLE_CLICK && sender != mMainChart)
+            if (evt == xBaseControl.EVT_ON_MOUSE_DOUBLE_CLICK && sender != mChartMaster)
             {
                 if (mZoomingChart == sender)
                 {
@@ -542,7 +542,7 @@ namespace stock123.app
                 //  adjust master chart position first
                 if (mTimingRange != null)
                     mTimingRange.setPosition((CHART_W - mTimingRange.getW()) / 2, mMainContainer.getH() - mTimingRange.getH() - 16);
-                mMainChart.setSize(mMainContainer);
+                mChartMaster.setSize(mMainContainer);
 
                 mDrawer.recalcPosition();
                 //======================================================
@@ -556,7 +556,7 @@ namespace stock123.app
                 int h = subHTotal / items;
                 h -= 1;
 
-                int y = 0;// mMainChart.getBottom() + 2;
+                int y = 0;// mChartMaster.getBottom() + 2;
                 for (int i = 0; i < mSubCharts.size(); i++)
                 {
                     xBaseControl c = (xBaseControl)mSubCharts.elementAt(i);
@@ -788,7 +788,7 @@ namespace stock123.app
                     createChartRangeControls(mShare, mTimingRange);
                 }
             }
-            mMainChart.invalidate();
+            mChartMaster.invalidate();
 
             for (int i = 0; i < mSubCharts.size(); i++)
             {
@@ -842,9 +842,9 @@ namespace stock123.app
             if (idx == C.ID_TS_SMA1 || idx == C.ID_TS_SMA2)
             {
                 int sma = idx - C.ID_TS_SMA1;
-                if (mMainChart.isSMAOn())
+                if (mChartMaster.isSMAOn())
                 {
-                    mMainChart.toggleSMA(sma);
+                    mChartMaster.toggleSMA(sma);
                 }
                 else
                 {
@@ -855,7 +855,7 @@ namespace stock123.app
                             mShare.mIsCalcSMA = false;
                         mContext.saveOptions();
                         mContext.saveOptions2();
-                        mMainChart.toggleSMA(sma);
+                        mChartMaster.toggleSMA(sma);
                     }
                 }
             }
@@ -873,101 +873,101 @@ namespace stock123.app
             }
             if (idx == C.ID_TS_CHARTLINE)
             {
-                mMainChart.setChartType(ChartLine.CHART_LINE);
-                mMainChart.clearModifyKey();
-                mMainChart.invalidate();
+                mChartMaster.setChartType(ChartLine.CHART_LINE);
+                mChartMaster.clearModifyKey();
+                mChartMaster.invalidate();
 
                 saveToFile();
             }
             else if (idx == C.ID_TS_CHARTCANDLE)
             {
-                mMainChart.setChartType(ChartLine.CHART_CANDLE);
-                mMainChart.clearModifyKey();
-                mMainChart.invalidate();
+                mChartMaster.setChartType(ChartLine.CHART_CANDLE);
+                mChartMaster.clearModifyKey();
+                mChartMaster.invalidate();
 
                 saveToFile();
             }
             else if (idx == C.ID_TS_CHARTCANDLE_HEIKEN)
             {
-                mMainChart.setChartType(ChartLine.CHART_CANDLE_HEIKEN);
-                mMainChart.clearModifyKey();
-                mMainChart.invalidate();
+                mChartMaster.setChartType(ChartLine.CHART_CANDLE_HEIKEN);
+                mChartMaster.clearModifyKey();
+                mChartMaster.invalidate();
 
                 saveToFile();
             }
             else if (idx == C.ID_TS_CHARTOHLC)
             {
-                mMainChart.setChartType(ChartLine.CHART_OHLC);
-                mMainChart.clearModifyKey();
-                mMainChart.invalidate();
+                mChartMaster.setChartType(ChartLine.CHART_OHLC);
+                mChartMaster.clearModifyKey();
+                mChartMaster.invalidate();
 
                 saveToFile();
             }
             else if (idx == C.ID_TS_CHARTHLC)
             {
-                mMainChart.setChartType(ChartLine.CHART_HLC);
-                mMainChart.clearModifyKey();
-                mMainChart.invalidate();
+                mChartMaster.setChartType(ChartLine.CHART_HLC);
+                mChartMaster.clearModifyKey();
+                mChartMaster.invalidate();
 
                 saveToFile();
             }
             //=============================================
             else if (idx == C.ID_TS_BOLLINGER)
             {
-                mMainChart.toggleAttachChart(ChartBase.CHART_BOLLINGER);
+                mChartMaster.toggleAttachChart(ChartBase.CHART_BOLLINGER);
             }
             else if (idx == C.ID_TS_ENVELOP)
             {
-                mMainChart.toggleAttachChart(ChartBase.CHART_ENVELOP);
+                mChartMaster.toggleAttachChart(ChartBase.CHART_ENVELOP);
             }
             else if (idx == C.ID_TS_PSAR)
             {
-                mMainChart.toggleAttachChart(ChartBase.CHART_PSAR);
+                mChartMaster.toggleAttachChart(ChartBase.CHART_PSAR);
             }
             else if (idx == C.ID_TS_VSTOP)
             {
-                mMainChart.toggleAttachChart(ChartBase.CHART_VSTOP);
+                mChartMaster.toggleAttachChart(ChartBase.CHART_VSTOP);
             }
             else if (idx == C.ID_TS_ICHIMOKU)
             {
-                mMainChart.toggleAttachChart(ChartBase.CHART_ICHIMOKU);
+                mChartMaster.toggleAttachChart(ChartBase.CHART_ICHIMOKU);
             }
             else if (idx == C.ID_TS_ZIGZAG)
             {
-                mMainChart.toggleAttachChart(ChartBase.CHART_ZIGZAG);
+                mChartMaster.toggleAttachChart(ChartBase.CHART_ZIGZAG);
             }
             else if (idx == C.ID_TS_VOLUMEBYPRICE)
             {
-                mMainChart.toggleAttachChart(ChartBase.CHART_VOLUMEBYPRICE);
+                mChartMaster.toggleAttachChart(ChartBase.CHART_VOLUMEBYPRICE);
             }
             else if (idx == C.ID_TS_COMPARE_YEAR1 || idx == C.ID_TS_COMPARE_YEAR2)
             {
                 int type = ChartBase.CHART_PAST_1_YEAR;
                 if (idx == C.ID_TS_COMPARE_YEAR2)
                     type = ChartBase.CHART_PAST_2_YEARS;
-                mMainChart.toggleAttachChart(type);
+                mChartMaster.toggleAttachChart(type);
                 if (type == ChartBase.CHART_PAST_1_YEAR)
                 {
-                    mShare.mIs1YearChartOn = mMainChart.isAttachedOn(type);
+                    mShare.mIs1YearChartOn = mChartMaster.isAttachedOn(type);
                 }
                 else
                 {
-                    mShare.mIs2YearChartOn = mMainChart.isAttachedOn(type);
+                    mShare.mIs2YearChartOn = mChartMaster.isAttachedOn(type);
                 }
-                mMainChart.clearModifyKey();
-                mMainChart.invalidate();
+                mChartMaster.clearModifyKey();
+                mChartMaster.invalidate();
                 
             }
             else if (idx == C.ID_TS_COMPARE_2_SHARES)
             {
-                if (mMainChart.isAttachedOn(ChartBase.CHART_COMPARING_SECOND_SHARE))
+                if (mChartMaster.isAttachedOn(ChartBase.CHART_COMPARING_SECOND_SHARE))
                 {
-                    mMainChart.hideAttachChart(ChartBase.CHART_COMPARING_SECOND_SHARE);
+                    mChartMaster.hideAttachChart(ChartBase.CHART_COMPARING_SECOND_SHARE);
 
                     
 
-                    mMainChart.clearModifyKey();
-                    mMainChart.invalidate();
+                    mChartMaster.clearModifyKey();
+                    mChartMaster.invalidate();
                 }
                 else
                 {
@@ -1098,7 +1098,7 @@ namespace stock123.app
                 {
                     mDrawer.clearAll();
                 }
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_TREND)
             {
@@ -1114,70 +1114,70 @@ namespace stock123.app
                 mDrawer.addTrends(Drawer.DRAW_TREND, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_TREND_ARROW)
             {
                 mDrawer.addTrends(Drawer.DRAW_TREND_ARROW, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_RETRACE)
             {
                 mDrawer.addTrends(Drawer.DRAW_FIBO_RETRACEMENT, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_PROJECT)
             {
                 mDrawer.addTrends(Drawer.DRAW_FIBO_PROJECTION, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_TIME)
             {
                 mDrawer.addTrends(Drawer.DRAW_FIBO_TIME, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_FAN)
             {
                 mDrawer.addTrends(Drawer.DRAW_FIBO_FAN, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_ARC)
             {
                 mDrawer.addTrends(Drawer.DRAW_FIBO_ARC, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_TRIANGLE)
             {
                 mDrawer.addTrends(Drawer.DRAW_TRIANGLE, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_RECTANGLE)
             {
                 mDrawer.addTrends(Drawer.DRAW_RECTANGLE, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_ANDREWS_PITCHFORK)
             {
                 mDrawer.addTrends(Drawer.DRAW_ANDREWS_PITCHFORK, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_ABC)
             {
@@ -1191,7 +1191,7 @@ namespace stock123.app
                         mDrawer.addText(text);
                         mDrawer.show(true);
 
-                        mMainChart.invalidate();
+                        mChartMaster.invalidate();
                     }
                 }
             }
@@ -1200,7 +1200,7 @@ namespace stock123.app
                 mDrawer.addTrends(Drawer.DRAW_OVAL, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
         }
         /*
@@ -1211,7 +1211,7 @@ namespace stock123.app
                 MenuItem item = (MenuItem)sender;
 
                 int type = (int)item.Tag;
-                mMainChart.toggleAttachChart(type);
+                mChartMaster.toggleAttachChart(type);
             }
             catch (Exception ex)
             {
@@ -1255,6 +1255,7 @@ namespace stock123.app
         SubchartsContainer createSubchart(int subchart)
         {
             SubchartsContainer sub = new SubchartsContainer(0, mShare, this, true);
+            sub.setChartMaster(mChartMaster);
             sub.setSize(CHART_W, 10);
             sub.setPosition(0, sub.getBottom() + 2);
             sub.setChart(subchart);
@@ -1272,7 +1273,7 @@ namespace stock123.app
             CHART_W = getW() - CHART_X0;
             mSplitter.setSize(CHART_W, h);
             mMainContainer.setSize(CHART_W, mMainContainer.getH());
-            mMainChart.setSize(mMainContainer);
+            mChartMaster.setSize(mMainContainer);
 
             if (mTimingRange != null)
                 mTimingRange.setPosition((CHART_W - mTimingRange.getW()) / 2, mMainContainer.getH() - mTimingRange.getH() - 16);
@@ -1295,7 +1296,7 @@ namespace stock123.app
             o.writeInt(Context.FILE_VERSION);
             
             o.writeInt(mMainContainer.getH());
-            mMainChart.flush(o);
+            mChartMaster.flush(o);
 
             o.writeInt(mSubCharts.size());
             for (int i = 0; i < mSubCharts.size(); i++)
@@ -1314,41 +1315,41 @@ namespace stock123.app
 
             if (idx == C.ID_TS_CHARTLINE)
             {
-                mMainChart.setChartType(ChartLine.CHART_LINE);
-                mMainChart.clearModifyKey();
-                mMainChart.invalidate();
+                mChartMaster.setChartType(ChartLine.CHART_LINE);
+                mChartMaster.clearModifyKey();
+                mChartMaster.invalidate();
 
                 saveToFile();
             }
             else if (idx == C.ID_TS_CHARTCANDLE)
             {
-                mMainChart.setChartType(ChartLine.CHART_CANDLE);
-                mMainChart.clearModifyKey();
-                mMainChart.invalidate();
+                mChartMaster.setChartType(ChartLine.CHART_CANDLE);
+                mChartMaster.clearModifyKey();
+                mChartMaster.invalidate();
 
                 saveToFile();
             }
             else if (idx == C.ID_TS_CHARTCANDLE_HEIKEN)
             {
-                mMainChart.setChartType(ChartLine.CHART_CANDLE_HEIKEN);
-                mMainChart.clearModifyKey();
-                mMainChart.invalidate();
+                mChartMaster.setChartType(ChartLine.CHART_CANDLE_HEIKEN);
+                mChartMaster.clearModifyKey();
+                mChartMaster.invalidate();
 
                 saveToFile();
             }
             else if (idx == C.ID_TS_CHARTOHLC)
             {
-                mMainChart.setChartType(ChartLine.CHART_OHLC);
-                mMainChart.clearModifyKey();
-                mMainChart.invalidate();
+                mChartMaster.setChartType(ChartLine.CHART_OHLC);
+                mChartMaster.clearModifyKey();
+                mChartMaster.invalidate();
 
                 saveToFile();
             }
             else if (idx == C.ID_TS_CHARTHLC)
             {
-                mMainChart.setChartType(ChartLine.CHART_HLC);
-                mMainChart.clearModifyKey();
-                mMainChart.invalidate();
+                mChartMaster.setChartType(ChartLine.CHART_HLC);
+                mChartMaster.clearModifyKey();
+                mChartMaster.invalidate();
 
                 saveToFile();
             } 
@@ -1357,28 +1358,28 @@ namespace stock123.app
                 mDrawer.addTrends(Drawer.DRAW_FIBO_RETRACEMENT, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_PROJECT)
             {
                 mDrawer.addTrends(Drawer.DRAW_FIBO_PROJECTION, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_TIME)
             {
                 mDrawer.addTrends(Drawer.DRAW_FIBO_TIME, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_FAN)
             {
                 mDrawer.addTrends(Drawer.DRAW_FIBO_FAN, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_TREND)
             {
@@ -1389,42 +1390,42 @@ namespace stock123.app
                 mDrawer.addTrends(Drawer.DRAW_FIBO_ARC, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_TRIANGLE)
             {
                 mDrawer.addTrends(Drawer.DRAW_TRIANGLE, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_RECTANGLE)
             {
                 mDrawer.addTrends(Drawer.DRAW_RECTANGLE, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_ANDREWS_PITCHFORK)
             {
                 mDrawer.addTrends(Drawer.DRAW_ANDREWS_PITCHFORK, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_ABC)
             {
                 mDrawer.addTrends(Drawer.DRAW_ABC, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_ECLIPSE)
             {
                 mDrawer.addTrends(Drawer.DRAW_OVAL, 0, 0);
                 mDrawer.show(true);
 
-                mMainChart.invalidate();
+                mChartMaster.invalidate();
             }
             else{
                 return base.onMenuEvent(item);
@@ -1456,7 +1457,7 @@ namespace stock123.app
 
         public ChartMaster getMasterChart()
         {
-            return mMainChart;
+            return mChartMaster;
         }
 
         public void onChangedQuote()
@@ -1485,10 +1486,10 @@ namespace stock123.app
                     mShare.mCompare2ShareCode = mContext.mComparingShareCode;
                     mShare.clearCalculations();
 
-                    mMainChart.showAttachChart(ChartBase.CHART_COMPARING_SECOND_SHARE);
+                    mChartMaster.showAttachChart(ChartBase.CHART_COMPARING_SECOND_SHARE);
 
-                    mMainChart.clearModifyKey();
-                    mMainChart.invalidate();
+                    mChartMaster.clearModifyKey();
+                    mChartMaster.invalidate();
                 }
             }
         }

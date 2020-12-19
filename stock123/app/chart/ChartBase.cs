@@ -147,6 +147,8 @@ namespace stock123.app.chart
         public bool mShouldDrawTitle = true;
         public bool mShouldDrawPriceLabelOnRight = true;
         protected Share mShare;
+        protected int mStartX;
+        ChartBase mRefChart;
         //=================================================================
         public ChartBase(Font f)
             : base(null)
@@ -161,6 +163,8 @@ namespace stock123.app.chart
             mLastScope = -1;
 
             mContext = Context.getInstance();
+
+            mStartX = 0;
 
             setBackgroundColor(C.COLOR_BLACK);
         }
@@ -470,7 +474,7 @@ namespace stock123.app.chart
             int deltaC = candle - getShare().mBeginIdx;
             int dx = candlesToDx(deltaC);
 
-            return (mX + CHART_BORDER_SPACING_X + dx + mContext.mChartDrawingStart);
+            return (mX + CHART_BORDER_SPACING_X + dx + getStartX());
         }
 
         public void supportDrawingTrend(bool set) { mSupportDrawingTrend = set; }
@@ -655,7 +659,7 @@ namespace stock123.app.chart
             //	int begin = share.mBeginIdx;
             for (int i = 0; i < len; i++)
             {
-                xy[2 * i] = (short)(mX + CHART_BORDER_SPACING_X + (int)(i * rX) + mContext.mChartDrawingStart);
+                xy[2 * i] = (short)(mX + CHART_BORDER_SPACING_X + (int)(i * rX) + getStartX());
                 xy[2 * i + 1] = (short)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (int)((price[i + offset] - low) * rY));
             }
         }
@@ -681,7 +685,7 @@ namespace stock123.app.chart
             //	int begin = share.mBeginIdx;
             for (int i = 0; i < len; i++)
             {
-                xy[2 * i] = (short)(mX + CHART_BORDER_SPACING_X + i * rX + mContext.mChartDrawingStart);
+                xy[2 * i] = (short)(mX + CHART_BORDER_SPACING_X + i * rX + getStartX());
                 xy[2 * i + 1] = (short)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (price[i+offset] - low) * rY);
             }
         }
@@ -927,7 +931,7 @@ namespace stock123.app.chart
             if (getShare() == null)
                 return 0;
 
-            int dx = x - mContext.mChartDrawingStart - mX - CHART_BORDER_SPACING_X;
+            int dx = x - getStartX() - mX - CHART_BORDER_SPACING_X;
 
             float candle = getShare().mBeginIdx;
             candle += ((float)dx / getCandleW());
@@ -973,7 +977,7 @@ namespace stock123.app.chart
             float deltaC = candle - getShare().mBeginIdx;
             int dx = candlesToDx(deltaC);
 
-            return (mX + CHART_BORDER_SPACING_X + dx + mContext.mChartDrawingStart);
+            return (mX + CHART_BORDER_SPACING_X + dx + getStartX());
         }
         public int priceToY(float price)
         {
@@ -1038,15 +1042,17 @@ namespace stock123.app.chart
 
             getShare().mModifiedKey2++;
 
-            if (mContext.mChartDrawingStart > 0)
-                mContext.mChartDrawingStart = 0;
+            if (mStartX > 0)
+            {
+                mStartX = 0;
+            }
 
             if (getShare() != null && movedCandles != 0)
             {
                 //	add gap to the right
-                if (mContext.mChartDrawingStart < 0)
+                if (mStartX < 0)
                 {
-                    mContext.mChartDrawingStart += dx;
+                    mStartX += dx;
                 }
                 else
                 {
@@ -1055,11 +1061,22 @@ namespace stock123.app.chart
                         getShare().moveCursor(-movedCandles);
                     }
                     else
-                        mContext.mChartDrawingStart += dx;
+                    {
+                        mStartX += dx;
+                    }
                 }
 
-                if (mContext.mChartDrawingStart > 0)
-                    mContext.mChartDrawingStart = 0;
+                if (mStartX > 0)
+                {
+                    mStartX = 0;
+                }
+
+                if (mRefChart != null)
+                {
+                    mRefChart.setStartX(mStartX);
+                }
+
+                invalidate();
 
                 if (dx != 0)// || mContext.mChartDrawingStart < 0)
                 {
@@ -1075,9 +1092,9 @@ namespace stock123.app.chart
             //	adjust right gap
             if (false)//mContext.mChartDrawingStart < 0)
             {
-                if (mContext.mChartDrawingStart < 0)
+                if (mStartX < 0)
                 {
-                    mContext.mChartDrawingStart += dx;
+                    mStartX += dx;
                 }
                 mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, null);
 
@@ -1323,6 +1340,11 @@ namespace stock123.app.chart
         }
         public Share getShare()
         {
+            if (mRefChart != null)
+            {
+                return mRefChart.getShare();
+            }
+
             if (mShare == null && mContext.mShareManager.getVnindexCnt() > 0)
             {
                 mShare = mContext.mShareManager.getVnindexShareAt(0);
@@ -1334,6 +1356,30 @@ namespace stock123.app.chart
             }
 
             return mShare;
+        }
+
+        public void setRefChart(ChartBase refChart)
+        {
+            mRefChart = refChart;
+        }
+
+        public void setStartX(int x)
+        {
+            mStartX = x;
+            if (mRefChart != null)
+            {
+                mRefChart.setStartX(x);
+            }
+        }
+
+        public int getStartX()
+        {
+            if (mRefChart != null)
+            {
+                return mRefChart.getStartX();
+            }
+
+            return mStartX;
         }
     }
 }

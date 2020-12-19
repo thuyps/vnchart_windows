@@ -244,6 +244,12 @@ namespace stock123.app.data
 
         public Share()
         {
+
+        }
+
+        public Share(int candleCnt)
+        {
+            allocPrivateMemory(candleCnt);
         }
 
         public bool isRealtime()
@@ -496,7 +502,6 @@ namespace stock123.app.data
         public void loadShareFromCommonData(bool appendToday)
         {
             clearCalculations();
-            allocShareMemory(false);
 
             mLastScope = -1;
             mCandleType = CANDLE_DAILY;
@@ -538,8 +543,10 @@ namespace stock123.app.data
         public bool loadShareFromFile(bool appendToday)
         {
             if (isRealtime())
+            {
                 appendToday = false;
-            allocShareMemory(false);
+            }
+
             clearCalculations();
             mCandleType = CANDLE_DAILY;
             mLastScope = -1;
@@ -618,7 +625,6 @@ namespace stock123.app.data
         //  load share from saved file
         bool loadShare()
         {
-            allocShareMemory(false);
             if (isIndex())
             {
                 loadShareFromFile(false);
@@ -894,6 +900,11 @@ namespace stock123.app.data
 
         }
 
+        public bool isUsingShareMemory()
+        {
+            return mCClose == mSharedCClose;
+        }
+
         public void allocShareMemory(bool useSharedMemory)
         {
             if (useSharedMemory)
@@ -923,29 +934,31 @@ namespace stock123.app.data
             }
             else
             {
-                if (mIsUsingSharedMemory){
-                    mCVolume = null;
-                }
-
-                mIsUsingSharedMemory = false;
                 if (mCVolume == null)
                 {
-                    mCVolume = new int[MAX_CANDLE_CHART_COUNT];
-                    mCDate = new int[MAX_CANDLE_CHART_COUNT];
-                    mCOpen = new float[MAX_CANDLE_CHART_COUNT];
-                    mCClose = new float[MAX_CANDLE_CHART_COUNT];
-                    mCHighest = new float[MAX_CANDLE_CHART_COUNT];
-                    mCLowest = new float[MAX_CANDLE_CHART_COUNT];
-                    mCRef = new float[MAX_CANDLE_CHART_COUNT];
-                    mNNMua = new int[MAX_CANDLE_CHART_COUNT];
-                    mNNBan = new int[MAX_CANDLE_CHART_COUNT];
+                    allocPrivateMemory(MAX_CANDLE_CHART_COUNT);
+
                 }
             }
         }
 
+        void allocPrivateMemory(int maxCandle)
+        {
+            mCVolume = new int[maxCandle];
+            mCDate = new int[maxCandle];
+            mCOpen = new float[maxCandle];
+            mCClose = new float[maxCandle];
+            mCHighest = new float[maxCandle];
+            mCLowest = new float[maxCandle];
+            mCRef = new float[maxCandle];
+            mNNMua = new int[maxCandle];
+            mNNBan = new int[maxCandle];
+
+            mIsUsingSharedMemory = false;
+        }
+
         public void loadShare(xDataInput di)
         {
-            allocShareMemory(false);
             float tmp;
             for (int i = 0; i < mCandleCnt; i++)
             {
@@ -1067,12 +1080,6 @@ namespace stock123.app.data
 
         void addMoreData(int cnt, xDataInput di)
         {
-            if (mCVolume == null)
-            {
-                allocShareMemory(false);
-            }
-            //======================================
-
             int addedCount = cnt;//di.available()/NET_CANDLE_SIZE;
             if (addedCount > 0)
             {
@@ -3568,10 +3575,6 @@ namespace stock123.app.data
 
         public void addMoreCandle(float open, float close, float reference, float hi, float lo, int vol, int date)
         {
-            if (mCVolume == null)
-            {
-                allocShareMemory(false);
-            }
             makeSureMemoryCapacity(mCandleCnt + 1);
 
             if (mCandleCnt > 0)
@@ -6389,7 +6392,6 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
             {
                 pComparingPrice[i] = second.mCClose[j];
             }
-            second.unloadShare();
         }
 
         public void calcYearOfPast(int yearOfPast)

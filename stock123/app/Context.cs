@@ -265,10 +265,10 @@ namespace stock123.app
         public int mMasterChartType;
         //===================================================
 
-        public int mChartDrawingStart = 0;
+        //public int mChartDrawingStart = 0;
 
         private Share mCurrentShare;
-        public Share mRealtimeShare = new Share();
+        public Share mRealtimeShare = new Share(10000);
         public ShareManager mShareManager;
         public Priceboard mPriceboard;
 
@@ -358,6 +358,17 @@ namespace stock123.app
             }
 
             return mFontBig;
+        }
+
+        public Font getFontText2()
+        {
+            if (mFontText == null)
+            {
+                Font f = new Font(new FontFamily("Arial"), 9.0f, FontStyle.Regular);
+                mFontText = f;
+            }
+
+            return mFontText;
         }
 
         public Font getFontText()
@@ -759,7 +770,6 @@ namespace stock123.app
             if (mCurrentShare != null && mCurrentShare != share)
             {
                 lastComparingShare = mCurrentShare.mCompare2ShareCode;
-                mCurrentShare.unloadShare();
             }
             //-----------------------------------
             mCurrentShare = share;
@@ -1544,7 +1554,7 @@ namespace stock123.app
             {
                 gainloss = new stShareGroup();
                 gainloss.setGroupType(stShareGroup.ID_GROUP_GAINLOSS);
-                gainloss.setName("_ Quản lý danh mục _");
+                gainloss.setName("_ Lãi / Lỗ _");
                 mFavorGroups.addElement(gainloss);
             }
         }
@@ -1558,7 +1568,7 @@ namespace stock123.app
             {
                 gainloss = new stShareGroup();
                 gainloss.setGroupType(stShareGroup.ID_GROUP_GAINLOSS);
-                gainloss.setName("_ Quản lý danh mục _");
+                gainloss.setName("_ Lãi / Lỗ _");
                 mFavorGroups.addElement(gainloss);
             }
 
@@ -2136,36 +2146,6 @@ namespace stock123.app
                     addGlobalQuote(symbol, point, change, changePercent, name);
                 }
             }
-        }
-
-        public Share getGlobalShare(string symbol)
-        {
-            Share share;
-            for (int i = 0; i < mGlobalShares.size(); i++)
-            {
-                share = (Share)mGlobalShares.elementAt(i);
-                if (share.mCode.CompareTo(symbol) == 0)
-                    return share;
-            }
-            share = new Share();
-            share.mCode = symbol;
-            mGlobalShares.addElement(share);
-
-            return share;
-        }
-
-        public bool isGlobalQuote(Share share)
-        {
-            for (int i = 0; i < mGlobalShares.size(); i++)
-            {
-                Share s = (Share)mGlobalShares.elementAt(i);
-                if (s == share)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         public bool isQuoteFavorite(Share share)

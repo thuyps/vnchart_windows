@@ -28,6 +28,7 @@ namespace stock123.app.chart
         xButton mHelpButton;
 
         Share mShare;
+        ChartBase mChartMaster;
         //=================================
 
         public SubchartsContainer(int idx, Share share, xIEventListener listener, bool add_removable)
@@ -539,6 +540,8 @@ namespace stock123.app.chart
             }
 
             c.setHasDrawer(true);
+            c.setShare(mShare);
+            c.setRefChart(mChartMaster);
 
             return c;
         }
@@ -644,6 +647,11 @@ namespace stock123.app.chart
         public void setShare(Share share)
         {
             mShare = share;
+        }
+
+        public void setChartMaster(ChartBase chartMaster)
+        {
+            mChartMaster = chartMaster;
         }
     }
 }

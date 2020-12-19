@@ -46,12 +46,6 @@ namespace stock123.app
         const int STATE_RESETING_PASSWORD_PREPARING = 17;
         const int STATE_RESETING_PASSWORD = 18;
 
-        const int STATE_GLOBAL_DOWJONES_PRICEBOARD_PREPARING = 20;
-        const int STATE_GLOBAL_DOWJONES_PRICEBOARD = 21;
-        const int STATE_GLOBAL_PRICEBOARD_PREPARING = 22;
-        const int STATE_GLOBAL_PRICEBOARD = 23;
-        const int STATE_GLOBAL_QUOTE_DATA = 24;
-
         const int STATE_DOWNLOAD_NEW_VERSION_PREPARING = 30;
         const int STATE_DOWNLOAD_NEW_VERSION = 31;
 
@@ -60,7 +54,7 @@ namespace stock123.app
 
         const int W_INDEX_BRIEF = 900;
 
-        const int W_SHARE_GROUP = 166;//210;
+        const int W_SHARE_GROUP = 150;//210;
         const int X_PRICEBOARD = (W_SHARE_GROUP+3);
         const int W_PRICEBOARD = (W_INDEX_BRIEF - X_PRICEBOARD);
         const int H_PREVIEW_CHART = 260;
@@ -89,7 +83,6 @@ namespace stock123.app
         xBaseControl mPriceboadCandle;
         xListView mGlobalPriceboard;
 
-        bool mIsGlobalPriceboard = false;
         xContainer mRightPanel;
         int mRightPanelW = 0;
         bool mShouldDrawMACD = true;
@@ -137,8 +130,6 @@ namespace stock123.app
         bool mRequestChangePassword = false;
         string mRequestNewPassword;
         //---------------------------------------------------------------/
-        g_NetProtocol gNetProtocol;
-
         bool mIsGettingServerAddress;
 
         NetProtocol mNetProtocol;
@@ -148,7 +139,6 @@ namespace stock123.app
         bool mIsShowAlarmDialog = true;
         public ScreenHome(): base()
         {
-            gNetProtocol = new g_NetProtocol(this);
         }
 
         bool doNotRecreateHomeScreen = false;
@@ -263,12 +253,9 @@ namespace stock123.app
             //---------------------------------
             stShareGroup g = mContext.getCurrentShareGroup();
             int w, x;
-            mIsGlobalPriceboard = false;
             if (g != null)
             {
                 setTitle("  -Nhóm: " + g.getName());
-
-                mIsGlobalPriceboard = g.getType() == stShareGroup.ID_GROUP_GLOBAL;
             }
 
             //-tool bar
@@ -535,12 +522,6 @@ namespace stock123.app
             else if (mNetState == STATE_RESETING_PASSWORD_PREPARING) s = "STATE_RESETING_PASSWORD_PREPARING";
             else if (mNetState == STATE_RESETING_PASSWORD) s = "STATE_RESETING_PASSWORD";
 
-            else if (mNetState == STATE_GLOBAL_DOWJONES_PRICEBOARD_PREPARING) s = "STATE_GLOBAL_DOWJONES_PRICEBOARD_PREPARING";
-            else if (mNetState == STATE_GLOBAL_DOWJONES_PRICEBOARD) s = "STATE_GLOBAL_DOWJONES_PRICEBOARD";
-            else if (mNetState == STATE_GLOBAL_PRICEBOARD_PREPARING) s = "STATE_GLOBAL_PRICEBOARD_PREPARING";
-            else if (mNetState == STATE_GLOBAL_PRICEBOARD) s = "STATE_GLOBAL_PRICEBOARD";
-            else if (mNetState == STATE_GLOBAL_QUOTE_DATA) s = "STATE_GLOBAL_QUOTE_DATA";
-
             else if (mNetState == STATE_DOWNLOAD_NEW_VERSION_PREPARING) s = "STATE_DOWNLOAD_NEW_VERSION_PREPARING";
             else if (mNetState == STATE_DOWNLOAD_NEW_VERSION) s = "STATE_DOWNLOAD_NEW_VERSION"; 
         }
@@ -677,21 +658,7 @@ namespace stock123.app
                 }
             }
 
-            if (mIsGlobalPriceboard && mTimerGlobal.isExpired())
-            {
-                mTimerGlobal.reset();
-                mNetState = STATE_GLOBAL_DOWJONES_PRICEBOARD_PREPARING;
-            }
-            if (mNetState == STATE_GLOBAL_DOWJONES_PRICEBOARD_PREPARING)
-            {
-                gNetProtocol.getDowjonePriceboard();
-                mNetState = STATE_GLOBAL_DOWJONES_PRICEBOARD;
-            }
-            if (mNetState == STATE_GLOBAL_PRICEBOARD_PREPARING)
-            {
-                gNetProtocol.getPriceboardIndiceData();
-                mNetState = STATE_GLOBAL_PRICEBOARD;
-            }
+           
 
             //  login
             if (mNetState == STATE_PREPARING_LOGIN)
@@ -852,11 +819,6 @@ namespace stock123.app
 
         override public void onNetworkCompleted(bool success)
         {
-            if (mNetState >= STATE_GLOBAL_DOWJONES_PRICEBOARD_PREPARING)
-            {
-                return;
-            }
-
             if (mStartupDialog != null)
             {
                 mStartupDialog.Close();
@@ -1124,13 +1086,7 @@ namespace stock123.app
                     mStartupDialog.setMsg2((aIntParameter / 1024) + " KB");
                 }
             }
-            //=======================================
-
-            if (sender == gNetProtocol)
-            {
-                onGlobalNetEvent(evt, aIntParameter, aParameter);
-                return;
-            }
+            //======================================
 
             if (evt == C.EVT_SUB_CHART_CONTAINER_CHANGED)
             {
@@ -1324,26 +1280,7 @@ namespace stock123.app
                 }
                 if (aIntParameter == C.ID_PRICEBOARD_TABLE)
                 {
-                    /*
-                    if (mIsGlobalPriceboard)
-                    {
-                        RowGlobalQuote r = (RowGlobalQuote)aParameter;
-                        share = mContext.getGlobalShare(r.mQuote.symbol);
-
-                        share.mName = r.mQuote.name;
-                        share.loadShareFromFile(false);
-                        mContext.mSelectedGlobalQuote = share;
-                        mContext.setCurrentShare(mContext.mSelectedGlobalQuote);
-
-                        mNetProtocol.cancelNetwork();
-
-                        ViewHistoryChart scr = (ViewHistoryChart)MainApplication.getInstance().getScreen(MainApplication.SCREEN_SEARCH);
-                        scr.mScreenType = ViewHistoryChart.TYPE_CHART;
-                        goNextScreen(MainApplication.SCREEN_SEARCH);
-                        mNetState = STATE_NORMAL;
-                    }
-                    else
-                     */
+                    
                     {
                         RowPriceboard r = (RowPriceboard)aParameter;
                         int shareId = r.mShareID;
@@ -1375,26 +1312,9 @@ namespace stock123.app
                 }
                 if (aIntParameter == C.ID_PRICEBOARD_TABLE)
                 {
-                    if (mIsGlobalPriceboard)
-                    {
-                        RowGlobalQuote r = (RowGlobalQuote)aParameter;
-                        share = new Share();
-                        share.mCode = r.mQuote.symbol;
-                        share.mName = r.mQuote.name;
-                        share.loadShareFromFile(false);
-
-                        mContext.mSelectedGlobalQuote = share;
-
-                        mContext.setCurrentShare(mContext.mSelectedGlobalQuote);
-                        createChartRangeControls(0, mTimingRange);
-                        invalidateCharts();
-                    }
-                    else
-                    {
-                        RowPriceboard r = (RowPriceboard)aParameter;
-                        int shareId = r.mShareID;
-                        selectShare(shareId);
-                    }
+                    RowPriceboard r = (RowPriceboard)aParameter;
+                    int shareId = r.mShareID;
+                    selectShare(shareId);
                 }
             }
         }
@@ -1474,7 +1394,7 @@ namespace stock123.app
             {
                 devidedDate = Utils.getDateAsInt(500);
             }
-//            mNetProtocol.requestGetAllDevidedShares(mContext.mLastDayOfShareUpdate);
+
         }
 
         void reloadAllData()
@@ -1635,8 +1555,7 @@ namespace stock123.app
             else if (buttonID == C.ID_SWITCH_VIEW)
             {
                 stShareGroup g = mContext.getCurrentShareGroup();
-                if (g.getGroupType() != stShareGroup.ID_GROUP_GAINLOSS
-                    && g.getGroupType() != stShareGroup.ID_GROUP_GLOBAL)
+                if (g.getGroupType() != stShareGroup.ID_GROUP_GAINLOSS)
                 {
                     mTimerRequestOpen.expireTimer();
                     mContext.mViewTypeOfPriceboard++;
@@ -1787,7 +1706,6 @@ namespace stock123.app
         {
             stShareGroup g = mContext.getCurrentShareGroup();
             if (mContext.mViewTypeOfPriceboard == VIEWTYPE_CANDLE 
-                && g.getGroupType() != stShareGroup.ID_GROUP_GLOBAL
                 && g.getGroupType() != stShareGroup.ID_GROUP_GAINLOSS)
             {
                 return _createPriceboardAsCandles(w, h);
@@ -1907,7 +1825,7 @@ namespace stock123.app
 
         xBaseControl _createPriceboardAsTable(int w, int h)
         {
-            int rowH = 34;
+            int rowH = 35;
             stShareGroup g = mContext.getCurrentShareGroup();
             TablePriceboard priceboard = new TablePriceboard(this, g, w, rowH);
             int boardH = rowH * g.getTotal() + 160;
@@ -2065,14 +1983,6 @@ namespace stock123.app
                 xBaseControl c0 = (xBaseControl)mControlsShouldInvalideAfterNetDone.elementAt(j);
 
                 c0.invalidate();
-            }
-
-            if (mRealtimeMoneyChart != null
-                && mContext.getSelectedShare() != null
-                && !mContext.getSelectedShare().isIndex()
-                && !mContext.isGlobalQuote(mContext.getSelectedShare()))
-            {
-                //mRealtimeMoneyChart.refreshChart();
             }
 
             if (mRealtimeTradeList != null)
@@ -2408,7 +2318,7 @@ namespace stock123.app
                     Share share = mContext.mShareManager.getShare(shareID);
                  */  
                 Share share = mContext.getSelectedShare();// mContext.mShareManager.getShare(shareID);    
-                if (share != null && !share.isIndex() && !mContext.isGlobalQuote(share))    
+                if (share != null && !share.isIndex())    
                 {
                     stShareGroup g = mContext.getCurrentShareGroup();
                     if (g != null && share != null)
@@ -2517,7 +2427,7 @@ namespace stock123.app
                 */
                     
                 Share share = mContext.getSelectedShare();// mContext.mShareManager.getShare(shareID);
-                if (share != null && !share.isIndex() && !mContext.isGlobalQuote(share))
+                if (share != null && !share.isIndex())
                 {
                     stAlarm a = mContext.mAlarmManager.getAlarm(share.getCode());
                     if (a == null)
@@ -2553,14 +2463,8 @@ namespace stock123.app
             }
             xBaseControl list = null;
 
-            if (mIsGlobalPriceboard)
-            {
-                list = createGlobalIndicesPriceboard(W_PRICEBOARD, mPriceboardH);
-            }
-            else
-            {
-                list = createPriceboard(W_PRICEBOARD, mPriceboardH);
-            }
+            list = createPriceboard(W_PRICEBOARD, mPriceboardH);
+
             list.setPosition(X_PRICEBOARD, mPriceboardY);
 
             mPriceboardContainer = list;
@@ -2628,13 +2532,12 @@ namespace stock123.app
 
         void showGroupHistory(string code)
         {
-            Share share = new Share();
+            Share share = new Share(Share.MAX_CANDLE_CHART_COUNT);
             share.setID(100000);
             share.setCode(code, 1);
             share.loadShareFromFile(false);
 
-            mContext.setCurrentShare(share);
-            goChartScreen(-1);
+            goChartScreen(share);
         }
 
         void onClickShare(string code)
@@ -2660,6 +2563,11 @@ namespace stock123.app
             goNextScreen(MainApplication.SCREEN_SEARCH);
              * */
             Share share = mContext.mShareManager.getShare(shareID);
+            ScreenRoot.instance().createNewHistory(share);
+        }
+
+        void goChartScreen(Share share)
+        {
             ScreenRoot.instance().createNewHistory(share);
         }
 
@@ -2877,7 +2785,6 @@ namespace stock123.app
 
             mContext.setCurrentShareGroup(g);
 
-            mIsGlobalPriceboard = false;
             if (g != null)
             {
                 setTitle("  -Nhóm: " + g.getName());
@@ -2913,14 +2820,11 @@ namespace stock123.app
             }
             //=====================================================
             mContext.setCurrentShareGroup(g);
-            gNetProtocol.cancelNetwork();
 
-            mIsGlobalPriceboard = false;
             if (g != null)
             {
                 setTitle("  -Nhóm: " + g.getName());
 
-                mIsGlobalPriceboard = g.getType() == stShareGroup.ID_GROUP_GLOBAL;
             }
 
             recreatePriceboard();
@@ -2933,24 +2837,7 @@ namespace stock123.app
         {
             if (evt == xBaseControl.EVT_NET_DONE)
             {
-                if (mNetState == STATE_GLOBAL_DOWJONES_PRICEBOARD)
-                {
-                    mNetState = STATE_GLOBAL_PRICEBOARD_PREPARING;
-                }
-                else if (mNetState == STATE_GLOBAL_PRICEBOARD)
-                {
-                    recreatePriceboard();
-                    mNetState = STATE_NORMAL;
-
-                    mContext.saveGlobalGroup();
-                }
-                else if (mNetState == STATE_GLOBAL_QUOTE_DATA)
-                {
-                    ViewHistoryChart scr = (ViewHistoryChart)MainApplication.getInstance().getScreen(MainApplication.SCREEN_SEARCH);
-                    scr.mScreenType = ViewHistoryChart.TYPE_CHART;
-                    goNextScreen(MainApplication.SCREEN_SEARCH);
-                    mNetState = STATE_NORMAL;
-                }
+                
             }
             if (evt == xBaseControl.EVT_NET_ERROR)
             {

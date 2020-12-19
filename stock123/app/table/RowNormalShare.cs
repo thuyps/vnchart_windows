@@ -60,18 +60,23 @@ namespace stock123.app.table
                 f = Context.getInstance().getFontSmallB();// getFontTextB();
                 Font fsmallB = Context.getInstance().getFontSmallB();
                 Font fsmall = Context.getInstance().getFontSmall();
+                Font fnormal = Context.getInstance().getFontText();
                 //  code/_ref | Mua1 | Mua2 | Mua3 | Khop | +/- | Ban1 | Ban2 | Ban3 | Cao/thap | Cung/Cau TongKL
-                Font[] font = {f, f,
-		            				fsmallB, fsmallB, fsmallB, 
-		            				f, f, 
-		            				fsmallB, fsmallB, fsmallB, 
-		            				f, 
-		            				fsmall, fsmallB};
-                float[] percents = {7, 4.5f,   
-		                8, 8, 9, 
-		                9, 6.5f,
-		                9, 8, 8, 
-		                6.5f, 7.5f, 9, -1};
+                Font[] font = {fsmallB, fsmallB,
+		            				fnormal, fnormal, fnormal, 
+		            				fsmallB, fsmallB, 
+		            				fnormal, fnormal, fnormal, 
+		            				fsmallB,        //  cao thap
+		            				fsmall, 
+                                    fsmallB,        /// volume
+                                    f};
+                float[] percents = {6.5f, 3.7f,          //  11
+		                8, 8, 8.5f,    //  Du mua      =   25
+		                9, 6.5f,    //  khop / +-   =   15.5   
+		                8.5f, 8, 8,    //  Du ban      =   25
+		                6.5f,       //  cao/thap    =   6.5
+                        7.5f,       //  Du cung cau =   7.0
+                        10, 2, -1};    //  Volume      =   10.5
                 uint[] colors = { BG_GRAY, BG0, BG0, BG0, BG0, BG_GRAY, BG_GRAY, BG0, BG0, BG0, BG_GRAY, BG_GRAY, BG_GRAY, COLOR_NONE };
                 init(w, h, percents, font, colors);
                 if (_id <= 0)
@@ -291,10 +296,10 @@ namespace stock123.app.table
                 else
                 {
                     g.setColor(c.textColor);
-                    g.drawStringInRect(c.f, c.text, c.x, (int)(h / 2 - c.f.GetHeight()), c.w, h / 2, xGraphics.HCENTER | xGraphics.VCENTER);
+                    g.drawStringInRect(c.f, c.text, c.x, (int)(h / 2 - c.f.GetHeight())+3, c.w, h / 2, xGraphics.HCENTER | xGraphics.VCENTER);
 
                     g.setColor(c.textColor2);
-                    g.drawStringInRect(c.f, c.text2, c.x, h / 2, c.w, (int)(c.f.GetHeight()), xGraphics.HCENTER | xGraphics.VCENTER);
+                    g.drawStringInRect(c.f, c.text2, c.x, h / 2+1, c.w, (int)(c.f.GetHeight()), xGraphics.HCENTER | xGraphics.VCENTER);
                 }
                 //Utils.trace("here 5:" + c.text + " x=" + c.x + " w=" + c.w + " h=" + h);
             }
@@ -349,7 +354,7 @@ namespace stock123.app.table
 
                 setCellValue(10, "H/L", C.COLOR_GRAY);
 
-                setCellValue(11, "Dư M/B", C.COLOR_GRAY);
+                setCellValue(11, "Vol Dư\nM/B", C.COLOR_GRAY);
                 /*
                 c = getCellAt(11);
                 if (c != null)

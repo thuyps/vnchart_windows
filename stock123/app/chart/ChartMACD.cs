@@ -174,7 +174,7 @@ namespace stock123.app.chart
             //	cnt == CHART_W
             for (i = 0; i < cnt; i++)
             {
-                mLineMACD[2 * i] = (short)(0 + CHART_BORDER_SPACING_X + i * rx + mContext.mChartDrawingStart);
+                mLineMACD[2 * i] = (short)(0 + CHART_BORDER_SPACING_X + i * rx + getStartX());
                 mLineSignal9[2 * i] = mLineMACD[2 * i];
             }
 
@@ -205,7 +205,7 @@ namespace stock123.app.chart
                     if (his[i + s.mBeginIdx] > 0) mHistogramH[i] = -1;
                     else mHistogramH[i] = 1;
                 }
-                mHistogramXY[2 * i] = (short)(0 + CHART_BORDER_SPACING_X + i * rx + mContext.mChartDrawingStart);
+                mHistogramXY[2 * i] = (short)(0 + CHART_BORDER_SPACING_X + i * rx + getStartX());
                 mHistogramXY[2 * i + 1] = (short)OY;//mY + CHART_BORDER_SPACING_Y + halfH - deltaY;
             }
         }

@@ -72,7 +72,21 @@ namespace stock123.app.chart
             //g.clear();
 
             if (getShare(3) == null)
+            {
                 return;
+            }
+
+            //-----------------------------------
+            for (int i = 0; i < mAttachedCharts.size(); i++)
+            {
+                ChartBase c = (ChartBase)mAttachedCharts.elementAt(i);
+                c.setRefChart(this);
+            }
+            if (mChartSMA != null)
+            {
+                mChartSMA.setRefChart(this);
+            }
+            //-----------------------------------
 
             if (isAttachedOn(CHART_PAST_1_YEAR))
             {
@@ -307,7 +321,7 @@ namespace stock123.app.chart
                 else
                     y = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (c - low) * ry);
 
-                x = (int)(mX + CHART_BORDER_SPACING_X + j * rw - candleW / 2 + mContext.mChartDrawingStart);
+                x = (int)(mX + CHART_BORDER_SPACING_X + j * rw - candleW / 2 + getStartX());
                 //x += 1;
 
                 //	candle shadow	
@@ -474,7 +488,7 @@ namespace stock123.app.chart
                 else
                     y = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (hc - low) * ry);
 
-                x = (int)(mX + CHART_BORDER_SPACING_X + j * rw - candleW / 2 + mContext.mChartDrawingStart);
+                x = (int)(mX + CHART_BORDER_SPACING_X + j * rw - candleW / 2 + getStartX());
                 //x += 1;
 
                 //	candle shadow	
@@ -604,7 +618,7 @@ namespace stock123.app.chart
 
                 //y = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (o - low) * ry);
 
-                x = (int)(mX + CHART_BORDER_SPACING_X + j * rw - rw / 2 + mContext.mChartDrawingStart);
+                x = (int)(mX + CHART_BORDER_SPACING_X + j * rw - rw / 2 + getStartX());
 
                 //	H-L vertical line
                 float tmp = h - l;
@@ -734,7 +748,7 @@ namespace stock123.app.chart
 
                 //y = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (o - low) * ry);
 
-                x = (int)(mX + CHART_BORDER_SPACING_X + j * rw - rw / 2 + mContext.mChartDrawingStart);
+                x = (int)(mX + CHART_BORDER_SPACING_X + j * rw - rw / 2 + getStartX());
 
                 //	H-L vertical line
                 float tmp = h - l;
@@ -987,7 +1001,9 @@ namespace stock123.app.chart
         {
             Share share = getShare();
             if (share == null)
+            {
                 return;
+            }
 
             if (CHART_COMPARING_SECOND_SHARE == chart)
             {
@@ -1154,6 +1170,8 @@ namespace stock123.app.chart
                 mChartSMA.setSize(this);
                 mChartSMA.setChartType(CHART_SMA);
                 mChartSMA.setSMAIdx(smaIdx);
+
+                mChartSMA.setShare(getShare());
             }
 
             mIsMAOn[smaIdx] = mChartSMA != null;
@@ -1199,6 +1217,7 @@ namespace stock123.app.chart
                 mChartSMA.setSize(this);
                 mChartSMA.setChartType(CHART_SMA);
             }
+            mChartSMA.setShare(getShare());
             mChartSMA.setSMAIdx(smaIDX);
             mChartSMA.mSMAPeriod = 0;
             mChartSMA.clearModifyKey();
@@ -1463,18 +1482,6 @@ namespace stock123.app.chart
                 }
             }
             return false;
-        }
-
-        public void refeshAttachedChart(int chart)
-        {
-            for (int i = 0; i < mAttachedCharts.size(); i++)
-            {
-                ChartBase c = (ChartBase)mAttachedCharts.elementAt(i);
-                if (c.getChartType() == chart)
-                {
-                    c.clearModifyKey();
-                }
-            }
         }
 
         public void setDrawer(Drawer drawer)

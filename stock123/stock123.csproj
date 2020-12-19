@@ -131,7 +131,6 @@
     <Compile Include="app\RowGlobalQuote.cs" />
     <Compile Include="app\data\ShareComparer.cs" />
     <Compile Include="app\data\stGlobalQuote.cs" />
-    <Compile Include="app\g_NetProtocol.cs" />
     <Compile Include="app\MiniFormMoving.cs" />
     <Compile Include="app\MiniIndex.cs" />
     <Compile Include="app\RowQuoteList.cs" />

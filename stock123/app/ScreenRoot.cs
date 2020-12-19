@@ -79,11 +79,19 @@ namespace stock123.app
             }
         }
 
-        public void createNewHistory(Share share)
+        public void createNewHistory(Share oriShare)
         {
             if (mScreens.size() > 20)
             {
                 return;
+            }
+
+            Share share = oriShare;
+            if (share.getShareID() > 0)
+            {
+                share = new Share(Share.MAX_CANDLE_CHART_COUNT);
+                share.setCode(oriShare.getCode(), 0);
+                share.setID(oriShare.getShareID());
             }
 
             ViewHistoryChart his = new ViewHistoryChart(share);

@@ -26,11 +26,7 @@ namespace stock123.app
         const int NETSTATE_GET_QUOTE_DATA_PREPARING = 1;
         const int NETSTATE_GET_QUOTE_DATA = 2;
 
-        const int NETSTATE_GET_GLOBAL_QUOTE_PREPARING = 3;
-        const int NETSTATE_GET_GLOBAL_QUOTE = 4;
-
         int mNetState;
-        g_NetProtocol gNetProtocol;
 
         bool[] mUseVNIndex = { true };
         bool[] mUseHASTC = { true };
@@ -85,6 +81,8 @@ namespace stock123.app
             mNetProtocol = mContext.createNetProtocol();
             mNetProtocol.setListener(this);
 
+            mScreenType = TYPE_CHART;
+            /*
             if (mScreenType == TYPE_SEARCH)
             {
                 try
@@ -99,8 +97,9 @@ namespace stock123.app
                 }
             }
             else
+             */
             {
-                if (share != null && share.getID() != 100000)
+                if (share.getID() > 0)
                 {
                     share.mIsComparingChart = false;
                     if (share.isRealtime())
@@ -110,24 +109,18 @@ namespace stock123.app
                     else
                     {
                         reloadShare(share, false);
-                        if (mContext.isGlobalQuote(share))
-                        {
-                            mNetState = NETSTATE_GET_GLOBAL_QUOTE_PREPARING;
-                        }
-                        else if (true)//mContext.isQuoteFavorite(share))
+                        if (true)//mContext.isQuoteFavorite(share))
                         {
                             mNetState = NETSTATE_GET_QUOTE_DATA_PREPARING;
                         }
 
                         if (!mContext.isOnline())
+                        {
                             mNetState = NETSTATE_NORMAL;
+                        }
                     }
                 }
             }
-            //if (mShare != null)
-            //{
-                //reloadShare(mShare);
-            //}
 
             updateUI();
         }
@@ -161,21 +154,7 @@ namespace stock123.app
             //============================================
 
             int date = 0;
-            if (mNetState == NETSTATE_GET_GLOBAL_QUOTE_PREPARING)
-            {
-                mNetState = NETSTATE_GET_GLOBAL_QUOTE;
-                gNetProtocol = new g_NetProtocol(this);
-                date = mShare.getLastCandleDate();
-                if (date == 0)
-                    date = C.DATE_BEGIN;
-                gNetProtocol.getOfflineShareData(mShare.mCode, date);
-
-                if (mShare.getCandleCount() == 0)
-                {
-                    mNetworkContacting = new DlgContactingServer();
-                    mNetworkContacting.Show();
-                }
-            }
+            
             if (mNetState == NETSTATE_GET_QUOTE_DATA_PREPARING)
             {
                 mNetState = NETSTATE_GET_QUOTE_DATA;
@@ -1576,8 +1555,7 @@ namespace stock123.app
         {
             if (share != null)
             {
-                if (mContext.isGlobalQuote(share)
-                    || mContext.isQuoteFavorite(share)
+                if (mContext.isQuoteFavorite(share)
                     || share.isIndex())
                 {
                     if (!share.loadShareFromFile(applyTodayCandle))

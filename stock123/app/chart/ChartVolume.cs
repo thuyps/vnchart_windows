@@ -33,6 +33,9 @@ namespace stock123.app.chart
             Share share = getShare();
             int mX = 0;
             int mY = 0;
+
+            Utils.trace(String.Format("volume render: {0}", getStartX()));
+
             if (detectShareCursorChanged())
             {
                 mHighestVolume = "";
@@ -89,7 +92,7 @@ namespace stock123.app.chart
                 for (i = 0; i < mChartLineLength; i++)
                 {
                     j = (i + share.mBeginIdx);
-                    mChartLineXY[i * 2] = (short)(mX + CHART_BORDER_SPACING_X + i * rw + mContext.mChartDrawingStart - volumeBarWHalf);	//	x
+                    mChartLineXY[i * 2] = (short)(mX + CHART_BORDER_SPACING_X + i * rw + getStartX() - volumeBarWHalf);	//	x
                     mChartLineXY[i * 2 + 1] = (short)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (share.getVolume(j) - lowest) * ry);
 
                     if (share.mCVolume[j] > vH) vH = share.mCVolume[j];

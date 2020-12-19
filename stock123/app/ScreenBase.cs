@@ -274,7 +274,7 @@ namespace stock123.app
                 {
                     color = C.COLOR_ORANGE;
                 }
-                item.getItem().SubItems[0].Font = mContext.getFontTextB();
+                item.getItem().SubItems[0].Font = mContext.getFontText2();
                 item.getItem().SubItems[0].ForeColor = Color.FromArgb((int)color);
                 item.setData(favor);
                 list.addRow(item);

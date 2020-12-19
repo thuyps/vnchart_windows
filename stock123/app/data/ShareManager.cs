@@ -623,16 +623,16 @@ namespace stock123.app.data
 
             //  not found, create a new
             s = new Share();
+            s.allocShareMemory(true);
             s.setID(shareID);
-
             s.setCode(getShareCode(shareID), marketID);
+
+            mShares.addElement(s);
 
             Context.getInstance().mShareManager.loadShareFromCommon(s, maxLastCandle, true);
             //  for sorting====quick
             s.calcTotalVolume(10);
             //======================
-
-            mShares.addElement(s);
 
             return s;
         }
@@ -672,6 +672,7 @@ namespace stock123.app.data
             int marketID = getShareMarketID(shareID);
 
             s = new Share();
+            s.allocShareMemory(true);
 
             s.setID(shareID);
             if (shareID == 752)
@@ -1294,7 +1295,6 @@ namespace stock123.app.data
 
         public void loadShareFromCommon(Share s, int maxLastCandle, bool useCommonData)
         {
-            s.allocShareMemory(useCommonData);
             loadCommonData();
    
             if (mCommonData == null)
@@ -2559,8 +2559,8 @@ namespace stock123.app.data
         public void calcIndexOfGroup(stShareGroup g)
         {
             //--------------------------------------------------
-            Share _index = new Share();
-            Share _share = new Share();
+            Share _index = new Share(Share.MAX_CANDLE_CHART_COUNT);
+            Share _share = new Share(Share.MAX_CANDLE_CHART_COUNT);
 
             _index.setCode(g.getName(), 1);
             String rootCode = null;
@@ -2833,8 +2833,8 @@ namespace stock123.app.data
         public void calcIndexOfGroup2(stShareGroup g)
         {
             //--------------------------------------------------
-            Share _index = new Share();
-            Share _share = new Share();
+            Share _index = new Share(Share.MAX_CANDLE_CHART_COUNT);
+            Share _share = new Share(Share.MAX_CANDLE_CHART_COUNT);
 
             _index.setCode(g.getName(), 1);
             String rootCode = null;
