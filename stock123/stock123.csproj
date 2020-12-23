@@ -523,7 +523,9 @@
     <Compile Include="xlib\ui\xScrollView.cs" />
     <Compile Include="xlib\ui\xSlider.cs" />
     <Compile Include="xlib\ui\xSplitter.cs" />
-    <Compile Include="xlib\ui\xTabControl.cs" />
+    <Compile Include="xlib\ui\xTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="xlib\ui\xTabPage.cs" />
     <Compile Include="xlib\ui\xTextField.cs" />
     <Compile Include="xlib\utils\VTDictionary.cs" />

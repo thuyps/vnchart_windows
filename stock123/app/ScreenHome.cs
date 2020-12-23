@@ -244,6 +244,12 @@ namespace stock123.app
                 updateUI();
         }
 
+
+        public override int getToolbarH()
+        {
+            return 55;
+        }
+
         public void updateUI()
         {
             removeAllControls();
@@ -336,7 +342,7 @@ namespace stock123.app
 
             mSplitterMain = xSplitter.createSplitter(false, getW(), workingH, distanceW, 200, 100);//getW()-W_PRICEBOARD);
             mSplitterMain.setPanels(mLeftPanel, mRightPanel);
-            mSplitterMain.setPosition(0, getToolbarH() + 2);
+            mSplitterMain.setPosition(0, getToolbarH());
             mSplitterMain.setListener(this);
             //this.addControl(mSplitterMain);
 
@@ -1507,10 +1513,12 @@ namespace stock123.app
             {
                 if (mScreenState != SCREENSTATE_CHANGES_STATISTICS)
                 {
+                    /*
                     if (mCurrentScreenView != null)
                     {
                         this.removeControl(mCurrentScreenView);
                     }
+                     */
 
                     if (mChangesView == null)
                     {
@@ -1531,9 +1539,10 @@ namespace stock123.app
                         mChangesView.addPage(page1);
                         mChangesView.addPage(page2);
                     }
-                    mChangesView.setSize(mSplitterMain.getW(), mSplitterMain.getH());
-                    mChangesView.setPosition(mSplitterMain.getX(), mSplitterMain.getY());
-                    this.addControl(mChangesView);
+                    //mChangesView.setSize(mSplitterMain.getW(), mSplitterMain.getH());
+                    //mChangesView.setPosition(mSplitterMain.getX(), mSplitterMain.getY());
+                    ScreenRoot.instance().addViewAsTab("Thay đổi", mChangesView);
+                    //this.addControl(mChangesView);
                 }
                 mCurrentScreenView = mChangesView;
                 mScreenState = SCREENSTATE_CHANGES_STATISTICS;

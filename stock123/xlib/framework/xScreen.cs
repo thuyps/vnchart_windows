@@ -228,7 +228,7 @@ namespace xlib.framework
             statusPanel1.Text = text;
         }
 
-        public int getToolbarH()
+        virtual public int getToolbarH()
         {
             return 0;
         }

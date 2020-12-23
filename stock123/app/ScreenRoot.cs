@@ -56,6 +56,15 @@ namespace stock123.app
             */
             mTab.addPage(mHomePage);
 
+            mTab.showClosePageButton(true, (int tabIndex) =>
+            {
+                if (tabIndex == 0)
+                {
+                    return false;
+                }
+                return true;
+            }, null);
+
             screenHome.setSize(mHomePage.getW(), mHomePage.getH());
             screenHome.onActivate();
         }
@@ -115,15 +124,22 @@ namespace stock123.app
             });
         }
 
-        void initViewHistory(ViewHistoryChart his)
-        {
-            his.onActivate();
-        }
-
         public void removeHistory(ViewHistoryChart his)
         {
             mTab.removePage((xTabPage)his.Tag);
             mScreens.removeElement(his);
+        }
+
+        public void addViewAsTab(String title, xBaseControl content)
+        {
+            xTabPage page = new xTabPage(title);
+
+            content.setSize(mTab.getW(), mTab.getH());
+
+            page.addControl(content);
+            mTab.addPage(page);
+
+            mTab.selectLastPage();
         }
     }
 }

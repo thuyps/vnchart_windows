@@ -65,6 +65,14 @@ namespace stock123.app.chart
             }
             isProcessing = true;
             invalidate();
+
+            utils.AsyncUtils.DelayCall(250, () =>
+            {
+                refreshChart(mMarketID);
+
+                isProcessing = false;
+            });
+            /*
             System.Threading.ThreadPool.QueueUserWorkItem(delegate
              {
                  System.Threading.Thread.Sleep(100);
@@ -74,6 +82,7 @@ namespace stock123.app.chart
                  isProcessing = false;
                  invalidate();
              }, null);
+             */
         }
 
 
