@@ -64,10 +64,15 @@ namespace stock123.app
         public ViewHistoryChart(Share share)
             : base()
         {
-            mScreenType = TYPE_SEARCH;
+            mScreenType = share != null?TYPE_CHART:TYPE_SEARCH;
             mShare = share;
 //            List<Share> list;
 //            IComparer<Share>
+        }
+
+        public override int getToolbarH()
+        {
+            return 39;
         }
 
         public override void onActivate()
@@ -81,10 +86,9 @@ namespace stock123.app
             mNetProtocol = mContext.createNetProtocol();
             mNetProtocol.setListener(this);
 
-            mScreenType = TYPE_CHART;
-            /*
             if (mScreenType == TYPE_SEARCH)
             {
+                mShare = mContext.mShareManager.getVnindexShareAt(0);
                 try
                 {
                     mContext.mShareManager.loadAllShares();
@@ -97,7 +101,6 @@ namespace stock123.app
                 }
             }
             else
-             */
             {
                 if (share.getID() > 0)
                 {
@@ -198,36 +201,45 @@ namespace stock123.app
         void createToolbar()
         {
             addToolbar(mContext.getImageList(C.IMG_MAIN_ICONS, 30, 26));
-            addToolbarButton(C.ID_GOTO_HOME_SCREEN, 0, "Bảng giá");
-            addToolbarButton(C.ID_SEARCH_ON, 3, "Lọc cổ phiếu");
-            addToolbarSeparator();
-            addToolbarSeparator();
-            addToolbarSeparator();
-            addToolbarSeparator();
-            addToolbarButton(C.ID_SETUP_INDICATOR_PARAMETER, 2, "Cài đặt thông số");
-            addToolbarButton(C.ID_SHOW_FILTER_PARAMETER_FORM, 7, "Điều kiện lọc");
+            ToolBar tb = getToolbar();
+            tb.ButtonSize = new System.Drawing.Size(60, 30);
+            tb.Size = new System.Drawing.Size(300, 30);
+            tb.TextAlign = ToolBarTextAlign.Right;
 
+            //addToolbarButton(C.ID_GOTO_HOME_SCREEN, 0, "Bảng giá");
+            addToolbarButton(C.ID_SEARCH_ON, 3, "Lọc");
+            //addToolbarSeparator();
+            //addToolbarSeparator();
+            //addToolbarSeparator();
+            addToolbarSeparator();
+            addToolbarButton(C.ID_SETUP_INDICATOR_PARAMETER, 2, "Cài đặt");
+
+            addToolbarSeparator();
+            addToolbarButton(C.ID_SHOW_FILTER_PARAMETER_FORM, 7, "Đ/k lọc");
+
+            addToolbarSeparator();
+            /*
             for (int i = 0; i < 10; i++)
             {
                 addToolbarSeparator();
             }
+             */
 
             bool viewPushed = mContext.mIsViewSplitted;
-            addToolbarButton(C.ID_TOOGLE_DRAWING_TOOL, 9, "Drawing", ToolBarButtonStyle.ToggleButton, false);
-            addToolbarSeparator();
+            addToolbarButton(C.ID_TOOGLE_DRAWING_TOOL, 9, "Vẽ", ToolBarButtonStyle.ToggleButton, false);
+            //addToolbarSeparator();
             addToolbarSeparator();
             addToolbarButton(C.ID_SPLIT_VIEW, 8, "-View-", ToolBarButtonStyle.ToggleButton, viewPushed);
             //addToolbarButton(C.ID_GOTO_MINI_SCREEN, 4, "Minimize");
+            //addToolbarSeparator();
             addToolbarSeparator();
-            addToolbarSeparator();
-            mAlarmButton = addToolbarButton(C.ID_ALARM_MANAGER, 10, "Alarm");
-            addToolbarSeparator();
+            mAlarmButton = addToolbarButton(C.ID_ALARM_MANAGER, 10, "Cảnh báo");
+            //addToolbarSeparator();
             addToolbarSeparator();
             addToolbarButton(C.ID_GOTO_HELP, 1, "Help");
             //addToolbarButton(C.ID_ADD_SUB_CHART, 2, "+Sub chart");
             //addToolbarButton(C.ID_ADD_MASTER_CHART, 2, "+Master chart");
             //=================================================
-            ToolBar tb = getToolbar();
             /*
             xBaseControl dropdown = null;
             dropdown = createShareGroupDroplist(C.ID_DROPDOWN_COMMON_GROUP, "Nhóm mặc định", mContext.mShareGroups);
@@ -867,12 +879,19 @@ namespace stock123.app
                     if (idx >= 0 && idx < g.getTotal())
                     {
                         string code = g.getCodeAt(idx);
-                        mContext.setCurrentShare(code);
-                        reloadShare(mShare, true);
+                        share = mContext.mShareManager.getShare(code);
 
-                        mNetState = NETSTATE_GET_QUOTE_DATA_PREPARING;
+                        if (share != null)
+                        {
+                            mShare = share;
+                            reloadShare(mShare, true);
 
-                        refreshCharts();
+                            mMainHistoryChartControl.setShare(mShare);
+
+                            mNetState = NETSTATE_GET_QUOTE_DATA_PREPARING;
+
+                            refreshCharts();
+                        }
                     }
                 }
                 if (aIntParameter == C.ID_ALARM_MANAGER)

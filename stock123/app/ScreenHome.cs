@@ -1541,10 +1541,11 @@ namespace stock123.app
                     }
                     //mChangesView.setSize(mSplitterMain.getW(), mSplitterMain.getH());
                     //mChangesView.setPosition(mSplitterMain.getX(), mSplitterMain.getY());
-                    ScreenRoot.instance().addViewAsTab("Thay đổi", mChangesView);
+                    
                     //this.addControl(mChangesView);
                 }
-                mCurrentScreenView = mChangesView;
+                ScreenRoot.instance().addViewAsTab("Thay đổi", mChangesView);
+
                 mScreenState = SCREENSTATE_CHANGES_STATISTICS;
             }
             else if (buttonID == C.ID_GOTO_HOME_SCREEN)
@@ -1587,7 +1588,8 @@ namespace stock123.app
             }
             else if (buttonID == C.ID_GOTO_SEARCH_SCREEN)
             {
-                goNextScreen(MainApplication.SCREEN_SEARCH);
+                //goNextScreen(MainApplication.SCREEN_SEARCH);
+                ScreenRoot.instance().createNewHistory(null);
             }
             /*
             if (buttonID == C.ID_GOTO_MINI_SCREEN)

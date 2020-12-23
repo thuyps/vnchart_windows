@@ -1498,6 +1498,21 @@ namespace stock123.app
         public void setShare(Share share)
         {
             mShare = share;
+
+            if (mChartMaster == null)
+            {
+                return;
+            }
+            //  
+            for (int i = 0; i < mSubCharts.size(); i++)
+            {
+                SubchartsContainer c = (SubchartsContainer)mSubCharts.elementAt(i);
+                c.setShare(share);
+                c.invalidate();
+            }
+
+            mChartMaster.setShare(share);
+            mChartMaster.invalidate();
         }
     }
 }

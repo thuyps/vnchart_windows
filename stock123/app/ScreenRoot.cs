@@ -98,7 +98,7 @@ namespace stock123.app
             }
 
             Share share = oriShare;
-            if (share.getShareID() > 0)
+            if (share != null && share.getShareID() > 0)
             {
                 share = new Share(Share.MAX_CANDLE_CHART_COUNT);
                 share.setCode(oriShare.getCode(), 0);
@@ -110,7 +110,15 @@ namespace stock123.app
             //his.onActivate();
             mScreens.addElement(his);
 
-            xTabPage page = new xTabPage(share.getCode());
+            String title = "Lọc mã";
+            if (share != null)
+            {
+                if (share.getCode() != null & share.getCode().Length > 0)
+                {
+                    title = share.getCode();
+                }
+            }
+            xTabPage page = new xTabPage(title);
             his.Tag = page;
 
             page.addControl(his);
