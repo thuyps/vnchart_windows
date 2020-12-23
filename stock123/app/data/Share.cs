@@ -4427,7 +4427,7 @@ namespace stock123.app.data
             float reference = 0;
             if (!isIndex())
             {
-                stPriceboardState pb = ctx.mPriceboard.getPriceboard(floor, mCode);
+                stPriceboardState pb = ctx.mPriceboard.getPriceboard(mCode);
 
                 if (pb != null)
                 {

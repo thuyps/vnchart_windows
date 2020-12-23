@@ -37,6 +37,7 @@ namespace stock123.app.chart
         public xVector mAttachedCharts = new xVector(10);
         public xVector mOverlayAttachedCharts = new xVector(10);
         Drawer mDrawer;
+        String mComparingShareCode;
         //=========================================
 
         public ChartMaster(Font f):base(f)
@@ -1100,6 +1101,12 @@ namespace stock123.app.chart
                 }
             }
             invalidate();
+        }
+
+        public void compareToChart(String code)
+        {
+            mComparingShareCode = code;
+            showAttachChart(CHART_COMPARING_SECOND_SHARE);
         }
 
         //  bollinger, psar or ichimoku

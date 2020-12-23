@@ -310,7 +310,7 @@ namespace stock123.app
         //========================================
         public AlarmManager mAlarmManager;
 
-        public String mComparingShareCode;
+        //public String mComparingShareCode;
 
         public bool mNeedRefreshOpens = true;
         public int mViewTypeOfPriceboard = 1;

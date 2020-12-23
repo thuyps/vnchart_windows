@@ -1471,7 +1471,7 @@ namespace stock123.app
         void showCompareWithShareDialog()
         {
             DlgCompareToShare dlg = new DlgCompareToShare();
-            dlg.setShareCode(mContext.mComparingShareCode);
+            dlg.setShareCode("");
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 String code = dlg.getShareCode();
@@ -1482,11 +1482,12 @@ namespace stock123.app
                 }
                 else
                 {
-                    mContext.mComparingShareCode = code.ToUpper();
-                    mShare.mCompare2ShareCode = mContext.mComparingShareCode;
+                    //mContext.mComparingShareCode = code.ToUpper();
+                    mShare.mCompare2ShareCode = code.ToUpper();
                     mShare.clearCalculations();
 
-                    mChartMaster.showAttachChart(ChartBase.CHART_COMPARING_SECOND_SHARE);
+                    //mChartMaster.showAttachChart(ChartBase.CHART_COMPARING_SECOND_SHARE);
+                    mChartMaster.compareToChart(mShare.mCompare2ShareCode);
 
                     mChartMaster.clearModifyKey();
                     mChartMaster.invalidate();

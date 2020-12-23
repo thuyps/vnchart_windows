@@ -208,6 +208,7 @@ namespace stock123.app.chart
                 return;
 
             double tmp = 0;
+            StringBuilder sb = new StringBuilder();
             //  now calc blocks
             for (i = 0; i < v.size(); i++)
             {
@@ -218,10 +219,10 @@ namespace stock123.app.chart
                     if (priceboard != null)
                     {
                         String code = mContext.mShareManager.getShareCode(inf.shareID);
-                        if (code != null && (code.CompareTo("MSN") == 0 || code.CompareTo("AAM") == 0))
-                        {
-                            Utils.trace("aaa");
-                        }
+                        //if (code != null && (code.CompareTo("MSN") == 0 || code.CompareTo("AAM") == 0))
+                        //{
+                            //Utils.trace("aaa");
+                        //}
                         double modifierValue = 0.0f;
                         double ff = priceboard.getCurrentPrice();  //  avoiding of overstack
 
@@ -322,7 +323,7 @@ namespace stock123.app.chart
                             //setBlockPosition(block);
 
                             //  extra inf
-                            StringBuilder sb = Utils.sb;
+
                             sb.Length = 0;
                             if (mChartType == BUBBLE_TRADE_MONEY)
                             {

@@ -35,5 +35,6 @@ namespace xlib.ui
             TabPage page = (TabPage)getControl();
             page.Controls.Clear();
         }
+
     }
 }

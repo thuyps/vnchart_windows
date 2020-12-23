@@ -78,6 +78,8 @@ namespace stock123.app.data
         public float[] mOpens = null;
         public int mOpensCount = 0;
 
+        Dictionary<int, stPriceboardState> mPriceboardMap = new Dictionary<int, stPriceboardState>();
+
         public Priceboard()
         {
             mContext = Context.getInstance();
@@ -147,7 +149,7 @@ namespace stock123.app.data
             }
          * 
          */
-
+        /*
         public void setZeroPriceboard(xDataInput di)
         {
             String nextfile = di.readUTF();
@@ -210,6 +212,7 @@ namespace stock123.app.data
                 p.setZero(di);
             }
         }
+         */
 
         public void setZeroPriceboard2016(xDataInput di)
         {
@@ -261,47 +264,56 @@ namespace stock123.app.data
             int j = 0;
             for (int i = 0; i < cnt; i++)
             {
-                stPriceboardState p = getPriceboard(floor, data, di.getCurrentOffset());
+                //stPriceboardState p = getPriceboard(floor, data, di.getCurrentOffset());
 
-                //Utils.trace("=====" + c0 + c1 + c2);
+                String scode = Utils.bytesNullTerminatedToString(data, di.getCurrentOffset(), 20);
+                stPriceboardState p = getPriceboard(scode);
 
                 if (p == null)
                 {
                     di.skip(Share.SHARE_CODE_LENGTH + 72);
                     continue;
                 }
+
+                p.code = scode;
+
+                //Utils.trace("=====" + c0 + c1 + c2);
+
+
                 di.skip(Share.SHARE_CODE_LENGTH);
 
                 p.setZero(di);
             }
         }
 
+        public stPriceboardState createNewPriceboardState(int shareID)
+        {
+            if (mPriceboardMap.ContainsKey(shareID))
+            {
+                return mPriceboardMap[shareID];
+            }
+
+            stPriceboardState ps = new stPriceboardState();
+            ps.id = shareID;
+            mPriceboardMap.Add(shareID, ps);
+
+            return ps;
+        }
+
         public stPriceboardState getPriceboard(int id)
         {
-            int marketID = mContext.mShareManager.getShareMarketID(id);
+            if (mPriceboardMap.ContainsKey(id))
+            {
+                return mPriceboardMap[id];
+            }
 
-            return stPriceboardState.seekPriceboardByID(marketID, id);
-        }
-
-        public stPriceboardState getPriceboard(int marketID, int id)
-        {
-            return stPriceboardState.seekPriceboardByID(marketID, id);
-        }
-
-        public stPriceboardState getPriceboard(int marketID, byte[] code, int offset)
-        {
-            return stPriceboardState.seekPriceboard(marketID, code, offset);
+            return new stPriceboardState();
         }
 
         public stPriceboardState getPriceboard(String code)
         {
             int id = mContext.mShareManager.getShareID(code);
             return getPriceboard(id);
-        }
-
-        public stPriceboardState getPriceboard(int marketID, String code)
-        {
-            return stPriceboardState.seekPriceboard(marketID, code);
         }
 
         public int getIndicesCount()
@@ -385,17 +397,6 @@ namespace stock123.app.data
             return true;
         }
 
-        public void sortByTopDecreased()
-        {
-            for (int i = 0; i < 2; i++)
-            {
-                int floor = i + 1;
-                int cnt = stPriceboardState.getCount(floor);
-                for (int j = 0; j < cnt; j++)
-                {
-                }
-            }
-        }
 
         public void loadPriceboard()
         {
@@ -483,268 +484,6 @@ namespace stock123.app.data
             }
 
             xFileManager.saveFile(o, PRICEBOARD_FILE);
-        }
-        /*
-        public void updateRealtimeJ2ME(xDataInput di){
-            stShareGroup g = Context.getInstance().getCurrentShareGroup();
-            if (g != null)
-                g.setNextfile(di);
-
-            int cnt = di.readInt();
-            int id;
-            int reference;
-            int tmp;
-            int ave_value;
-
-            int i = 0;
-            for (i = 0; i < cnt; i++){
-                id = di.readShort();
-                int floor = mContext.mShareManager.getShareFloor(id);
-                stPriceboardState p = getPriceboard(floor, id);
-
-                if (p == null){
-                    di.skip(26);
-                    continue;
-                }
-
-                tmp = di.readShort();
-                p.setRemainBuyPrice(tmp);
-                tmp = di.readInt();
-                p.setRemainBuyVolume(tmp);
-
-                tmp = di.readShort();
-                p.setRemainSellPrice(tmp);
-                tmp = di.readInt();
-                p.setRemainSellVolume(tmp);
-
-                tmp = di.readShort();
-                p.setCurrentPrice(tmp);//di.readShort());
-                tmp = di.readInt();
-                p.setCurrentVolume(tmp);
-
-                ave_value = di.readShort();
-                p.setAveValue(ave_value);
-
-                tmp = di.readShort();
-                p.setChange(tmp);
-
-                reference = p.getCurrentPrice() - tmp;//p.getChange();
-
-                if (p.getRef() == 0)
-                    p.setRef(reference);
-
-                if (reference != 0)
-                    reference = (p.getChange()*1000)/reference;
-
-                p.setChangePercent(reference);
-
-                p.setTotalVolume(di.readInt());
-
-                p.setState(1);
-            }
-
-            //  more infor
-            cnt = di.readInt();
-            for (i = 0; i < cnt; i++){
-                id = di.readShort();
-                int floor = mContext.mShareManager.getShareFloor(id);
-                stPriceboardState p = getPriceboard(floor, id);
-
-                if (p == null){
-                    di.skip(4);
-                }
-
-                tmp = di.readShort();
-                p.setMin(tmp);
-
-                tmp = di.readShort();
-                p.setMax(tmp);
-            }
-        }
-        */
-
-        public void updateRealtime(xDataInput di)
-        {
-            if (di.size() < 10)
-            {
-                return;
-            }
-
-            String nextfile = di.readUTF();
-
-            String date = di.readUTF();	//	************************************
-
-            int marketStatus = di.readInt();
-            int floor = di.readInt();
-            int max = 10;
-            if (floor < 1 || floor > max)
-            {
-                return;
-            }
-
-            if (floor == 1)
-            {
-                //int k = 0;
-            }
-
-            mDate = parseDate(date);
-            mTime = parseTime(date);
-            mLocalTime = Utils.currentTimeMillis();
-
-            mNextfile[floor - 1] = nextfile;
-
-            byte[] data = di.getBytes();
-            int j = di.getCurrentOffset();
-
-            int idx = 0;
-            int val = 0;
-            int cnt = 0;
-
-            stPriceboardStateIndex index = getPriceboardIndexOfMarket(floor);
-
-            index.mDate = date;
-
-            index.status_changed = marketStatus != index.market_status ? true : false;
-            if (index.status_changed)
-            {
-                index.market_status = marketStatus;
-            }
-
-            //============index changed==================
-            cnt = Utils.readInt(data, j);
-            j += 4;
-            for (int i = 0; i < cnt; i++)
-            {
-                idx = data[j++];
-                val = Utils.readInt(data, j);
-                j += 4;
-                /*
-                switch (idx)
-                {
-                    case PB_IDX_CURRENT_POINT:
-                        index.current_point = val;
-                        break;
-                    case PB_IDX_CHANGED_POINT:
-                        index.changed_point = val;
-                        break;
-                    case PB_IDX_CHANGED_PERCENT:
-                        index.changed_percent = val;
-                        break;
-                    case PB_IDX_TOTAL_VOLUME:
-                        index.total_volume = val;
-                        break;
-                    case PB_IDX_INC_NUM:
-                        index.inc_cnt = val;
-                        break;
-                    case PB_IDX_CE_NUM:
-                        index.ce_cnt = val;
-                        break;
-                    case PB_IDX_DEC_NUM:
-                        index.dec_cnt = val;
-                        break;
-                    case PB_IDX_FLOOR_NUM:
-                        index.floor_cnt = val;
-                        break;
-                    case PB_IDX_REF_NUM:
-                        index.ref_num = val;
-                        break;
-                    case PB_IDX_GTDG:
-                        index.totalGTGD = val / 10;
-                        break;		//	dv 1tr
-                }
-                 */
-            }
-
-            //============shares changed==================
-            cnt = Utils.readInt(data, j);
-            j += 4;
-            //printf("\n============cnt&floor = %d/%d", cnt, floor);
-
-            for (int i = 0; i < cnt; i++)
-            {
-                stPriceboardState p = stPriceboardState.seekPriceboard(floor, data, j);
-
-                //if (data[j+0] == 'V' && data[j+1] == 'C' && data[j+2] == 'G')
-                //{
-                    //int gg = 0;
-                //}
-                if (p == null)
-                {
-                    return;
-                }
-                /*
-                //=================j += SHARE_CODE_LENGTH;
-                while (data[j] != 0 && j < Share.SHARE_CODE_LENGTH)
-                {
-                    j++;
-                }
-
-                j++;
-                */
-                j += 8; //  share code length
-                int idx_state = 0;
-                //=================int fieldCnt = FAST_READ_INT(data, j);		j += 4;
-                int fieldCnt = data[j];
-                j += 1;
-                for (int k = 0; k < fieldCnt; k++)
-                {
-                    idx = data[j++];
-                    val = Utils.readInt(data, j);
-
-                    j += 4;
-
-                    //			if (idx == 2)
-                    //			{
-                    //				int k = 0;
-                    //			}
-
-                    //	update value
-                    switch (idx)
-                    {
-                        case PB_MAX:
-                            p.setMax(val);
-                            break;
-                        case PB_MMIN:
-                            p.setMin(val);
-                            break;
-                        case PB_REMAIN_BUY_1: p.setRemainBuyPrice0(val); break;
-                        case PB_REMAIN_BUY_VOL_1: p.setRemainBuyVolume0(val); break;
-                        case PB_REMAIN_BUY_2: p.setRemainBuyPrice1(val); break;
-                        case PB_REMAIN_BUY_VOL_2: p.setRemainBuyVolume1(val); break;
-                        case PB_REMAIN_BUY_3: p.setRemainBuyPrice2(val); break;
-                        case PB_REMAIN_BUY_VOL_3: p.setRemainBuyVolume2(val); break;
-                        //-------------------------------
-                        case PB_CURRENT_PRICE:
-                            p.setCurrentPrice(val);
-                            break;
-                        case PB_CURRENT_VOLUME:
-                            p.setCurrentVolume(val);
-                            break;
-                        case PB_CHANGE:
-                            p.setChange(val);
-                            break;
-                        //-------------------------------
-                        case PB_REMAIN_SELL_1: p.setRemainSellPrice0(val); break;
-                        case PB_REMAIN_SELL_VOL_1: p.setRemainSellVolume0(val); break;
-                        case PB_REMAIN_SELL_2: p.setRemainSellPrice1(val); break;
-                        case PB_REMAIN_SELL_VOL_2: p.setRemainSellVolume1(val); break;
-                        case PB_REMAIN_SELL_3: p.setRemainSellPrice2(val); break;
-                        case PB_REMAIN_SELL_VOL_3: p.setRemainSellVolume2(val); break;
-                        //-------------------------------
-                        case PB_TOTAL_VOLUME:
-                            p.setTotalVolume(val * 100);
-                            break;
-                        default:
-                            {
-                                int kk = 0;
-                            }
-                            break;
-                    }
-
-                    idx_state = 1 << idx;
-                    p.setState(p.getState() | idx_state);
-                }//	end of for
-            }
         }
 
         public void setOnlineIndexData(xDataInput di)

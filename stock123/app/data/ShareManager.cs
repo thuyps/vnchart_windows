@@ -140,6 +140,9 @@ namespace stock123.app.data
             int k_old;
 
             int kkk = 0;
+
+            Priceboard priceboard = mContext.mPriceboard;
+
             try
             {
                 for (int i = 0; i < floor_cnt; i++)
@@ -173,7 +176,7 @@ namespace stock123.app.data
                         {
                             share_id = share_id;
                         }
-                        stPriceboardState pb = stPriceboardState.seekPriceboardByID(marketID, share_id);
+                        stPriceboardState pb = priceboard.createNewPriceboardState(share_id);// stPriceboardState.seekPriceboardByID(marketID, share_id);
                         pb.setID(share_id);
 
                         if (share_id == 1439)

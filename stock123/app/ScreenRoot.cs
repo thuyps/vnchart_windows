@@ -6,6 +6,8 @@ using System.Drawing;
 using xlib.framework;
 using xlib.ui;
 
+using System.Threading;
+
 using stock123.app.data;
 
 namespace stock123.app
@@ -96,7 +98,7 @@ namespace stock123.app
 
             ViewHistoryChart his = new ViewHistoryChart(share);
             his.setSize(mTab.getW(), mTab.getH());
-            his.onActivate();
+            //his.onActivate();
             mScreens.addElement(his);
 
             xTabPage page = new xTabPage(share.getCode());
@@ -104,6 +106,18 @@ namespace stock123.app
 
             page.addControl(his);
             mTab.addPage(page);
+
+            mTab.selectLastPage();
+            
+            utils.AsyncUtils.DelayCall(500, () =>
+            {
+                his.onActivate();
+            });
+        }
+
+        void initViewHistory(ViewHistoryChart his)
+        {
+            his.onActivate();
         }
 
         public void removeHistory(ViewHistoryChart his)

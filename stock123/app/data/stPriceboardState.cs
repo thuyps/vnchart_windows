@@ -34,7 +34,7 @@ namespace stock123.app.data
         public int changePercent;		//	1000	==	1%
         public int id; 
         
-        static xVector mPriceboards = new xVector(3000);
+        //static xVector mPriceboards = new xVector(3000);
         //=====================================================
 
         public stPriceboardState()
@@ -51,6 +51,8 @@ namespace stock123.app.data
         {
             
         }
+
+        /*
         static public stPriceboardState seekPriceboard(int marketID, byte[] code, int offset)
         {
             String scode = Utils.bytesNullTerminatedToString(code, offset, 20);
@@ -75,10 +77,11 @@ namespace stock123.app.data
             return newitem;
         }
 
+
         static public int getCount(int floor)
         {
             return mPriceboards.size();
-        }
+        }*/
         
         public String getCode()
         {
@@ -240,10 +243,7 @@ namespace stock123.app.data
             }
 
             current_price_1 = di.readInt() / 1000.0f;
-            if (current_price_1 < 100)
-            {
-                id = id;
-            }
+
             current_volume_1 = di.readInt();
 
             change = di.readInt()/1000.0f;
@@ -253,7 +253,7 @@ namespace stock123.app.data
             //Utils.writeInt(pData, offset + POS_STATE, 0xffffffff);
         }
 
-
+        /*
         public static stPriceboardState seekPriceboard(int floor, String code)
         {
             return getPriceboardItem(floor, code);
@@ -275,6 +275,7 @@ namespace stock123.app.data
 
             return newitem;
         }
+         */
 
         public void setMax(int v)
         {

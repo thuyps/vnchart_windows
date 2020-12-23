@@ -2502,19 +2502,17 @@ namespace stock123.app
             int itemW = w / 4 - 1;
             int itemH = h / 2 - 1;
             //  Dòng tiền | Trọng số | Tăng Index | Giảm Index
-            for (int i = 0; i < mContext.mPriceboard.getIndicesCount(); i++)
-            {
-                if (i >= 2)
-                {
-                    break;
-                }
 
-                stPriceboardStateIndex pi = mContext.mPriceboard.getPriceboardIndexAt(i);
+            int[] markets = { 1, 2 };
+            for (int i = 0; i < 2; i++)
+            {
+                stPriceboardStateIndex pi = mContext.mPriceboard.getPriceboardIndexOfMarket(markets[i]);
 
                 int[] types = {ChartStatistics.BUBBLE_TRADE_MONEY, ChartStatistics.BUBBLE_VOLUME_WEIGHT, 
                     ChartStatistics.BUBBLE_INDEX_WEIGHT_RATIO_INC, ChartStatistics.BUBBLE_INDEX_WEIGHT_RATIO_DEC};
                 int[] xx = {0, w/4, 2*w/4, 3*w/4};
 
+                //for (int j = 0; j < 4; j++)
                 for (int j = 0; j < 4; j++)
                 {
                     ChartStatistics moneyChart = new ChartStatistics(pi.marketID, this);
@@ -2697,7 +2695,7 @@ namespace stock123.app
                 int marketID = (int)mContext.mShareManager.mShareIDs[k];
                 int shareID = (mContext.mShareManager.mShareIDs[k+1] << 8) | (mContext.mShareManager.mShareIDs[k+2]);
                 ids[i] = shareID;
-                stPriceboardState ps = mContext.mPriceboard.getPriceboard(marketID, shareID);
+                stPriceboardState ps = mContext.mPriceboard.getPriceboard(shareID);
 
                 if (ps != null && ps.getRef() > 0 && ps.getCurrentPrice() > 0)
                 {

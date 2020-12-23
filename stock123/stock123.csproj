@@ -66,6 +66,7 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="app\chart\ChartADX.cs" />
@@ -161,6 +162,7 @@
     <Compile Include="app\ScreenHome.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="app\utils\AsyncUtils.cs" />
     <Compile Include="app\ViewHistoryChart.cs">
       <SubType>Component</SubType>
     </Compile>

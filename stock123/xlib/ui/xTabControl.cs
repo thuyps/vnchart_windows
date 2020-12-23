@@ -51,5 +51,25 @@ namespace xlib.ui
         {
             mTab.TabPages.Clear();
         }
+
+        public int getPageCount()
+        {
+            return ((TabControl)getControl()).TabPages.Count;
+        }
+        
+        public void selectPage(int pageIndex)
+        {
+            TabControl tabControl = (TabControl)this.getControl();
+
+            if (pageIndex < getPageCount())
+            {
+                tabControl.SelectTab(pageIndex);
+            }
+        }
+
+        public void selectLastPage(){
+            TabControl tabControl = (TabControl)this.getControl();
+            tabControl.SelectTab(getPageCount()-1);
+        }
     }
 }
