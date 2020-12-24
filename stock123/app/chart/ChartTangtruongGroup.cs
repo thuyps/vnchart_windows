@@ -240,6 +240,8 @@ namespace stock123.app.chart
             stCandle _c1 = new stCandle();
 
             Share vnindex = mContext.mShareManager.getShare("^VNINDEX");
+            vnindex.loadShareFromFile(true);
+
             if (vnindex.getCandleCnt() < period){
                 return;
             }

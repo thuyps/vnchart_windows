@@ -247,7 +247,7 @@ namespace stock123.app
 
         public override int getToolbarH()
         {
-            return 55;
+            return 53;
         }
 
         public void updateUI()
@@ -1352,7 +1352,7 @@ namespace stock123.app
                 mNetProtocol.requestShareGroup();
 
             if (Utils.getDateAsInt() - mContext.mCompanyUpdateTime >= 2
-                || mContext.mShareManager.getCompanyInfos().size() == 0)	//	2days
+                || mContext.mShareManager.getCompanyInfoCount() == 0)	//	2days
             {
                 mNetProtocol.requestGetCompanyInfo();
             }
@@ -1531,11 +1531,11 @@ namespace stock123.app
                         page1.addControl(view0);
 
                         xTabPage page2 = new xTabPage("Thay đổi ngành");
+
                         ChartNhomnganhTangtruong view = createThaydoiNhomnganh(mSplitterMain.getW(), mSplitterMain.getH() - 40);
                         view.delegateShowHistoryChartOfGroup += showGroupHistory;
                         view.delegateShowHistoryChartOfShare += onClickShare;
                         page2.addControl(view);
-
                         mChangesView.addPage(page1);
                         mChangesView.addPage(page2);
                     }
@@ -2496,7 +2496,7 @@ namespace stock123.app
                     v.addElement(g);
                 }
             }
-            for (int i = 1; i < mContext.mShareGroups.size(); i++)
+            for (int i = 0; i < mContext.mShareGroups.size(); i++)
             {
                 v.addElement(mContext.mShareGroups.elementAt(i));
             }

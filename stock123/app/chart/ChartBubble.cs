@@ -119,7 +119,7 @@ namespace stock123.app.chart
             }
 
             //--------------------------------------
-            xVector v = mContext.mShareManager.getCompanyInfos();
+            //xVector v = mContext.mShareManager.getCompanyInfos();
             double totalEquity = 0.0f;
             double totalIndexInc = 0;
             double totalIndexDec = 0;
@@ -127,11 +127,14 @@ namespace stock123.app.chart
 
             stPriceboardStateIndex pi = mContext.mPriceboard.getPriceboardIndexOfMarket(martketID);
 
+            int shareCount = mContext.mShareManager.getTotalShareIDCount();
             //  calc totalEquity
-            for (i = 0; i < v.size(); i++)
+            int[] market = { 0 };
+            for (i = 0; i < shareCount; i++)
             {
-                stCompanyInfo inf = (stCompanyInfo)v.elementAt(i);
-                if (inf.floor == martketID)
+                int shareID = mContext.mShareManager.getShareIDAt(i, market);
+                stCompanyInfo inf = mContext.mShareManager.getCompanyInfo(shareID);
+                if (inf != null && inf.floor == martketID)
                 {
                     stPriceboardState priceboard = mContext.mPriceboard.getPriceboard(inf.shareID);
                     if (priceboard != null)
@@ -151,10 +154,11 @@ namespace stock123.app.chart
                 }
             }
             //  extra
-            for (i = 0; i < v.size(); i++)
+            for (i = 0; i < shareCount; i++)
             {
-                stCompanyInfo inf = (stCompanyInfo)v.elementAt(i);
-                if (inf.floor == martketID)
+                int shareID = mContext.mShareManager.getShareIDAt(i, market);
+                stCompanyInfo inf = mContext.mShareManager.getCompanyInfo(shareID);
+                if (inf != null && inf.floor == martketID)
                 {
                     stPriceboardState priceboard = mContext.mPriceboard.getPriceboard(inf.shareID);
                     if (priceboard != null)
@@ -189,10 +193,11 @@ namespace stock123.app.chart
             double squareOfCell = 1.0 / (mMapW * mMapH);
             double tmp = 0;
             //  now calc blocks
-            for (i = 0; i < v.size(); i++)
+            for (i = 0; i < shareCount; i++)
             {
-                stCompanyInfo inf = (stCompanyInfo)v.elementAt(i);
-                if (inf.floor == martketID)
+                int shareID = mContext.mShareManager.getShareIDAt(i, market);
+                stCompanyInfo inf = mContext.mShareManager.getCompanyInfo(shareID);
+                if (inf != null && inf.floor == martketID)
                 {
                     stPriceboardState priceboard = mContext.mPriceboard.getPriceboard(inf.shareID);//martketID, share.mShareID);            
                     if (priceboard != null)

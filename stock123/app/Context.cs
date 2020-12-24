@@ -2552,7 +2552,7 @@ namespace stock123.app
                 mMainMarketGroups.addElement(gLargeCap);
                 
                 //  Share
-                int cnt = Context.getInstance().mShareManager.getShareCount();
+                int cnt = Context.getInstance().mShareManager.getTotalShareIDCount();// .getShareCount();
                 int[] market = { 0 };
                 for (int i = 0; i < cnt; i++)
                 {
@@ -2566,10 +2566,10 @@ namespace stock123.app
                     stPriceboardState ps = mPriceboard.getPriceboard(shareID);
                     stCompanyInfo inf = mShareManager.getCompanyInfo(shareID);
 
-                    if (share.getCode() == "HNF")
-                    {
-                        Utils.trace("");
-                    }
+                    //if (share.getCode() == "HNF")
+                    //{
+                        //Utils.trace("");
+                    //}
                     
                     if (ps != null && inf != null && ps.getMarketID() == 1)
                     {

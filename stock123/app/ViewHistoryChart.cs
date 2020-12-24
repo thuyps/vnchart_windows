@@ -493,7 +493,7 @@ namespace stock123.app
             {
                 mScreenType = 1 - mScreenType;
 
-                if (mContext.mShareManager.getShares().size() < 100)
+                if (mContext.mShareManager.getShareCount() < 100)
                 {
                     mContext.mShareManager.loadAllShares();
                     doFilter();
@@ -1295,16 +1295,19 @@ namespace stock123.app
         void doFilter()
         {
             mFilteredShares.removeAllElements();
-            xVector v = mContext.mShareManager.getShares();
+
             int i = 0;
-            int cnt = v.size();
             Share share;
-            xVector v0 = new xVector(v.size());
+            xVector v0 = new xVector(2000);
             //  fill the list
+            int shareCnt = mContext.mShareManager.getTotalShareIDCount();
+
             {
-                for (i = 0; i < cnt; i++)
+                int[] market = {0};
+                for (i = 0; i < shareCnt; i++)
                 {
-                    share = (Share)v.elementAt(i);
+                    int shareID = mContext.mShareManager.getShareIDAt(i, market);
+                    share = mContext.mShareManager.getShare(shareID);
 
                     if (!share.isIndex())
                     {
@@ -1322,7 +1325,7 @@ namespace stock123.app
                 mAcceptedMarkets[1] = 2;
 
             //  by market ID
-            cnt = v0.size();
+            int cnt = v0.size();
             xVector v1 = new xVector(v0.size());
 
             for (i = 0; i < v0.size(); i++)

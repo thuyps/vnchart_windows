@@ -26,8 +26,8 @@ namespace stock123.app.data
         static String SHARE_IDS_FILE = "data\\share_ids.dat";
 
         public static int RECORDID_FILE_COMPANY_INFO = 1;
-        public xVector mShares = new xVector(1000);           //  Share array
-        public xVector mCompanyInfos = new xVector(1000);     //  stCompany
+        public Dictionary<int, Share> mShares = new Dictionary<int, Share>();           //  Share array
+        public Dictionary<int, stCompanyInfo> mCompanyInfos = new Dictionary<int, stCompanyInfo>();     //  stCompany
         int mShareIDCount = 0;
         public byte[] mShareIDs = null;         //  array of [floor:1 | id: 2 | share_code:8]
         xVectorInt vIDs = new xVectorInt(2000);
@@ -118,11 +118,9 @@ namespace stock123.app.data
 
         int getMarketID(int shareID, int marketID)
         {
-            for (int i = 0; i < mCompanyInfos.size(); i++)
-            {
-                stCompanyInfo inf = (stCompanyInfo)mCompanyInfos.elementAt(i);
-                if (inf.shareID == shareID)
-                    return inf.floor;
+            if (mCompanyInfos.ContainsKey(shareID)){
+                stCompanyInfo inf = mCompanyInfos[shareID];
+                return inf.floor;
             }
 
             return marketID;
@@ -273,7 +271,12 @@ namespace stock123.app.data
 
         public void clearCompanyInfo()
         {
-            mCompanyInfos.removeAllElements();
+            mCompanyInfos.Clear();
+        }
+
+        public int getCompanyInfoCount()
+        {
+            return mCompanyInfos.Count;
         }
 
         String readCode(byte[] p, int offset)
@@ -325,8 +328,17 @@ namespace stock123.app.data
 
                 shareID = di.readInt();
 
-                stCompanyInfo inf = new stCompanyInfo();
-                mCompanyInfos.addElement(inf);
+                stCompanyInfo inf = null;
+
+                if (mCompanyInfos.ContainsKey(shareID))
+                {
+                    inf = mCompanyInfos[shareID];
+                }
+                else
+                {
+                    inf = new stCompanyInfo();
+                }
+                mCompanyInfos.Add(shareID, inf);
 
                 //s = mContext.mShareManager.getShareCode(shareID);
 
@@ -384,28 +396,17 @@ namespace stock123.app.data
 
         public stCompanyInfo getCompanyInfo(int shareID)
         {
-            if (mCompanyInfos.isEmpty())
-                loadCompanyInfo();
-
-            for (int i = 0; i < mCompanyInfos.size(); i++)
+            if (mCompanyInfos.Count == 0)
             {
-                stCompanyInfo inf = (stCompanyInfo)mCompanyInfos.elementAt(i);
-                if (inf.shareID == shareID)
-                {
-                    return inf;
-                }
+                loadCompanyInfo();
+            }
+
+            if (mCompanyInfos.ContainsKey(shareID))
+            {
+                return mCompanyInfos[shareID];
             }
 
             return null;
-        }
-
-        public xVector getCompanyInfos()
-        {
-            if (mCompanyInfos.size() == 0)
-            {
-                loadCompanyInfo();
-            }
-            return mCompanyInfos;
         }
 
         //=======================shor share IDs===================
@@ -578,6 +579,10 @@ namespace stock123.app.data
             return id;
         }
         //=============================================================
+        public int getShareCount()
+        {
+            return mShares.Count;
+        }
         public void loadAllShares()
         {
             if (mShareIDs == null)
@@ -606,22 +611,16 @@ namespace stock123.app.data
             }
         }
 
-        public xVector getShares()
-        {
-            return mShares;
-        }
-
         public Share getShareQuick(int shareID, byte marketID, int maxLastCandle)
         {
             if (shareID <= 0)
                 return null;
 
             Share s;
-            for (int i = 0; i < mShares.size(); i++)
+
+            if (mShares.ContainsKey(shareID))
             {
-                s = (Share)mShares.elementAt(i);
-                if (s.mID == shareID)
-                    return s;
+                return mShares[shareID];
             }
 
             //  not found, create a new
@@ -630,7 +629,7 @@ namespace stock123.app.data
             s.setID(shareID);
             s.setCode(getShareCode(shareID), marketID);
 
-            mShares.addElement(s);
+            mShares.Add(shareID, s);
 
             Context.getInstance().mShareManager.loadShareFromCommon(s, maxLastCandle, true);
             //  for sorting====quick
@@ -657,20 +656,12 @@ namespace stock123.app.data
                 return null;
 
             Share s;
-            for (int i = 0; i < mShares.size(); i++)
-            {
-                s = (Share)mShares.elementAt(i);
-                if (s.getID() == shareID)
-                {
-                    if (shareID == 752)
-                    {
-                        s.mCode = "^VN30";
-                    }
-                    //s.loadShare();
-                    return s;
-                }
-            }
 
+            if (mShares.ContainsKey(shareID))
+            {
+                return mShares[shareID];
+            }
+            
             //  not found, create a new
             int marketID = getShareMarketID(shareID);
 
@@ -686,7 +677,7 @@ namespace stock123.app.data
             s.setCode(getShareCode(shareID), marketID);
             //s.loadShare();
 
-            mShares.addElement(s);
+            mShares.Add(shareID, s);
 
             return s;
         }
@@ -760,7 +751,7 @@ namespace stock123.app.data
 
             return cursor + 2;
         }
-
+        /*
         public int getShareCount()
         {
             int pos = 8;
@@ -769,6 +760,7 @@ namespace stock123.app.data
 
             return share_cnt;
         }
+         */
 
 
         public void replace1ShareDataToCommon(Share share)
@@ -1393,12 +1385,15 @@ namespace stock123.app.data
 
         int getLastupdate()
         {
-            if (mShares.size() > 0)
+            int shareID = getShareID("VNM");
+            if (mShares.ContainsKey(shareID))
             {
-                Share s = (Share)mShares.elementAt(0);
-                if (s.getCandleCount() > 0)
-                    return s.getLastCandleDate();
+                Share share = mShares[shareID];
+                if (share.getCandleCnt() > 0){
+                    return share.getLastCandleDate();
+                }
             }
+
             return 0;
         }
 
