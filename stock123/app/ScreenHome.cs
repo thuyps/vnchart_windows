@@ -24,7 +24,7 @@ namespace stock123.app
     {
         //  screen state
         const int SCREENSTATE_HOME = 0;
-        const int SCREENSTATE_CHANGES_STATISTICS = 1;
+
         int mScreenState = 0;
         //============================
         const int STATE_LOGIN_REQUIRED = -1;
@@ -350,10 +350,6 @@ namespace stock123.app
             if (mScreenState == SCREENSTATE_HOME)
             {
                 evt = C.ID_GOTO_HOME_SCREEN;
-            }
-            else if (mScreenState == SCREENSTATE_CHANGES_STATISTICS)
-            {
-                evt = C.ID_CHANGES_STATISTICS_VIEW;
             }
 
             mScreenState = -1;
@@ -1511,42 +1507,24 @@ namespace stock123.app
             }
             else if (buttonID == C.ID_CHANGES_STATISTICS_VIEW)
             {
-                if (mScreenState != SCREENSTATE_CHANGES_STATISTICS)
-                {
-                    /*
-                    if (mCurrentScreenView != null)
-                    {
-                        this.removeControl(mCurrentScreenView);
-                    }
-                     */
+                mChangesView = new xTabControl();
 
-                    if (mChangesView == null)
-                    {
-                        mChangesView = new xTabControl();
-                        
-                        xTabPage page1 = new xTabPage("Thay đổi chỉ số");
-                        xContainer view0 = createThaydoiMainIndices(mSplitterMain.getW(), mSplitterMain.getH() - 40);
-                        //view0.delegateShowHistoryChartOfGroup += showGroupHistory;
-                        //view0.delegateShowHistoryChartOfShare += onClickShare;
-                        page1.addControl(view0);
+                xTabPage page1 = new xTabPage("Thay đổi chỉ số");
+                xContainer view0 = createThaydoiMainIndices(mSplitterMain.getW(), mSplitterMain.getH());
+                //view0.delegateShowHistoryChartOfGroup += showGroupHistory;
+                //view0.delegateShowHistoryChartOfShare += onClickShare;
+                page1.addControl(view0);
 
-                        xTabPage page2 = new xTabPage("Thay đổi ngành");
+                xTabPage page2 = new xTabPage("Thay đổi ngành");
 
-                        ChartNhomnganhTangtruong view = createThaydoiNhomnganh(mSplitterMain.getW(), mSplitterMain.getH() - 40);
-                        view.delegateShowHistoryChartOfGroup += showGroupHistory;
-                        view.delegateShowHistoryChartOfShare += onClickShare;
-                        page2.addControl(view);
-                        mChangesView.addPage(page1);
-                        mChangesView.addPage(page2);
-                    }
-                    //mChangesView.setSize(mSplitterMain.getW(), mSplitterMain.getH());
-                    //mChangesView.setPosition(mSplitterMain.getX(), mSplitterMain.getY());
-                    
-                    //this.addControl(mChangesView);
-                }
+                ChartNhomnganhTangtruong view = createThaydoiNhomnganh(mSplitterMain.getW(), mSplitterMain.getH());
+                view.delegateShowHistoryChartOfGroup += showGroupHistory;
+                view.delegateShowHistoryChartOfShare += onClickShare;
+                page2.addControl(view);
+                mChangesView.addPage(page1);
+                mChangesView.addPage(page2);
+
                 ScreenRoot.instance().addViewAsTab("Thay đổi", mChangesView);
-
-                mScreenState = SCREENSTATE_CHANGES_STATISTICS;
             }
             else if (buttonID == C.ID_GOTO_HOME_SCREEN)
             {

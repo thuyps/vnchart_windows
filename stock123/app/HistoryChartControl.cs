@@ -174,7 +174,7 @@ namespace stock123.app
                 }
             }
 
-            mDrawer.initFibonaccie(mChartMaster, mContext.getFontSmall(), share);
+            mChartMaster.setHasDrawer(true);
             //====================SUB container
             mSubContainer = new xContainer();
 
@@ -544,7 +544,6 @@ namespace stock123.app
                     mTimingRange.setPosition((CHART_W - mTimingRange.getW()) / 2, mMainContainer.getH() - mTimingRange.getH() - 16);
                 mChartMaster.setSize(mMainContainer);
 
-                mDrawer.recalcPosition();
                 //======================================================
                 //  now adjust sub charts
                 int subHTotal = getH() - mMainContainer.getH() - 2;
@@ -744,8 +743,6 @@ namespace stock123.app
             cl.setIsMasterChart(true);
             cl.setSize(w, h);
             cl.setPosition(0, 0);
-
-            cl.setDrawer(mDrawer);
 
             cl.mShouldDrawCursor = true;
             cl.mShouldDrawDateSeparator = true;
@@ -1089,6 +1086,9 @@ namespace stock123.app
         void drawTrend(int trend)
         {
             int idx = trend;
+
+            Drawer drawer = mChartMaster.getDrawer();
+
             //=============================================
             if (idx == C.ID_TS_DRAW_CLEAR_ALL)
             {
@@ -1096,7 +1096,7 @@ namespace stock123.app
                 if (MessageBox.Show("Xóa tất cả các hình vẽ trên đồ thị?", "Xóa hình vẽ", buttons)
                     == DialogResult.Yes)
                 {
-                    mDrawer.clearAll();
+                    mChartMaster.getDrawer().clearAll();
                 }
                 mChartMaster.invalidate();
             }
@@ -1111,71 +1111,71 @@ namespace stock123.app
                 mContext.mOptFiboTrendThinkness = dlg.getThickness();
                 mDrawer.addTrends(Drawer.DRAW_TREND, dlg.getColor(), dlg.getThickness());
                  */
-                mDrawer.addTrends(Drawer.DRAW_TREND, 0, 0);
-                mDrawer.show(true);
+                drawer.addTrends(Drawer.DRAW_TREND, 0, 0);
+                drawer.show(true);
 
                 mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_TREND_ARROW)
             {
-                mDrawer.addTrends(Drawer.DRAW_TREND_ARROW, 0, 0);
-                mDrawer.show(true);
+                drawer.addTrends(Drawer.DRAW_TREND_ARROW, 0, 0);
+                drawer.show(true);
 
                 mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_RETRACE)
             {
-                mDrawer.addTrends(Drawer.DRAW_FIBO_RETRACEMENT, 0, 0);
-                mDrawer.show(true);
+                drawer.addTrends(Drawer.DRAW_FIBO_RETRACEMENT, 0, 0);
+                drawer.show(true);
 
                 mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_PROJECT)
             {
-                mDrawer.addTrends(Drawer.DRAW_FIBO_PROJECTION, 0, 0);
-                mDrawer.show(true);
+                drawer.addTrends(Drawer.DRAW_FIBO_PROJECTION, 0, 0);
+                drawer.show(true);
 
                 mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_TIME)
             {
-                mDrawer.addTrends(Drawer.DRAW_FIBO_TIME, 0, 0);
-                mDrawer.show(true);
+                drawer.addTrends(Drawer.DRAW_FIBO_TIME, 0, 0);
+                drawer.show(true);
 
                 mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_FAN)
             {
-                mDrawer.addTrends(Drawer.DRAW_FIBO_FAN, 0, 0);
-                mDrawer.show(true);
+                drawer.addTrends(Drawer.DRAW_FIBO_FAN, 0, 0);
+                drawer.show(true);
 
                 mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_ARC)
             {
-                mDrawer.addTrends(Drawer.DRAW_FIBO_ARC, 0, 0);
-                mDrawer.show(true);
+                drawer.addTrends(Drawer.DRAW_FIBO_ARC, 0, 0);
+                drawer.show(true);
 
                 mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_TRIANGLE)
             {
-                mDrawer.addTrends(Drawer.DRAW_TRIANGLE, 0, 0);
-                mDrawer.show(true);
+                drawer.addTrends(Drawer.DRAW_TRIANGLE, 0, 0);
+                drawer.show(true);
 
                 mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_RECTANGLE)
             {
-                mDrawer.addTrends(Drawer.DRAW_RECTANGLE, 0, 0);
-                mDrawer.show(true);
+                drawer.addTrends(Drawer.DRAW_RECTANGLE, 0, 0);
+                drawer.show(true);
 
                 mChartMaster.invalidate();
             }
             else if (idx == C.ID_TS_DRAW_ANDREWS_PITCHFORK)
             {
-                mDrawer.addTrends(Drawer.DRAW_ANDREWS_PITCHFORK, 0, 0);
-                mDrawer.show(true);
+                drawer.addTrends(Drawer.DRAW_ANDREWS_PITCHFORK, 0, 0);
+                drawer.show(true);
 
                 mChartMaster.invalidate();
             }
@@ -1188,8 +1188,8 @@ namespace stock123.app
                     string text = dlg.getText();
                     if (text != null && text.Length > 0)
                     {
-                        mDrawer.addText(text);
-                        mDrawer.show(true);
+                        drawer.addText(text);
+                        drawer.show(true);
 
                         mChartMaster.invalidate();
                     }
@@ -1197,8 +1197,8 @@ namespace stock123.app
             }
             else if (idx == C.ID_TS_DRAW_ECLIPSE)
             {
-                mDrawer.addTrends(Drawer.DRAW_OVAL, 0, 0);
-                mDrawer.show(true);
+                drawer.addTrends(Drawer.DRAW_OVAL, 0, 0);
+                drawer.show(true);
 
                 mChartMaster.invalidate();
             }

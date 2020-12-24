@@ -883,14 +883,7 @@ namespace stock123.app
 
                         if (share != null)
                         {
-                            mShare = share;
-                            reloadShare(mShare, true);
-
-                            mMainHistoryChartControl.setShare(mShare);
-
-                            mNetState = NETSTATE_GET_QUOTE_DATA_PREPARING;
-
-                            refreshCharts();
+                            showChartOfShare(share);
                         }
                     }
                 }
@@ -941,21 +934,7 @@ namespace stock123.app
                     share = mContext.mShareManager.getShare(code);
                     if (share != null)
                     {
-                        if (share.isIndex()
-                            || mContext.isQuoteFavorite(share))
-                        {
-                            share.loadShareFromFile(true);
-                            if (mContext.isQuoteFavorite(share))
-                                mNetState = NETSTATE_GET_QUOTE_DATA_PREPARING;
-                        }
-                        else
-                        {
-                            share.loadShareFromCommonData(true);
-                        }
-
-                        mContext.setCurrentShare(share);
-
-                        refreshCharts();
+                        showChartOfShare(share);
                     }
                     else
                     {
@@ -1004,19 +983,7 @@ namespace stock123.app
 
                     if (share != null)
                     {
-                        if (share.isIndex() || mContext.isQuoteFavorite(share))
-                        {
-                            share.loadShareFromFile(false);
-                            if (mContext.isQuoteFavorite(share))
-                                mNetState = NETSTATE_GET_QUOTE_DATA_PREPARING;
-                        }
-                        else
-                        {
-                            share.loadShareFromCommonData(true);
-                        }
-
-                        mContext.setCurrentShare(share);
-
+                        showChartOfShare(share);
                         //refreshCharts();
                         onChangedQuote();
                         //AAA
@@ -1582,11 +1549,7 @@ namespace stock123.app
                 {
                     if (!share.loadShareFromFile(applyTodayCandle))
                     {
-                        if (!mContext.isOnline())
-                        {
-                            //  offline mode: use from common
-                            share.loadShareFromCommonData(false);
-                        }
+                        share.loadShareFromCommonData(true);
                     }
                 }
                 else
@@ -1823,6 +1786,24 @@ namespace stock123.app
                 mContext.mShareManager.sortTichluy((int)filterItem.param1, (int)filterItem.param2, mFilteredShares);
                 
                 recreateSearchControl();
+            }
+        }
+
+        void showChartOfShare(Share share)
+        {
+            if (share != null && share != mShare)
+            {
+                mShare = new Share();
+                mShare.setCode(share.getCode(), share.getMarketID());
+                mShare.setID(share.getID());
+
+                reloadShare(mShare, true);
+
+                mMainHistoryChartControl.setShare(mShare);
+
+                mNetState = NETSTATE_GET_QUOTE_DATA_PREPARING;
+
+                refreshCharts();
             }
         }
     }

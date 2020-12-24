@@ -51,6 +51,34 @@ namespace stock123.app.chart
         {
             viewState = VIEWSTATE_1_NHOMNGANH;
 
+            if (g.getTotal() == 1 && 
+                (g.getName().CompareTo("^VNINDEX") == 0
+                || g.getName().CompareTo("^HASTC") == 0
+                || g.getName().CompareTo("^UPCOM") == 0))
+            {
+                int cnt = mContext.mShareManager.getShareCount();
+                int[] market = { 0 };
+
+                int marketID = 1;
+                if (g.getName().CompareTo("^HASTC") == 0){
+                    marketID = 2;
+                }
+                else if (g.getName().CompareTo("^UPCOM") == 0){
+                    marketID = 3;
+                }
+
+                for (int i = 0; i < cnt; i++)
+                {
+                    int shareID = mContext.mShareManager.getShareIDAt(i, market);
+
+                    if (shareID > 0 && market[0] == marketID)
+                    {
+                        g.addCode(mContext.mShareManager.getShareCode(shareID));
+                    }
+
+                }
+            }
+
             chartG = new ChartTangtruongGroup();
 
             chartG.setGroup(g);

@@ -30,8 +30,9 @@ namespace stock123.app.data
         public Dictionary<int, stCompanyInfo> mCompanyInfos = new Dictionary<int, stCompanyInfo>();     //  stCompany
         int mShareIDCount = 0;
         public byte[] mShareIDs = null;         //  array of [floor:1 | id: 2 | share_code:8]
-        xVectorInt vIDs = new xVectorInt(2000);
-        xVector vCodes = new xVector(2000);
+        xVectorInt vMarketIDs = new xVectorInt(3000);
+        xVectorInt vIDs = new xVectorInt(3000);
+        xVector vCodes = new xVector(3000);
 
         Context mContext;
         //===========candle area
@@ -228,8 +229,7 @@ namespace stock123.app.data
                 saveShareIDs();
             }
 
-            vIDs.removeAllElements();
-            vCodes.removeAllElements();
+            loadShareIDs();
         }
 
         public int getTotalShareIDCount()
@@ -239,15 +239,13 @@ namespace stock123.app.data
 
         public int getShareIDAt(int idx, int[] marketID)
         {
-            int shareID = 0;
-            int offset = idx * ShareManager.SHARE_ID_SIZE;
-            if (offset < mShareIDs.Length)
+            if (idx < vIDs.size())
             {
-                marketID[0] = mShareIDs[offset];
-                shareID = (mShareIDs[offset + 1] << 8) | mShareIDs[offset + 2];
+                marketID[0] = vMarketIDs.elementAt(idx);
+                return vIDs.elementAt(idx);
             }
 
-            return shareID;
+            return 0;
         }
 
         void saveShareIDs()
@@ -266,6 +264,31 @@ namespace stock123.app.data
             if (di != null)
             {
                 mShareIDs = di.getBytes();
+            }
+
+            vMarketIDs.removeAllElements();
+            vIDs.removeAllElements();
+            vCodes.removeAllElements();
+            if (vIDs.size() == 0)
+            {
+                int itemSize = SHARE_ID_SIZE;
+
+                byte[] p = mShareIDs;
+                String s = null;
+
+                int len = mShareIDs.Length;
+                for (int i = 0; i < len; i += itemSize)
+                {
+                    int marketID = p[i];
+                    int item = Utils.readShort(p, i + 1);
+
+                    {
+                        s = Share.readTerminatedString(p, i + 3);
+                        vMarketIDs.addElement(marketID);
+                        vIDs.addElement(item);
+                        vCodes.addElement(s);
+                    }
+                }
             }
         }
 
@@ -412,209 +435,92 @@ namespace stock123.app.data
         //=======================shor share IDs===================
         public int getShareMarketID(int id)
         {
-            if (mShareIDs == null)
+            if (vIDs.size() > 0)
             {
-                return -1;
-            }
-
-            int itemSize = SHARE_ID_SIZE;
-
-            byte[] p = mShareIDs;
-
-            int len = mShareIDs.Length;
-            for (int i = 0; i < len; i += itemSize)
-            {
-                int item = Utils.readShort(p, i + 1);
-                if (item == id)
+                int cnt = vIDs.size();
+                for (int i = 0; i < vIDs.size(); i++)
                 {
-                    return p[i];
+                    if (vIDs.elementAt(i) == id)
+                    {
+                        return vMarketIDs.elementAt(i);
+                    }
                 }
             }
-            return -1;
+            return 0;
         }
        
         public String getShareCode(int id)
         {
-            if (mShareIDs == null)
+            if (vIDs.size() == 0)
             {
                 return null;
             }
 
-            if (vIDs.size() == 0)
+            int cnt = vIDs.size();
+            for (int i = 0; i < cnt; i++)
             {
-                int itemSize = SHARE_ID_SIZE;
-
-                byte[] p = mShareIDs;
-                String s = null;
-
-                int len = mShareIDs.Length;
-                for (int i = 0; i < len; i += itemSize)
+                if (vIDs.elementAt(i) == id)
                 {
-                    int item = Utils.readShort(p, i + 1);
-
-                    {
-                        s = Share.readTerminatedString(p, i + 3);
-                        vIDs.addElement(item);
-                        vCodes.addElement(s);
-                    }
-                }
-            }
-
-            {
-                int cnt = vIDs.size();
-                for (int i = 0; i < cnt; i++)
-                {
-                    if (vIDs.elementAt(i) == id)
-                    {
-                        return (string)vCodes.elementAt(i);
-                    }
+                    return (string)vCodes.elementAt(i);
                 }
             }
             return "";
         }
-        /*
-            public String[] searchShareOld(String pattern) {
-                if (mShareIDs == null) {
-                    return null;
-                }
-
-                int itemSize = SHARE_ID_SIZE;
-
-                byte[] p = mShareIDs;
-                String s = null;
-
-                xVector temp = new xVector(10);
-                int len = mShareIDs.length;
-                String cmp = "CÔNG TY Cổ PHầN";
-                String strRepl = "CTCP";
-                String strRepl2 = "CT";
-                String cmp2 = "CÔNG TY";
-                String strTmp = "";
-                String strBuf = "";
-
-                int count = 0;
-
-                for (int i = 0; i < len; i += itemSize) {
-                    s = Utils.readTerminatedString(p, i + 3);
-                    if (s.startsWith(pattern.toUpperCase())) {
-                        stCompanyInfo st = mContext.mShareManager.getCompanyInfo(s);
-
-                        if (st != null) {
-                            strBuf = st.company_name;
-                            strTmp = strBuf.toUpperCase();
-                            if (strTmp.startsWith(cmp)) {
-                                strBuf = strRepl + strBuf.substring(cmp.length());
-                            } else if (strTmp.startsWith(cmp2)) {
-                                strBuf = strRepl2 + strBuf.substring(cmp2.length());
-                            }
-
-                            s += ": " + strBuf;
-                        }
-
-                        temp.addElement(s);
-                        count ++;
-                        if(count > 30)
-                            break;
-                    }
-                }
-
-                len = temp.size();
-                String[] rtn = new String[len];
-                temp.copyInto(rtn);
-
-                temp.removeAllElements();
-                temp = null;
-
-                return rtn;
-            }
-         * 
-         */
 
         public int getShareID(String code)
         {
-            if (code == null || code.Length == 0)
-            {
-                return -1;
-            }
-
-            if (mShareIDs == null)
-                return 0;
+            int cnt = vIDs.size();
 
             code = code.ToUpper();
 
-            byte[] p = mShareIDs;
-            int id = -1;
-
-            bool found;
-            int i = 0;
-            int len = p.Length;
-            while (i < len - 8)
+            for (int i = 0; i < cnt; i++)
             {
-                if (p[i + 3] == code[0])
+                String s = (String)vCodes.elementAt(i);
+                if (s.CompareTo(code) == 0)
                 {
-                    found = true;
-                    for (int j = 1; j < code.Length; j++)
-                    {
-                        if (p[i + 3 + j] != code[j])
-                        {
-                            found = false;
-                            break;
-                        }
-                    }
-                    if (found)
-                    {
-                        id = Utils.readShort(p, i + 1);
-                        break;
-                    }
+                    return vIDs.elementAt(i);
                 }
-
-                i += SHARE_ID_SIZE;
             }
-
-            if (id == -1 && code.CompareTo("^VNX30") == 0)
-            {
-                id = 752;
-            }
-
-            return id;
+            return 0;
         }
         //=============================================================
         public int getShareCount()
         {
-            return mShares.Count;
+            return vIDs.size();
         }
         public void loadAllShares()
         {
-            if (mShareIDs == null)
+            if (vIDs.size() == 0)
+            {
                 return;
-            byte[] p = mShareIDs;
+            }
+
             int id = -1;
 
-            int i = 0;
-            int len = p.Length;
-            byte market;
+            int market;
             int shareID;
-            while (i < len - 8)
+
+            int cnt = vIDs.size();
+            for (int i = 0; i < cnt; i++)
             {
                 if (i == 275)
                 {
                     Utils.trace("257");
                 }
                 //Utils.trace("i=" + i);
-                market = p[i];
-                shareID = Utils.readShort(p, i + 1);
+                market = vMarketIDs.elementAt(i);
+                shareID = vIDs.elementAt(i);
 
-                getShareQuick(shareID, market, 20);//-1);
-                //getShare(shareID);
-
-                i += SHARE_ID_SIZE;
+                getShareQuick(shareID, (byte)market, 20);
             }
         }
 
         public Share getShareQuick(int shareID, byte marketID, int maxLastCandle)
         {
             if (shareID <= 0)
+            {
                 return null;
+            }
 
             Share s;
 
@@ -653,7 +559,9 @@ namespace stock123.app.data
         public Share getShare(int shareID)
         {
             if (shareID <= 0)
+            {
                 return null;
+            }
 
             Share s;
 
@@ -666,6 +574,7 @@ namespace stock123.app.data
             int marketID = getShareMarketID(shareID);
 
             s = new Share();
+
             s.allocShareMemory(true);
 
             s.setID(shareID);

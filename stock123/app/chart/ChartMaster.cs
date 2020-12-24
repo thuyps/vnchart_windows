@@ -36,7 +36,7 @@ namespace stock123.app.chart
 
         public xVector mAttachedCharts = new xVector(10);
         public xVector mOverlayAttachedCharts = new xVector(10);
-        Drawer mDrawer;
+
         String mComparingShareCode;
         //=========================================
 
@@ -65,9 +65,6 @@ namespace stock123.app.chart
             {
                 return;
             }
-
-            if (mHasFibonacci && mDrawer != null)
-                mDrawer.initFibonaccie(this, mContext.getFontSmall(), getShare());
 
             //g.setColor(Constants.COLOR_BLACK);
             //g.clear();
@@ -1494,6 +1491,20 @@ namespace stock123.app.chart
         public void setDrawer(Drawer drawer)
         {
             mDrawer = drawer;
+        }
+
+        public Drawer getDrawer()
+        {
+            return mDrawer;
+        }
+        public void setShare(Share share)
+        {
+            mShare = share;
+
+            if (mDrawer != null)
+            {
+                mDrawer.initFibonaccie(this, mFont, mShare);
+            }
         }
     }
 }

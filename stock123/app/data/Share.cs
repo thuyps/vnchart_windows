@@ -44,103 +44,103 @@ namespace stock123.app.data
         static int CANDLE_SIZE_NETWORK = 28;
         //===============for drawing chart: 52K===============
         public static int MAX_CANDLE_CHART_COUNT = 10000;
-        public float[] pSMA1 = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pSMA2 = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pSMA3 = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pSMA4 = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pSMA5 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pSMA1;
+        public float[] pSMA2;
+        public float[] pSMA3;
+        public float[] pSMA4;
+        public float[] pSMA5;
 
-        public float[] pPastPrice1 = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pPastPrice2 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pPastPrice1;
+        public float[] pPastPrice2;
 
-        public float[] pEMA = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pRSI = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pWilliamR = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pRSISecond = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pStochRSI = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pStochRSISMA = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pEMA;
+        public float[] pRSI;
+        public float[] pWilliamR;
+        public float[] pRSISecond;
+        public float[] pStochRSI;
+        public float[] pStochRSISMA;
         //=====for macd=====
-        public float[] pMACD = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pMACDSignal9 = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pMACDHistogram = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pMFI = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pMFISecond = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pPSAR = new float[MAX_CANDLE_CHART_COUNT];
-        public bool[] pSAR_SignalUp = new bool[MAX_CANDLE_CHART_COUNT];
+        public float[] pMACD;
+        public float[] pMACDSignal9;
+        public float[] pMACDHistogram;
+        public float[] pMFI;
+        public float[] pMFISecond;
+        public float[] pPSAR;
+        public bool[] pSAR_SignalUp;
 
-        public float[] pVSTOP = new float[MAX_CANDLE_CHART_COUNT];
-        public bool[] pVSTOP_SignalUp = new bool[MAX_CANDLE_CHART_COUNT];
+        public float[] pVSTOP;
+        public bool[] pVSTOP_SignalUp;
 
-        public float[] pEMAIndicator = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pTMP = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pTMP1 = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pTMP2 = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pTMP3 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pEMAIndicator;
+        public float[] pTMP;
+        public float[] pTMP1;
+        public float[] pTMP2;
+        public float[] pTMP3;
 
-        public double[] pDouble1 = new double[MAX_CANDLE_CHART_COUNT];
-        public double[] pDouble2 = new double[MAX_CANDLE_CHART_COUNT];
+        public double[] pDouble1;
+        public double[] pDouble2;
 
-        public float[] pBBUpper = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pBBLower = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pBBUpper;
+        public float[] pBBLower;
 
-        public float[] pADX = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pPLUS_DI = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pMINUS_DI = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pADX;
+        public float[] pPLUS_DI;
+        public float[] pMINUS_DI;
 
-        public float[] pTrix = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pTrixEMA = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pTrix;
+        public float[] pTrixEMA;
 
-        public float[] pSMA_Envelop = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pSMA_Envelop;
 
         //========ichimoku=========
-        public float[] pTenkansen = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pKijunsen = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pChikouSpan = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pSpanA = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pSpanB = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pTenkansen;
+        public float[] pKijunsen;
+        public float[] pChikouSpan;
+        public float[] pSpanA;
+        public float[] pSpanB;
         //=========stochastic========
-        public float[] pStochasticFastK = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pStochasticFastD = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pStochasticSlowK = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pStochasticSlowD = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pStochasticFastK;
+        public float[] pStochasticFastD;
+        public float[] pStochasticSlowK;
+        public float[] pStochasticSlowD;
 
-        public float[] pChaikinOscillator = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pChaikinOscillatorSecond = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pChaikinOscillator;
+        public float[] pChaikinOscillatorSecond;
 
-        public float[] pADL = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pADL_SMA0 = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pADL_SMA1 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pADL;
+        public float[] pADL_SMA0;
+        public float[] pADL_SMA1;
 
-        public float[] pROC = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pROCSecond = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pROC;
+        public float[] pROCSecond;
 
-        public float[] pSMAVolume = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pSMAVolume;
         //  thuyps
-        public float[] pSMAThuyPS = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pSMAThuyPS1 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pSMAThuyPS;
+        public float[] pSMAThuyPS1;
 
-        public float[] pOBV = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pOBV;
 
-        public float[] pNVI = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pNVI_EMA1 = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pNVI_EMA2 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pNVI;
+        public float[] pNVI_EMA1;
+        public float[] pNVI_EMA2;
 
-        public float[] pPVI = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pPVI_EMA1 = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pPVI_EMA2 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pPVI;
+        public float[] pPVI_EMA1;
+        public float[] pPVI_EMA2;
         //  new
-        public float[] pPVT = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pPVT_EMA1 = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pPVT;
+        public float[] pPVT_EMA1;
 
-        public float[] pCCI = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pCCI;
 
         //public static float[] pVSTOP = new float[MAX_CANDLE_CHART_COUNT];
         //public static bool[] pVSTOP_SignalUp = new bool[MAX_CANDLE_CHART_COUNT];
 
-        public float[] pMassIndex = new float[MAX_CANDLE_CHART_COUNT];
-        public float[] pATR = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pMassIndex;
+        public float[] pATR;
         
-        public float[] pComparingPrice = new float[MAX_CANDLE_CHART_COUNT];
+        public float[] pComparingPrice;
         //===============================================
         //  shared memory
         static public int[] mSharedCVolume;
@@ -664,7 +664,7 @@ namespace stock123.app.data
         void initIndicatorMemory(int indicator)
         {
             bool realloc = false;
-            int maxCandle = getCandleCnt() + 1024;
+            int maxCandle = MAX_CANDLE_CHART_COUNT;
             if (pTMP != null && pTMP.Length < maxCandle)
             {
                 realloc = true;

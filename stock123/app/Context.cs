@@ -2557,12 +2557,15 @@ namespace stock123.app
                 for (int i = 0; i < cnt; i++)
                 {
                     market[0] = 0;
+
                     int shareID = Context.getInstance().mShareManager.getShareIDAt(i, market);
+
                     Share share = Context.getInstance().mShareManager.getShare(shareID);
+
                     if (share == null || share.getCode() == null || share.getShareID() <= 0){
                         continue;
                     }
-                    
+
                     stPriceboardState ps = mPriceboard.getPriceboard(shareID);
                     stCompanyInfo inf = mShareManager.getCompanyInfo(shareID);
 

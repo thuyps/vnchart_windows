@@ -27,6 +27,7 @@ namespace xlib.ui
         {
             Brush b = new SolidBrush(Color.Black);
             Pen p = new Pen(b);
+            Brush b0 = new SolidBrush(Color.Red);
 
             Rectangle r = e.Bounds;
             r = GetTabRect(e.Index);
@@ -34,9 +35,18 @@ namespace xlib.ui
             if (mShowClosePageButton)
             {
                 string titel = this.TabPages[e.Index].Text;
-                Font f = this.Font;
-                e.Graphics.DrawString(titel, f, b, new PointF(r.X + 3, r.Y+4));
 
+
+                if (e.Index == this.SelectedIndex)
+                {
+                    Font f = this.Font;
+                    e.Graphics.DrawString(titel, f, b0, new PointF(r.X + 3, r.Y + 4));
+                }
+                else
+                {
+                    Font f = this.Font;
+                    e.Graphics.DrawString(titel, f, b, new PointF(r.X + 3, r.Y + 4));
+                }
                 //--------------------
 
                 bool drawClose = true;

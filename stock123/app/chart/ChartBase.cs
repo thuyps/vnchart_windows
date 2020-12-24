@@ -919,6 +919,22 @@ namespace stock123.app.chart
             base.setSize(w, h);
 
             clearModifyKey();
+
+            if (mDrawer != null)
+            {
+                mDrawer.recalcPosition();
+            }
+        }
+
+        override public void setSize(xBaseControl c)
+        {
+            base.setSize(c.getW(), c.getH());
+            clearModifyKey();
+
+            if (mDrawer != null)
+            {
+                mDrawer.recalcPosition();
+            }
         }
 
         //=======================FIBONACCIE=====================
@@ -1165,7 +1181,9 @@ namespace stock123.app.chart
             {
                 mDrawer = new Drawer();
                 mDrawer.setChart(this);
-                mDrawer.enableSaveFile(false);
+                mDrawer.enableSaveFile(true);
+
+                mDrawer.initFibonaccie(this, mContext.getFontSmall(), getShare());
             }
             else
             {
