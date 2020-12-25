@@ -10,6 +10,7 @@ using stock123.app.data;
 using stock123.app.chart;
 using stock123.app.ui;
 using stock123.app.net;
+using stock123.app.utils;
 
 namespace stock123.app
 {
@@ -440,12 +441,34 @@ namespace stock123.app
             xVector shares = mFilteredShares;
             int cnt = shares.size();
 
-            float[] columnPercents = { 40, 30, 30 }; //  code, price, value
+            float[] columnPercents = { 30, 30, 40 }; //  code, price, value
             String[] columnTexts = { "Mã CP", "Giá", "---" };
 
             xListView list = xListView.createListView(this, columnTexts, columnPercents, w-20, h, mContext.getImageList(C.IMG_MARKET_ICONS, 20, 21));
             list.setID(C.ID_PRICEBOARD_TABLE);
             list.setBackgroundColor(C.COLOR_GRAY);
+
+            ColumnClickEventHandler columnClick = new ColumnClickEventHandler((sender, e) =>
+            {
+                ListView lv = (ListView)sender;
+                if (e.Column == 0 || e.Column == 1)
+                {
+                    //  alphabet
+                    ListViewItemComparer sorter = new ListViewItemComparer(e.Column);
+                    sorter.Numeric = false;
+                    lv.ListViewItemSorter = sorter;
+                    sorter.Column = e.Column;
+
+                    lv.Sort();
+                }
+                else
+                {
+                    showSortColumnMenu(lv, e);
+                    
+                }
+            });
+            list.setColumnClickHandler(columnClick);
+
             //  always add vnindex & hastc
             int i = 0;
             for (i = 0; i < mContext.mShareManager.getVnindexCnt(); i++)
@@ -453,7 +476,7 @@ namespace stock123.app
                 Share share = mContext.mShareManager.getVnindexShareAt(i);
                 if (share != null && share.getCode() != null && share.getCode().Length > 0)
                 {
-                    RowQuoteList r = RowQuoteList.createRowQuoteList(share, this);
+                    RowFilterResult r = RowFilterResult.createRowQuoteList(share, this);
                     list.addRow(r);
                     r.update();
                 }
@@ -463,7 +486,7 @@ namespace stock123.app
                 Share share = (Share)shares.elementAt(i);
                 if (!mContext.mPriceboard.isShareIndex(share.mID))
                 {
-                    RowQuoteList r = RowQuoteList.createRowQuoteList(share, this);
+                    RowFilterResult r = RowFilterResult.createRowQuoteList(share, this);
                     list.addRow(r);
                     r.update();
                 }
@@ -978,7 +1001,7 @@ namespace stock123.app
             {
                 if (aIntParameter == C.ID_PRICEBOARD_TABLE)
                 {
-                    RowQuoteList r = (RowQuoteList)aParameter;
+                    RowFilterResult r = (RowFilterResult)aParameter;
                     share = r.mShare;
 
                     if (share != null)
@@ -1794,6 +1817,8 @@ namespace stock123.app
             if (share != null && share != mShare)
             {
                 mShare = new Share();
+                mShare.allocMemoryUsingShared(false);
+
                 mShare.setCode(share.getCode(), share.getMarketID());
                 mShare.setID(share.getID());
 
@@ -1806,5 +1831,81 @@ namespace stock123.app
                 refreshCharts();
             }
         }
+
+        void showSortColumnMenu(ListView lv, ColumnClickEventArgs e)
+        {
+            //  show popup menu
+            ContextMenuStrip cm = new ContextMenuStrip();
+            cm.Items.Add("RSI");
+            cm.Items.Add("MFI");
+            cm.Items.Add("Vốn hóa");
+            cm.Items.Add("Giá trị giao dịch");
+            cm.Items.Add("EPS");
+            cm.Items.Add("PE");
+            cm.Items.Add("Thay đổi khối lượng");
+
+            cm.ItemClicked += new ToolStripItemClickedEventHandler(
+                (sender, item) => {
+                    float[] columnPercents = { 30, 30, 40 }; //  code, price, value
+                    String[] columnTexts = { "Mã CP", "Giá", "---" };
+                    if (item.ClickedItem.Text.CompareTo("RSI") == 0)
+                    {
+                        ShareSortUtils.evalueSortValue(mFilteredShares, ShareSortUtils.SORT_RSI);
+                        columnTexts[2] = "RSI";
+                    }
+                    else if (item.ClickedItem.Text.CompareTo("MFI") == 0)
+                    {
+                        ShareSortUtils.evalueSortValue(mFilteredShares, ShareSortUtils.SORT_MFI);
+                        columnTexts[2] = "MFI";
+                    }
+                    else if (item.ClickedItem.Text.CompareTo("EPS") == 0)
+                    {
+                        ShareSortUtils.evalueSortValue(mFilteredShares, ShareSortUtils.SORT_EPS);
+                        columnTexts[2] = "EPS";
+                    }
+                    else if (item.ClickedItem.Text.CompareTo("PE") == 0)
+                    {
+                        ShareSortUtils.evalueSortValue(mFilteredShares, ShareSortUtils.SORT_PE);
+                        columnTexts[2] = "PE";
+                    }
+                    else if (item.ClickedItem.Text.CompareTo("Vốn hóa") == 0)
+                    {
+                        ShareSortUtils.evalueSortValue(mFilteredShares, ShareSortUtils.SORT_VonHoa);
+                        columnTexts[2] = "VốnHóa";
+                    }
+                    else if (item.ClickedItem.Text.CompareTo("Giá trị giao dịch") == 0)
+                    {
+                        ShareSortUtils.evalueSortValue(mFilteredShares, ShareSortUtils.SORT_TRADE_VALUE);
+                        columnTexts[2] = "GTGD";
+                    }
+
+                    //==================
+
+                    xListView list = (xListView)lv.Tag;
+                    list.clear();
+                    list.setColumnHeaders(columnTexts, columnPercents);
+
+                    for (int i = 0; i < mFilteredShares.size(); i++)
+                    {
+                        Share share = (Share)mFilteredShares.elementAt(i);
+                        RowFilterResult r = RowFilterResult.createRowQuoteList(share, this);
+                        list.addRow(r);
+                        r.update();
+                    }
+
+                    /*
+                    ListViewItemComparer sorter = new ListViewItemComparer(e.Column);
+                    sorter.Numeric = true;
+                    sorter.LowToHigher = false;
+                    lv.ListViewItemSorter = sorter;
+                    sorter.Column = e.Column;
+
+                    lv.Sort();
+                    */
+                });
+
+            cm.Show(lv.PointToScreen(new Point(50, 15)));
+        }
+
     }
 }

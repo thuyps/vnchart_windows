@@ -459,7 +459,7 @@ namespace stock123.app.table
             setCellValue(12, s, C.COLOR_WHITE);
         }
 
-        protected String volumeToString(int v)
+        public static String volumeToString(int v)
         {
             float vf = (float)(v/ 1000.0f);
             String s;

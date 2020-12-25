@@ -122,19 +122,17 @@
     <Compile Include="app\MarketsTab.cs" />
     <Compile Include="app\MarketSummary.cs" />
     <Compile Include="app\net\JSONHandler.cs" />
-    <Compile Include="app\RowPriceboardGainLoss.cs" />
     <Compile Include="app\RealtimeTradeListDetail.cs" />
-    <Compile Include="app\RowOnlineTrade.cs" />
+    <Compile Include="app\rowlist\RowOnlineTrade.cs" />
     <Compile Include="app\FormSettingParameters.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="app\HistoryChartControl.cs" />
-    <Compile Include="app\RowGlobalQuote.cs" />
     <Compile Include="app\data\ShareComparer.cs" />
     <Compile Include="app\data\stGlobalQuote.cs" />
     <Compile Include="app\MiniFormMoving.cs" />
     <Compile Include="app\MiniIndex.cs" />
-    <Compile Include="app\RowQuoteList.cs" />
+    <Compile Include="app\rowlist\RowFilterResult.cs" />
     <Compile Include="app\data\Priceboard.cs" />
     <Compile Include="app\data\Share.cs" />
     <Compile Include="app\data\ShareManager.cs" />
@@ -152,7 +150,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="app\net\NetProtocol.cs" />
-    <Compile Include="app\RowPriceboard.cs" />
     <Compile Include="app\ScreenBase.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -163,6 +160,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="app\utils\AsyncUtils.cs" />
+    <Compile Include="app\utils\ShareSortUtils.cs" />
     <Compile Include="app\ViewHistoryChart.cs">
       <SubType>Component</SubType>
     </Compile>

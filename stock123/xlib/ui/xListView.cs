@@ -10,6 +10,7 @@ namespace xlib.ui
 {
     public class xListView: xBaseControl
     {
+        protected ColumnClickEventHandler _columnClickHandler;
         public xListView(xIEventListener listener, ImageList imglist)
             : base(listener)
         {
@@ -80,9 +81,10 @@ namespace xlib.ui
             setControl(lv);
         }
 
-        void setColumnHeaders(String[] columnHeaders, float[] columnPercents)
+        public void setColumnHeaders(String[] columnHeaders, float[] columnPercents)
         {
             ListView lv = (ListView)getControl();
+            lv.Columns.Clear();
 
             int w = getW();
             float tmp = 0;
@@ -139,6 +141,12 @@ namespace xlib.ui
             ListView lv = (ListView)getControl();
             lv.Items.Insert(0, item.getItem());
         }
+
+        public void clear()
+        {
+            ListView lv = (ListView)getControl();
+            lv.Items.Clear();
+        }
         //-----------------------------------
         void selectChanged(object sender, EventArgs e)
         {
@@ -162,8 +170,19 @@ namespace xlib.ui
             }
         }
 
-        private void columnClick(object sender, ColumnClickEventArgs e)
+        public void setColumnClickHandler(ColumnClickEventHandler columnClickHandler)
         {
+            _columnClickHandler = columnClickHandler;
+        }
+
+        protected void columnClick(object sender, ColumnClickEventArgs e)
+        {
+            if (_columnClickHandler != null)
+            {
+                _columnClickHandler(sender, e);
+                return;
+            }
+
             ListView lv = (ListView)getControl();
             ListViewItemComparer sorter = lv.ListViewItemSorter as ListViewItemComparer;
 
@@ -214,6 +233,8 @@ namespace xlib.ui
         private int column;
         private bool numeric = false;
 
+        public bool LowToHigher = true;
+
         public int Column
         {
             get { return column; }
@@ -258,7 +279,16 @@ namespace xlib.ui
                     itemYVal = 0;
                 }
 
-                return Decimal.Compare(itemXVal, itemYVal);
+                if (LowToHigher)
+                {
+                    return Decimal.Compare(itemXVal, itemYVal);
+                }
+                else
+                {
+                    return Decimal.Compare(itemYVal, itemXVal);
+                }
+
+                
             }
             else
             {

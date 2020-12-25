@@ -531,7 +531,7 @@ namespace stock123.app.data
 
             //  not found, create a new
             s = new Share();
-            s.allocShareMemory(true);
+            s.allocMemoryUsingShared(true);
             s.setID(shareID);
             s.setCode(getShareCode(shareID), marketID);
 
@@ -575,7 +575,7 @@ namespace stock123.app.data
 
             s = new Share();
 
-            s.allocShareMemory(true);
+            s.allocMemoryUsingShared(true);
 
             s.setID(shareID);
             if (shareID == 752)

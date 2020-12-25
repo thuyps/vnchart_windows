@@ -522,7 +522,7 @@ namespace stock123.app.data
         public void loadShareFromCommonData(bool useSharedMemory, bool appendToday)
         {
             clearCalculations();
-            allocShareMemory(useSharedMemory);
+            allocMemoryUsingShared(useSharedMemory);
 
             mLastScope = -1;
             mCandleType = CANDLE_DAILY;
@@ -905,7 +905,7 @@ namespace stock123.app.data
             return mCClose == mSharedCClose;
         }
 
-        public void allocShareMemory(bool useSharedMemory)
+        public void allocMemoryUsingShared(bool useSharedMemory)
         {
             if (useSharedMemory)
             {

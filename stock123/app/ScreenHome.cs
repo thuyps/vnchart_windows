@@ -11,7 +11,7 @@ using stock123.app.chart;
 using stock123.app.ui;
 using stock123.app;
 using System.Diagnostics;
-
+using stock123.app.rowlist;
 using stock123.app.table;
 
 using stock123.app.net;
@@ -1269,29 +1269,6 @@ namespace stock123.app
                         goChartScreen(pi.id);
                     }
                 }
-                if (aIntParameter == C.ID_GAINLOSS_TABLE)
-                {
-                    RowPriceboardGainLoss r = (RowPriceboardGainLoss)aParameter;
-                    stGainloss a = (stGainloss)r.getData();
-
-                    int shareId = mContext.mShareManager.getShareID(a.code);
-                    if (shareId > 0)
-                    {
-                        goChartScreen(shareId);
-                    }
-                }
-                if (aIntParameter == C.ID_PRICEBOARD_TABLE)
-                {
-                    
-                    {
-                        RowPriceboard r = (RowPriceboard)aParameter;
-                        int shareId = r.mShareID;
-                        if (shareId > 0)
-                        {
-                            goChartScreen(shareId);
-                        }
-                    }
-                }
             }
             if (evt == xBaseControl.EVT_ON_ROW_SELECTED)
             {
@@ -1303,20 +1280,6 @@ namespace stock123.app
                     xListViewItem item = (xListViewItem)aParameter;
 
                     onShareGroupSelected((stShareGroup)item.getData());
-                }
-                if (aIntParameter == C.ID_GAINLOSS_TABLE)
-                {                    
-                    RowPriceboardGainLoss r = (RowPriceboardGainLoss)aParameter;
-                    stGainloss a = (stGainloss)r.getData();
-
-                    int shareID = mContext.mShareManager.getShareID(a.code);
-                    selectShare(shareID);
-                }
-                if (aIntParameter == C.ID_PRICEBOARD_TABLE)
-                {
-                    RowPriceboard r = (RowPriceboard)aParameter;
-                    int shareId = r.mShareID;
-                    selectShare(shareId);
                 }
             }
         }
@@ -1615,44 +1578,6 @@ namespace stock123.app
 
         xBaseControl createGainlossTable(int w, int h)
         {
-            /*
-            xContainer c = new xContainer(this);
-
-            c.setSize(w, h);
-
-            stShareGroup g = mContext.getCurrentShareGroup();
-            float[] columnPercents = {6, 7, 
-                7, 10, 
-                8, 10, 8,
-                9, 10, 
-                8, 7.5f, 9, -1};
-
-            String[] columnTexts = {"Mã CP", "TC", 
-                    "Khớp", "KLKhớp", "+/-", "Tổng KL Khớp",
-                    "Giá mua", "KL mua",
-                    "Tiền vốn (tr)",
-                    "Lãi %", "Lãi VNĐ (tr)",
-                    "Ngày"};
-
-            xListView l = xListView.createListView(this, columnTexts, columnPercents, w, h, mContext.getImageList(C.IMG_MARKET_ICONS, 20, 21));
-            l.setID(C.ID_GAINLOSS_TABLE);
-            l.setBackgroundColor(C.COLOR_GRAY);
-            mPriceboard = l;
-
-            for (int i = 0; i < mContext.mGainLossManager.getTotal(); i++)
-            {
-                stGainloss a = mContext.mGainLossManager.getGainLossAt(i);
-                if (a != null)
-                {
-                    RowPriceboardGainLoss row = RowPriceboardGainLoss.createRowPriceboardGainLoss(a, this);
-                    l.addRow(row);
-                    row.update();
-                }
-            }
-
-            c.addControl(l);
-            //addControl(c);
-            */
             int rowH = 34;
             stShareGroup g = mContext.getCurrentShareGroup();
             TablePriceboard priceboard = new TablePriceboard(this, mContext.mGainLossManager, w, rowH);
@@ -1850,95 +1775,7 @@ namespace stock123.app
             }
 
             return scroll;
-            /*
-            xContainer c = new xContainer(this);
-
-            c.setSize(w, h);
-
-            c
-            float[] columnPercents = { 5.6f, 4.5f, 
-                4.4f, 5.0f, 4.4f, 5.2f, 4.6f, 6.0f, 
-                4.5f, 5.5f, 4f, 
-                4.6f, 6.0f, 4.4f, 5.2f, 4.4f, 5.0f, 
-                4.4f, 4.4f, 8 };
-            String[] columnTexts = {"Mã CP", "TC", "Mua3", "KL 3", "Mua2", "KL 2", "Mua1", "KL 1",
-                    "Khớp", "KLKhớp", "+/-",
-                    "Bán1", "KL 1", "Bán2", "KL 2", "Bán3", "KL 3", 
-                    "Cao", "Thấp", "Tổng KL"};
-
-            xListView l = xListView.createListView(this, columnTexts, columnPercents, w, h, mContext.getImageList(C.IMG_MARKET_ICONS, 20, 21));
-
-            l.setID(C.ID_PRICEBOARD_TABLE);
-            l.setBackgroundColor(C.COLOR_GRAY);
-            mPriceboard = l;
-
-            if (g != null)
-            {
-                for (int i = 0; i < g.getTotal(); i++)
-                {
-                    int shareID = g.getIDAt(i);
-                    if (shareID != -1)
-                    {
-                        RowPriceboard row = RowPriceboard.createRowPriceboard(shareID, this);
-                        l.addRow(row);
-                        row.update();
-                    }
-                }
-            }
-            c.addControl(l);
-            //addControl(c);
-
-            //==================context menu=============
-            int baseIDX = C.ID_SHARE_GROUP_BASE;
-            int groups = mContext.getShareGroupCount();
-            if (groups > 0)
-            {
-                int cnt = 50;   //  Them, xoa
-                int[] ids = new int[cnt];
-                String[] texts = new String[cnt];
-                //==================
-                int[] ids0 = { C.ID_ADD_SHARE, C.ID_REMOVE_SHARE, -1, C.ID_ADD_GROUP, C.ID_REMOVE_GROUP, -1, C.ID_SET_ALARM };
-                String[] texts0 = { "Thêm cổ phiếu", "Xóa CP khỏi d/s", "", "Thêm nhóm yêu thích", "Xóa nhóm", "", "Cài đặt cảnh báo"};
-
-                int i;
-                for (i = 0; i < ids0.Length; i++)
-                {
-                    ids[i] = ids0[i];
-                    texts[i] = texts0[i];
-                }
-
-                l.setMenuContext(ids, texts, i);
-            }
-
-            return c;
-            */
-        }
-
-        xContainer createGlobalIndicesPriceboard(int w, int h)
-        {
-            xContainer c = new xContainer(this);
-
-            c.setSize(w, h);
-
-            //  name, symbol, price, chage, changePercent
-            float[] columnPercents = { 35, 20, 15, 15, 15};
-            String[] columnTexts = {"Chỉ số sàn", "Mã", "Điểm", "+/-", "%"};
-
-            xListView l = xListView.createListView(this, columnTexts, columnPercents, w, h, mContext.getImageList(C.IMG_BLANK_ROW_ICON, 1, 21));
-            l.setID(C.ID_PRICEBOARD_TABLE);
-            l.setBackgroundColor(C.COLOR_GRAY);
-            mGlobalPriceboard = l;
-
-            for (int i = 0; i < mContext.mGlobalIndices.size(); i++)
-            {
-                stGlobalQuote quote = (stGlobalQuote)mContext.mGlobalIndices.elementAt(i);
-                RowGlobalQuote row = RowGlobalQuote.createRowQuoteList(quote, this);
-                l.addRow(row);
-                row.update();
-            }
-            c.addControl(l);
-
-            return c;
+            
         }
 
         void removeInvalidateItemFromRightPanel()
@@ -2393,29 +2230,8 @@ namespace stock123.app
                 }
             }
             if (idx == C.ID_SET_ALARM)
-            {
-                /*
-                xListViewItem item = mPriceboard.getSelectedItem();
-                if (item != null)
-                {
-                    int shareID = -1;
-                    if (item is RowPriceboard)
-                    {
-                        RowPriceboard r = (RowPriceboard)item;
-                        shareID = r.mShareID;
-                    }
-                    else
-                    {
-                        RowPriceboardGainLoss r = (RowPriceboardGainLoss)item;
-                        stGainloss gain = (stGainloss)r.getData();
-
-                        shareID = mContext.mShareManager.getShareID(gain.code);
-                    }
-                    if (shareID == -1)
-                        return;
-                */
-                    
-                Share share = mContext.getSelectedShare();// mContext.mShareManager.getShare(shareID);
+            { 
+                Share share = mContext.getSelectedShare();
                 if (share != null && !share.isIndex())
                 {
                     stAlarm a = mContext.mAlarmManager.getAlarm(share.getCode());
