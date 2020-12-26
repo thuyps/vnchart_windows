@@ -20,8 +20,10 @@ namespace stock123.app.utils
         public const int SORT_THAYDOI_VOL = 6;
         public const int SORT_VOLUME = 7;
         public const int SORT_TRADE_VALUE = 8;
+        public const int SORT_SYMBOL = 9;
+        public const int SORT_PRICE = 10;
 
-        static public void evalueSortValue(xVector v, int type)
+        static public void doSort(xVector v, int type)
         {
             bool revert = false;
             if (type == SORT_RSI)
@@ -55,12 +57,21 @@ namespace stock123.app.utils
             }
             else if (type == SORT_THAYDOI_VOL)
             {
+                revert = true;
                 evalueSortValueVolChanged(v);
             }
             else if (type == SORT_VOLUME)
             {
                 revert = true;
                 evalueSortValueVolume(v);
+            }
+            else if (type == SORT_SYMBOL)
+            {
+                evalueSortValueSymbol(v);
+            }
+            else if (type == SORT_PRICE)
+            {
+                evalueSortValuePrice(v);
             }
 
             sort(v);
@@ -228,7 +239,7 @@ namespace stock123.app.utils
                     stPriceboardState ps = Context.getInstance().mPriceboard.getPriceboard(share.getShareID());
                     if (ps != null)
                     {
-                        share.mSortParam = ps.current_price_1 * ps.current_price_1;
+                        share.mSortParam = ps.current_price_1 * ps.total_volume;
                         double t = share.mSortParam / 1000;
                         share.mCompareText = RowNormalShare.volumeToString((int)t);
                     }
@@ -282,8 +293,102 @@ namespace stock123.app.utils
                 }
             }
         }
+        static void evalueSortValueSymbol(xVector v)
+        {
+            for (int i = 0; i < v.size(); i++)
+            {
+                Share share = (Share)v.elementAt(i);
+                String code = share.getCode();
+
+                if (code == null || code.Length < 3)
+                {
+                    share.mSortParam = 1000;
+                }
+                else
+                {
+                    char[] cc = code.ToCharArray();
+                    int value = ((int)cc[0] << 24) | ((int)cc[1] << 16) | ((int)cc[2] << 8);
+                    if (cc.Length > 3)
+                    {
+                        share.mSortParam = value | (int)cc[3];
+                    }
+                    else
+                    {
+                        share.mSortParam = value;
+                    }
+                }
+            }
+        }
+
+        static void evalueSortValuePrice(xVector v)
+        {
+            for (int i = 0; i < v.size(); i++)
+            {
+                Share share = (Share)v.elementAt(i);
+                /*if (share.getCode().CompareTo("NAW") == 0)
+                {
+                    stPriceboardState ps = Context.getInstance().mPriceboard.getPriceboard(share.getShareID());
+                    share.mSortParam = ps.current_price_1;
+                }
+                 */
+                if (!share.isIndex())
+                {
+                    stPriceboardState ps = Context.getInstance().mPriceboard.getPriceboard(share.getShareID());
+                    share.mSortParam = ps.current_price_1;
+                    share.mSortParam = 0;
+                    if (share.mSortParam == 0)
+                    {
+                        share.loadShareFromCommonData(false);
+                        if (share.getCandleCnt() > 0)
+                        {
+                            share.mSortParam = share.getClose(share.getCandleCnt() - 1);
+                        }
+                    }
+                }
+                else
+                {
+                    share.mSortParam = 10000;
+                }
+            }
+        }
+
         static void evalueSortValueVolChanged(xVector v)
         {
+            for (int i = 0; i < v.size(); i++)
+            {
+                Share share = (Share)v.elementAt(i);
+                /*
+                if (share.getCode().CompareTo("VCP") == 0)
+                {
+                    stPriceboardState ps = Context.getInstance().mPriceboard.getPriceboard(share.getShareID());
+
+                    int vol3 = share.getAveVolumeInDays(3);
+                    int vol15 = share.getAveVolumeInDays(15);
+                    if (vol15 > 0)
+                    {
+                        share.mSortParam = vol3 * 100;
+                        share.mSortParam = share.mSortParam / vol15;
+                        share.mCompareText = String.Format("{0:D}", (int)share.mSortParam);
+                    }
+                }
+                 */
+
+                share.loadShareFromCommonData(true);
+
+                int vol3 = share.getAveVolumeInDays(3);
+                int vol15 = share.getAveVolumeInDays(15);
+                if (vol15 > 0)
+                {
+                    share.mSortParam = vol3 * 100;
+                    share.mSortParam = share.mSortParam / vol15;
+                    share.mCompareText = String.Format("{0:D}", (int)share.mSortParam);
+                }
+                else
+                {
+                    share.mSortParam = 0;
+                    share.mCompareText = "0";
+                }
+            }
         }
     }
 }

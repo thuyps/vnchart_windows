@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Collections;
 using System.Drawing;
 using xlib.framework;
+using System.Windows.Media;
 
 namespace xlib.ui
 {
@@ -99,7 +100,64 @@ namespace xlib.ui
             {
                 ColumnHeader col = lv.Columns.Add(columnHeaders[i], (int)columnPercents[i], HorizontalAlignment.Center);
             }
-            //lv.Columns[lv.Columns.Count - 1].Width = -2;
+           
+        }
+
+        public void setColumnHeaderTextColor(int columnIdx, uint textColor)
+        {
+            ListView lv = (ListView)getControl();
+            lv.OwnerDraw = true;
+
+            lv.DrawItem += (sender, e) =>{
+                e.DrawDefault = true;
+            };
+            lv.DrawSubItem += (sender, e) =>
+            {
+                e.DrawDefault = true;
+            };
+            lv.DrawColumnHeader += (sender, e) =>
+            {
+                using (StringFormat sf = new StringFormat())
+                {
+                    // Store the column text alignment, letting it default
+                    // to Left if it has not been set to Center or Right.
+                    switch (e.Header.TextAlign)
+                    {
+                        case HorizontalAlignment.Center:
+                            sf.Alignment = StringAlignment.Center;
+                            break;
+                        case HorizontalAlignment.Right:
+                            sf.Alignment = StringAlignment.Far;
+                            break;
+                    }
+
+                    // Draw the standard header background.
+                    e.DrawBackground();
+
+                    // Draw the header text.
+                    if (e.ColumnIndex == columnIdx)
+                    {
+                        using (Font headerFont =
+                                new Font("Helvetica", 9, FontStyle.Bold))
+                        {
+                            System.Drawing.SolidBrush brush = new System.Drawing.SolidBrush( System.Drawing.Color.FromArgb((int)textColor) );
+
+                            e.Graphics.DrawString(e.Header.Text, headerFont,
+                                brush, e.Bounds, sf);
+                        }
+                    }
+                    else
+                    {
+                        using (Font headerFont =
+                                new Font("Helvetica", 9, FontStyle.Regular))
+                        {
+                            e.Graphics.DrawString(e.Header.Text, headerFont,
+                                Brushes.Black, e.Bounds, sf);
+                        }
+                    }
+                    
+                }
+            };
         }
 
         void setColumnHeaders(int[] columnWs)
@@ -109,7 +167,6 @@ namespace xlib.ui
             {
                 lv.Columns.Add("", columnWs[i], HorizontalAlignment.Center);
             }
-            //lv.Columns[lv.Columns.Count - 1].Width = -2;
         }
 
         public static xListView createListView(xIEventListener listener, String[] columnHeaders, float[] columnPercents, int w, int h, ImageList imglist)
@@ -295,7 +352,14 @@ namespace xlib.ui
                 string itemXText = itemX.SubItems[Column].Text;
                 string itemYText = itemY.SubItems[Column].Text;
 
-                return String.Compare(itemXText, itemYText);
+                if (LowToHigher)
+                {
+                    return String.Compare(itemXText, itemYText);
+                }
+                else
+                {
+                    return String.Compare(itemYText, itemXText);
+                }
             }
         }
     }

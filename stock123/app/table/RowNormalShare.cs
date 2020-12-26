@@ -61,6 +61,8 @@ namespace stock123.app.table
                 Font fsmallB = Context.getInstance().getFontSmallB();
                 Font fsmall = Context.getInstance().getFontSmall();
                 Font fnormal = Context.getInstance().getFontText();
+
+                Font fSymbol = new Font(new FontFamily("Arial"), 9.0f, FontStyle.Bold);
                 //  code/_ref | Mua1 | Mua2 | Mua3 | Khop | +/- | Ban1 | Ban2 | Ban3 | Cao/thap | Cung/Cau TongKL
                 Font[] font = {fsmallB, fsmallB,
 		            				fnormal, fnormal, fnormal, 
