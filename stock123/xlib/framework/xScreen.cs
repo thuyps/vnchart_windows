@@ -238,7 +238,7 @@ namespace xlib.framework
             return 0;
         }
 
-        public int getWorkingH()
+        virtual public int getWorkingH()
         {
             return getH() - getToolbarH() - getStatusbarH();
         }

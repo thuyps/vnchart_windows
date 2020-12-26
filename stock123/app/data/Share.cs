@@ -1726,29 +1726,33 @@ namespace stock123.app.data
                     scope = _scope;
             }
 
-            if (mEndIdx == 0 || mEndIdx >= getCandleCount())
-                mEndIdx = getCandleCount() - 1;
+
             if (scope < 5)
                 scope = 5;
-            //if (scope > SCOPE_5YEAR)
-                //scope = SCOPE_5YEAR;
 
-            mBeginIdx = mEndIdx - scope;
-            if (mBeginIdx < 0)
+            setStartEndIndex(getCandleCnt() - scope, getCandleCnt() - 1);
+
+            mSelectedCandle = mEndIdx;
+        }
+
+        public void setStartEndIndex(int start, int end)
+        {
+            if (start < 0)
             {
-                mEndIdx = scope;
-                mBeginIdx = 0;
+                start = 0;
+            }
+            if (end >= getCandleCnt()){
+                end = getCandleCnt()-1;
+            }
+            if (end > start)
+            {
+                mBeginIdx = start;
+                mEndIdx = end;
             }
 
-            if (mEndIdx >= getCandleCount())
-                mEndIdx = getCandleCount() - 1;
-
-            mSelectedCandle = mBeginIdx + (mEndIdx - mBeginIdx) / 2;
-
             updateHiloCandle();
-
             mModifiedKey = 0;
-            mModifiedKey2 = (int)Utils.currentTimeMillis()%1000;
+            mModifiedKey2 = (int)Utils.currentTimeMillis() % 1000;
         }
 
         public int getCursorScope()

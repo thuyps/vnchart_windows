@@ -63,7 +63,15 @@ namespace stock123.app
                     return false;
                 }
                 return true;
-            }, null);
+            },
+            (int tabIndex) =>
+            {
+                if (tabIndex > 0)
+                {
+                    mScreens.removeElementAt(tabIndex);
+                }
+            }
+            );
 
             screenHome.setSize(mHomePage.getW(), mHomePage.getH());
             screenHome.onActivate();

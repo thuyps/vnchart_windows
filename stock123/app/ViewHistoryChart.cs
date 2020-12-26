@@ -46,6 +46,8 @@ namespace stock123.app
         xTextField mQuickCode;
 
         xVector mFilteredShares = new xVector(1000);
+        bool[] mFilteredSharesOrderAccend = {true, true, true};
+        int mFilteredSharesOrderLastSortType = -1;
         xContainer mTableList;
 
         int[] mAcceptedMarkets = { 1, 0, 0, 0};
@@ -61,6 +63,7 @@ namespace stock123.app
         xTimer mAlarmAnimation = new xTimer(500);
 
         NetProtocol mNetProtocol;
+        long mLastCheckTick;
 
         public ViewHistoryChart(Share share)
             : base()
@@ -74,6 +77,11 @@ namespace stock123.app
         public override int getToolbarH()
         {
             return 39;
+        }
+
+        override public int getWorkingH()
+        {
+            return getH() - getToolbarH() - getStatusbarH() - 28;
         }
 
         public override void onActivate()
@@ -183,6 +191,37 @@ namespace stock123.app
                 {
                     mNetworkContacting = new DlgContactingServer();
                     mNetworkContacting.Show();
+                }
+            }
+            else if (mNetState == NETSTATE_NORMAL && !mShare.isRealtime())
+            {
+                if (mLastCheckTick == 0) {
+                    mLastCheckTick = Utils.currentTimeMillis();
+                }
+                long now = Utils.currentTimeMillis();
+                long delta = now - mLastCheckTick;
+                if (Utils.isWorkingTime() && delta > 30000)
+                {
+                    stCandle c = mShare.getTodayCandle(false);
+                    if (c.date == mShare.getLastCandleDate())
+                    {
+                        if (c.close != mShare.getClose(mShare.getCandleCnt() - 1)
+                            || c.volume != mShare.getVolume(mShare.getCandleCnt()-1))
+                        {
+                            int start = mShare.mBeginIdx;
+                            int end = mShare.mEndIdx;
+                            int sel = mShare.mSelectedCandle;
+
+                            mShare.appendTodayCandle();
+
+                            mShare.setStartEndIndex(start, end);
+                            mShare.mSelectedCandle = sel;
+
+                            refreshCharts();
+
+                            mLastCheckTick = now;
+                        }
+                    }
                 }
             }
         }
@@ -441,25 +480,52 @@ namespace stock123.app
             xVector shares = mFilteredShares;
             int cnt = shares.size();
 
-            float[] columnPercents = { 30, 30, 40 }; //  code, price, value
-            String[] columnTexts = { "Mã CP", "Giá", "---" };
+            ShareSortUtils.doSort(shares, ShareSortUtils.SORT_TRADE_VALUE);
+
+            float[] columnPercents = { 30, 28, 34, 8 }; //  code, price, value
+            String[] columnTexts = { "Mã CP", "Giá", "▼ GTGD tỉ", "" };
 
             xListView list = xListView.createListView(this, columnTexts, columnPercents, w-20, h, mContext.getImageList(C.IMG_MARKET_ICONS, 20, 21));
             list.setID(C.ID_PRICEBOARD_TABLE);
             list.setBackgroundColor(C.COLOR_GRAY);
+
+            list.setColumnHeaderTextColor(2, C.COLOR_RED);
 
             ColumnClickEventHandler columnClick = new ColumnClickEventHandler((sender, e) =>
             {
                 ListView lv = (ListView)sender;
                 if (e.Column == 0 || e.Column == 1)
                 {
+                    /*
                     //  alphabet
                     ListViewItemComparer sorter = new ListViewItemComparer(e.Column);
-                    sorter.Numeric = false;
+                    sorter.Numeric = e.Column == 1?true:false;
+                    sorter.LowToHigher = mFilteredSharesOrderAccend[e.Column];
+                    mFilteredSharesOrderAccend[e.Column] = !mFilteredSharesOrderAccend[e.Column];
+
                     lv.ListViewItemSorter = sorter;
                     sorter.Column = e.Column;
 
                     lv.Sort();
+                     */
+
+                    int sort = e.Column == 0?ShareSortUtils.SORT_SYMBOL:ShareSortUtils.SORT_PRICE;
+                    ShareSortUtils.doSort(mFilteredShares, sort);
+
+                    mFilteredSharesOrderAccend[e.Column] = !mFilteredSharesOrderAccend[e.Column];
+                    if (mFilteredSharesOrderAccend[e.Column])
+                    {
+                        mFilteredShares.makeReverse();
+                    }
+
+                    list.clear();
+                    for (int j = 0; j < mFilteredShares.size(); j++)
+                    {
+                        Share share = (Share)mFilteredShares.elementAt(j);
+                        RowFilterResult r = RowFilterResult.createRowQuoteList(share, this);
+                        list.addRow(r);
+                        r.update();
+                    }
                 }
                 else
                 {
@@ -1277,9 +1343,9 @@ namespace stock123.app
         void doFilterQuick()
         {
             bool saved = mContext.mOptFilterKLTB30Use;
-            mContext.mOptFilterKLTB30Use = false;
+//            mContext.mOptFilterKLTB30Use = false;
             doFilter();
-            mContext.mOptFilterKLTB30Use = saved;
+//            mContext.mOptFilterKLTB30Use = saved;
         }
 
         void doFilter()
@@ -1842,42 +1908,83 @@ namespace stock123.app
             cm.Items.Add("Giá trị giao dịch");
             cm.Items.Add("EPS");
             cm.Items.Add("PE");
-            cm.Items.Add("Thay đổi khối lượng");
+            cm.Items.Add("Khối lượng");
+            cm.Items.Add("Khối lượng thay đổi (TB3/TB15)");
 
             cm.ItemClicked += new ToolStripItemClickedEventHandler(
                 (sender, item) => {
-                    float[] columnPercents = { 30, 30, 40 }; //  code, price, value
-                    String[] columnTexts = { "Mã CP", "Giá", "---" };
+                    float[] columnPercents = { 30, 28, 34, 8}; //  code, price, value
+
+                    String[] columnTexts = { "Mã CP", "Giá", "---", "" };
+                    int sortType = ShareSortUtils.SORT_RSI;
                     if (item.ClickedItem.Text.CompareTo("RSI") == 0)
                     {
-                        ShareSortUtils.evalueSortValue(mFilteredShares, ShareSortUtils.SORT_RSI);
+                        sortType = ShareSortUtils.SORT_RSI;
                         columnTexts[2] = "RSI";
                     }
                     else if (item.ClickedItem.Text.CompareTo("MFI") == 0)
                     {
-                        ShareSortUtils.evalueSortValue(mFilteredShares, ShareSortUtils.SORT_MFI);
+                        sortType = ShareSortUtils.SORT_MFI;
                         columnTexts[2] = "MFI";
                     }
                     else if (item.ClickedItem.Text.CompareTo("EPS") == 0)
                     {
-                        ShareSortUtils.evalueSortValue(mFilteredShares, ShareSortUtils.SORT_EPS);
+                        sortType = ShareSortUtils.SORT_EPS;
                         columnTexts[2] = "EPS";
                     }
                     else if (item.ClickedItem.Text.CompareTo("PE") == 0)
                     {
-                        ShareSortUtils.evalueSortValue(mFilteredShares, ShareSortUtils.SORT_PE);
+                        sortType = ShareSortUtils.SORT_PE;
                         columnTexts[2] = "PE";
                     }
                     else if (item.ClickedItem.Text.CompareTo("Vốn hóa") == 0)
                     {
-                        ShareSortUtils.evalueSortValue(mFilteredShares, ShareSortUtils.SORT_VonHoa);
-                        columnTexts[2] = "VốnHóa";
+                        sortType = ShareSortUtils.SORT_VonHoa;
+                        columnTexts[2] = "VốnHóa(tỉ)";
                     }
                     else if (item.ClickedItem.Text.CompareTo("Giá trị giao dịch") == 0)
                     {
-                        ShareSortUtils.evalueSortValue(mFilteredShares, ShareSortUtils.SORT_TRADE_VALUE);
-                        columnTexts[2] = "GTGD";
+                        sortType = ShareSortUtils.SORT_TRADE_VALUE;
+                        columnTexts[2] = "GTGD tỉ";
                     }
+                    else if (item.ClickedItem.Text.CompareTo("Khối lượng") == 0)
+                    {
+                        sortType = ShareSortUtils.SORT_VOLUME;
+                        columnTexts[2] = "Khối lượng";
+                    }
+                    else if (item.ClickedItem.Text.CompareTo("Khối lượng thay đổi (TB3/TB15)") == 0)
+                    {
+                        sortType = ShareSortUtils.SORT_THAYDOI_VOL;
+                        columnTexts[2] = "+/-Vol(%)";
+                    }
+                    
+
+                    ShareSortUtils.doSort(mFilteredShares, sortType);
+
+                    if (mFilteredSharesOrderLastSortType != -1)
+                    {
+                        if (mFilteredSharesOrderLastSortType != sortType)
+                        {
+                            mFilteredSharesOrderLastSortType = sortType;
+                            mFilteredSharesOrderAccend[2] = true;
+                        }
+                        else
+                        {
+                            mFilteredSharesOrderAccend[2] = false;
+                        }
+                    }
+                    else
+                    {
+                        mFilteredSharesOrderAccend[2] = true;
+                    }
+                    mFilteredSharesOrderLastSortType = sortType;
+                    if (!mFilteredSharesOrderAccend[2])
+                    {
+                        mFilteredShares.makeReverse();
+                        mFilteredSharesOrderLastSortType = -1;
+                    }
+                    
+                    columnTexts[2] = "▼ " + columnTexts[2];
 
                     //==================
 
@@ -1892,16 +1999,6 @@ namespace stock123.app
                         list.addRow(r);
                         r.update();
                     }
-
-                    /*
-                    ListViewItemComparer sorter = new ListViewItemComparer(e.Column);
-                    sorter.Numeric = true;
-                    sorter.LowToHigher = false;
-                    lv.ListViewItemSorter = sorter;
-                    sorter.Column = e.Column;
-
-                    lv.Sort();
-                    */
                 });
 
             cm.Show(lv.PointToScreen(new Point(50, 15)));

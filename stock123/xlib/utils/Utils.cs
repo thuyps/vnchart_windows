@@ -642,6 +642,15 @@ namespace xlib.utils
             return (long)DateTime.Now.TimeOfDay.TotalMilliseconds;// .Milliseconds;
         }
 
+        static public bool isWorkingTime()
+        {
+            DateTime now = DateTime.Now;
+
+            int hours = now.Hour;
+            return hours >= 9 & hours < 16;
+
+        }
+
         static public void trace(String msg)
         {
             //System.Diagnostics.Trace.WriteLine(msg);

@@ -638,21 +638,24 @@ namespace stock123.app
                         }
                         else
                         {
-                            mNetState = STATE_PREPARING_UPDATE_REALTIME;
-                            mRealtimeUpdateCnt++;
-                            if (mRealtimeUpdateCnt >= 9)
+                            if (Utils.isWorkingTime())
                             {
-                                mRealtimeUpdateCnt = 0;
-                                mNetState = STATE_PREPARING_PRICEBOARD_ZERO;
-                            }
-                            if (mContext.mPriceboard.isMarketClosed())
-                            {
-                                //mNetState = STATE_PREPARING_PRICEBOARD_ZERO;
-                                mTimer.setExpiration(30 * 1000);
-                            }
-                            else
-                            {
-                                mTimer.setExpiration(30 * 1000);
+                                mNetState = STATE_PREPARING_UPDATE_REALTIME;
+                                mRealtimeUpdateCnt++;
+                                if (mRealtimeUpdateCnt >= 9)
+                                {
+                                    mRealtimeUpdateCnt = 0;
+                                    mNetState = STATE_PREPARING_PRICEBOARD_ZERO;
+                                }
+                                if (mContext.mPriceboard.isMarketClosed())
+                                {
+                                    //mNetState = STATE_PREPARING_PRICEBOARD_ZERO;
+                                    mTimer.setExpiration(30 * 1000);
+                                }
+                                else
+                                {
+                                    mTimer.setExpiration(30 * 1000);
+                                }
                             }
                         }
                         mTimer.reset();
@@ -2949,6 +2952,11 @@ namespace stock123.app
             }
 
             Utils.trace("Downloaded all share: " + len);
+        }
+
+        override public int getWorkingH()
+        {
+            return getH() - getToolbarH() - getStatusbarH() - 30;
         }
     }
 }

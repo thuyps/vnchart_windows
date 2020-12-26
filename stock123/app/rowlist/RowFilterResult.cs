@@ -34,7 +34,7 @@ namespace stock123.app
 
             uint[] bg = {b, g, b};
             Font f = mContext.getFontText();
-            Font fb = mContext.getFontTextB();
+            Font fb = mContext.getFontSmallB();
 
             if (mShare.isIndex())
             {

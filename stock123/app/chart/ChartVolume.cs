@@ -79,7 +79,7 @@ namespace stock123.app.chart
 
                 mHighestVolume = sb.ToString();
 
-                lowest /= 2;
+                lowest /= 4;
 
                 double ry = (float)mDrawingH / (biggest - lowest);
                 double rw = (float)mDrawingW / mChartLineLength;
@@ -109,6 +109,9 @@ namespace stock123.app.chart
 
             if (mShouldDrawGrid)
                 drawGrid(g);
+
+            //g.setColor(0xffff00ff);
+            //g.drawLine(0, 150, getW(), 150);
 
             g.setColor(0xff00ff00);
             int tmp = mY + getH() - CHART_BORDER_SPACING_Y;
