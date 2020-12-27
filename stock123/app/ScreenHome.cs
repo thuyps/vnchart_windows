@@ -40,11 +40,6 @@ namespace stock123.app
         //const int STATE_GETTING_NEXTFILE = 7;
         const int STATE_PREPARING_UPDATE_REALTIME = 10;
         const int STATE_UPDATING_REALTIME = 11;
-        
-        const int STATE_CHANGING_PASSWORD_PREPARING = 15;
-        const int STATE_CHANGING_PASSWORD = 16;
-        const int STATE_RESETING_PASSWORD_PREPARING = 17;
-        const int STATE_RESETING_PASSWORD = 18;
 
         const int STATE_DOWNLOAD_NEW_VERSION_PREPARING = 30;
         const int STATE_DOWNLOAD_NEW_VERSION = 31;
@@ -126,13 +121,9 @@ namespace stock123.app
         int mAlarmAnimationIDX = 0;
         xTimer mAlarmAnimation = new xTimer(500);
         //---------------------------------------------------------------/
-        bool mRequestResetPassword = false;
-        bool mRequestChangePassword = false;
-        string mRequestNewPassword;
-        //---------------------------------------------------------------/
-        bool mIsGettingServerAddress;
 
-        NetProtocol mNetProtocol;
+        //---------------------------------------------------------------/
+
         int mRealtimeUpdateCnt;
         //---------------------------------------------------------------/
 
@@ -159,13 +150,6 @@ namespace stock123.app
                 return;
             }
 
-            mNetProtocol = mContext.createNetProtocol();
-            if (mNetProtocol == null){
-                mIsGettingServerAddress = true;
-                return;
-            }
-            mNetProtocol.setListener(this);
-
             mRealtimeUpdateCnt = 0;
 
             mTimer = new xTimer(3000);
@@ -183,8 +167,6 @@ namespace stock123.app
 
             setTitle("Home Screen");
             setStatusMsg("status bar");
-
-            mNetProtocol.setListener(this);
 
             if (!mContext.isOnline())
             {
@@ -519,17 +501,13 @@ namespace stock123.app
             else if (mNetState == STATE_PREPARING_UPDATE_REALTIME) s = "STATE_PREPARING_UPDATE_REALTIME";
             else if (mNetState == STATE_UPDATING_REALTIME) s = "STATE_UPDATING_REALTIME";
 
-            else if (mNetState == STATE_CHANGING_PASSWORD_PREPARING) s = "STATE_CHANGING_PASSWORD_PREPARING";
-            else if (mNetState == STATE_CHANGING_PASSWORD) s = "STATE_CHANGING_PASSWORD";
-            else if (mNetState == STATE_RESETING_PASSWORD_PREPARING) s = "STATE_RESETING_PASSWORD_PREPARING";
-            else if (mNetState == STATE_RESETING_PASSWORD) s = "STATE_RESETING_PASSWORD";
-
             else if (mNetState == STATE_DOWNLOAD_NEW_VERSION_PREPARING) s = "STATE_DOWNLOAD_NEW_VERSION_PREPARING";
             else if (mNetState == STATE_DOWNLOAD_NEW_VERSION) s = "STATE_DOWNLOAD_NEW_VERSION"; 
         }
 
         override public void onTick()
         {
+            /*
             if (mNetProtocol == null)
             {
                 if (mStartupDialog == null)
@@ -552,14 +530,17 @@ namespace stock123.app
                 }
                 return;
             }
-            
+             */
+            /*
             if (mNetState == STATE_DOWNLOAD_NEW_VERSION_PREPARING)
             {
                 xHttp http = new xHttp(this);
                 http.get(mContext.mLatestClientVersionURL, null);
                 mNetState = STATE_DOWNLOAD_NEW_VERSION;
             }
-            else if (mNetState == STATE_DOWNLOAD_ALL_SHARE_PREPARING)
+            else 
+             */
+            if (mNetState == STATE_DOWNLOAD_ALL_SHARE_PREPARING)
             {
                 xHttp http = new xHttp(this);
                 http.get(mContext.configJson.url_all_share2, null);
@@ -585,9 +566,6 @@ namespace stock123.app
             }
             //============================================
 
-            if (mNetProtocol != null)
-                mNetProtocol.onTick();
-
             if (mContext.mShouldReloadAllData)
             {
                 mContext.logout();
@@ -604,8 +582,6 @@ namespace stock123.app
                     mNetState = STATE_PREPARING_LOGIN;
                 }
             }
-            if (hasServerNotification())
-                return;
 
             //================
             if (!mIsShowAlarmDialog && mContext.mAlarmManager.hasTriggerredAlarm())
@@ -626,44 +602,37 @@ namespace stock123.app
                 {
                     if (mTimer.isExpired())
                     {
-                        if (mRequestChangePassword)
+                        if (Utils.isWorkingTime())
                         {
-                            mRequestChangePassword = false;
-                            mNetState = STATE_CHANGING_PASSWORD_PREPARING;
-                        }
-                        else if (mRequestResetPassword)
-                        {
-                            mRequestResetPassword = false;
-                            mNetState = STATE_RESETING_PASSWORD_PREPARING;
-                        }
-                        else
-                        {
-                            if (Utils.isWorkingTime())
+                            mNetState = STATE_PREPARING_UPDATE_REALTIME;
+                            mRealtimeUpdateCnt++;
+                            if (mRealtimeUpdateCnt >= 9)
                             {
-                                mNetState = STATE_PREPARING_UPDATE_REALTIME;
-                                mRealtimeUpdateCnt++;
-                                if (mRealtimeUpdateCnt >= 9)
-                                {
-                                    mRealtimeUpdateCnt = 0;
-                                    mNetState = STATE_PREPARING_PRICEBOARD_ZERO;
-                                }
-                                if (mContext.mPriceboard.isMarketClosed())
-                                {
-                                    //mNetState = STATE_PREPARING_PRICEBOARD_ZERO;
-                                    mTimer.setExpiration(30 * 1000);
-                                }
-                                else
-                                {
-                                    mTimer.setExpiration(30 * 1000);
-                                }
+                                mRealtimeUpdateCnt = 0;
+                                mNetState = STATE_PREPARING_PRICEBOARD_ZERO;
                             }
+                            if (mContext.mPriceboard.isMarketClosed())
+                            {
+                                //mNetState = STATE_PREPARING_PRICEBOARD_ZERO;
+                                mTimer.setExpiration(30 * 1000);
+                            }
+                            else
+                            {
+                                mTimer.setExpiration(30 * 1000);
+                            }
+
+                            doUpdateRealtime();
                         }
                         mTimer.reset();
                     }
                 }
             }
 
-           
+            if (mNetState == STATE_PREPARING_UPDATE_REALTIME
+                || mNetState == STATE_PREPARING_PRICEBOARD_ZERO)
+            {
+                doUpdateRealtime();
+            }
 
             //  login
             if (mNetState == STATE_PREPARING_LOGIN)
@@ -674,333 +643,6 @@ namespace stock123.app
             {
                 login(1);
             }
-            if (mNetState == STATE_CHANGING_PASSWORD_PREPARING)
-            {
-                mNetProtocol.resetRequest();
-                mNetProtocol.requestSetPassword(mRequestNewPassword);
-                mNetProtocol.flushRequest();
-                mNetState = STATE_CHANGING_PASSWORD;
-            }
-            if (mNetState == STATE_RESETING_PASSWORD_PREPARING)
-            {
-                mNetProtocol.resetRequest();
-                mNetProtocol.requestResetPassword(mContext.mEmail);
-                mNetProtocol.flushRequest();
-                mNetState = STATE_RESETING_PASSWORD;
-
-                showContactingServerDlg();
-            }
-            //  get priceboard reference + zero
-            if (mNetState == STATE_PREPARING_PRICEBOARD_ZERO)
-            {
-                if (!mTimer.isExpired())
-                {
-                    return;
-                }
-                mNetProtocol.resetRequest();
-
-                //  indices
-                if (!mIsLoadIndicesDataAtStartup)
-                {
-                    for (int i = 0; i < mContext.mShareManager.getVnindexCnt(); i++)
-                    {
-                        Share share = mContext.mShareManager.getVnindexShareAt(i);
-                        if (share == null)
-                            break;
-                        share.loadShareFromFile(false);
-                        int date = share.getLastCandleDate();
-                        if (date == 0)
-                        {
-                            date = Utils.getDateAsInt(5000);
-                        }
-                        else
-                        {
-                            long l = Utils.dateToNumber(date);
-                            date = Utils.dateFromNumber(l - 10);
-                        }
-                        mNetProtocol.requestGet1ShareData(share.mID, date);
-                    }
-                    //  loadShareFromFile makes mClose,mOpen... incorrect, fix it
-                    if (mContext.getSelectedShare() != null)
-                    {
-                        mContext.getSelectedShare().clearCalculations();
-                        if (mContext.getSelectedShare().isIndex())
-                            mContext.getSelectedShare().loadShareFromFile(false);
-                        else
-                            mContext.getSelectedShare().loadShareFromCommonData(false);
-                    }
-                    //=========================
-                }
-                //mNetProtocol.requestPriceboardRef(-1);
-                mNetProtocol.requestPriceboardInitial(-1, null);
-
-                mNetProtocol.requestOpens();
-
-                //  json indices
-                VTDictionary dict = new VTDictionary();
-                dict.setValueInt(JSONHandler.kMessageID, JSONHandler.JMSG_LIST_INDICES);
-                mNetProtocol.requestJSONMessage(dict.toJson());
-
-
-                mNetProtocol.flushRequest();
-
-                mNetState = STATE_GETTING_PRICEBOARD_ZERO;
-            }
-            //  realtime update
-            if (mNetState == STATE_PREPARING_UPDATE_REALTIME)
-            {
-                mNetProtocol.resetRequest();
-                //  check if user changed his favorite group
-                if (mContext.mIsFavorGroupChanged)
-                {
-                    xDataOutput o = mContext.getUserDataAsStream();
-                    mNetProtocol.requestSaveUserData(o);
-                    o = null;
-                }
-                mContext.mIsFavorGroupChanged = false;
-                //  intraday history
-                if (mRealtimeChart != null)
-                {
-                    TradeHistory tradehistory = mRealtimeChart.getTradeHistory();
-                    if (tradehistory != null)
-                        mNetProtocol.requestTradeHistory(tradehistory.mCode, tradehistory.getFloorID(), 0, tradehistory.getLastTime());
-                }
-                //  vnindex & hastc
-                for (int t = 0; t < mContext.mPriceboard.getIndicesCount(); t++)
-                {
-                    stPriceboardStateIndex pi = mContext.mPriceboard.getPriceboardIndexAt(t);
-
-                    if (pi.id != 0)
-                    {
-                        TradeHistory trade = mContext.getTradeHistory(pi.id);
-                        mNetProtocol.requestTradeHistory(pi.code, pi.marketID, 0, trade.getLastTime());
-
-                        //  online index
-                        //mNetProtocol.requestOnlineIndex(pi.marketID);
-                    }
-                }
-
-                //  current priceboard
-                stShareGroup currentGroup = mContext.getCurrentShareGroup();
-                xVector v = new xVector();
-
-                if (currentGroup != null)
-                {
-                    for (int i = 0; i < currentGroup.getTotal(); i++)
-                    {
-                        String code = currentGroup.getCodeAt(i);
-                        int id = mContext.mShareManager.getShareID(code);
-                        v.addElement((Int32)id);
-                    }
-                }
-                if (v.size() > 0)
-                {
-                    mNetProtocol.requestGetPriceboard(v);
-                }
-                //======opens=========
-                if (mTimerRequestOpen.isExpired())
-                {
-                    Utils.trace("--------timer is expired-----------");
-                    mTimerRequestOpen.reset();
-
-                    mNetProtocol.requestOpens();
-                }
-                //=========================
-                mNetProtocol.flushRequest();
-
-                mNetState = STATE_UPDATING_REALTIME;
-            }
-            /*
-            if (mNetState == STATE_NORMAL && mTimer.isExpired())
-            {
-                mTimer.reset();
-                if (mContext.isOnline())
-                {
-
-                }
-            }
-             * */
-        }
-
-        override public void onNetworkCompleted(bool success)
-        {
-            if (mStartupDialog != null)
-            {
-                mStartupDialog.Close();
-                mStartupDialog = null;
-            }
-            //SubScreenBase::onNetworkCompleted(data, len);
-            mTimer.reset();
-/*
-            if (mDialog && mDialog.getID() == ID_DIALOG_NETWORK_CONTACTING)
-            {
-                closeDialog();
-            }
-*/
-            //---------------------------    
-            if (mNetState == STATE_CHANGING_PASSWORD)
-            {
-                mNetState = STATE_NORMAL;
-            }
-            if (mNetState == STATE_RESETING_PASSWORD)
-            {
-                mNetState = STATE_LOGIN_REQUIRED;
-                //  show msg
-                hasServerNotification();
-
-                showLoginDialog("Login hệ thống");
-            }
-            if (mNetState == STATE_GETTING_PRICEBOARD_ZERO)
-            {
-                if (success)
-                    mIsLoadIndicesDataAtStartup = true;
-
-                if (mContext.mEmail.CompareTo("thuyps@gmail.com") == 0 && mContext.mPassword.CompareTo("1") == 0)
-                {
-                    //  clear default user
-                    mContext.mEmail = "";
-                    mContext.mPassword = "";
-                    mContext.saveProfile();
-                    mContext.logout();
-                    updateUI();
-
-                    mNetState = STATE_LOGIN_REQUIRED;
-                    showLoginDialog("Login hệ thống");
-                }
-
-                //  check alarm after getting priceboard zero
-                mIsShowAlarmDialog = false;
-            }
-            //---------------------------
-            if (mNetState == STATE_LOGGING)
-            {
-                if (mContext.isOnline())
-                {
-                    mContext.saveProfile();
-
-                    updateUI();
-
-                    /*
-                    //-----------------------------
-                    if (mSubScreen)
-                        mSubScreen.recreateControls();
-                    */
-                    mNetState = STATE_PREPARING_PRICEBOARD_ZERO;
-                    mTimer.expireTimer();
-                    setStatusMsg("LOGIN success. Starting priceboard ZERO");
-
-                    bool showContactingDlg = true;
-
-                    if (mContext.mLatestClientVersion > C.CLIENT_VERSION)
-                    {
-                        if (true)//mContext.noupdate)
-                        {
-                            showContactingDlg = false;
-                            showNewVersionDialog();
-                        }
-                        else if (true)//showDialogYesNo("Đã có phiên bản vnChart mới, bạn có muốn tải về không?"))
-                        {
-                            //showWeb(mContext.mLatestClientVersionURL);
-                            mNetState = STATE_DOWNLOAD_NEW_VERSION_PREPARING;
-                        }
-                        //mContext.mLatestClientVersion = -1;
-                    }
-
-                    if (mContext.mIsFirstTime)
-                    {
-                        mContext.mIsShowWhatNew = true;
-                        //showHelp(0);
-                        mContext.saveProfile();
-                    }
-                    else if (!mContext.mIsShowWhatNew && mContext.mEmail.CompareTo("thuyps@gmail.com") != 0)
-                    {
-                        //mContext.mIsShowWhatNew = true;
-                        mContext.saveProfile();
-                        //showHelp(-1);
-
-                        showContactingDlg = false;
-                    }
-
-                    if (showContactingDlg)
-                    {
-                        showContactingServerDlg();
-                    }
-                }
-                else
-                {
-                    string err = "Lỗi mạng";
-                    string status = err;
-                    if (mNetProtocol.getLastError() != null && mNetProtocol.getLastError().Length > 0)
-                    {
-                        err = mNetProtocol.getLastError();
-                    }
-                    else if (hasServerNotification())
-                    {
-                        err = null;
-                        status = null;
-                    }
-
-                    if (err != null)
-                        showDialogOK(err);
-                    if (status != null)
-                        setStatusMsg(status);
-                    //mNetState = STATE_NORMAL;
-                    mNetState = STATE_LOGIN_REQUIRED;
-
-                    showLoginDialog(err);
-                }
-            }
-            if (mNetState == STATE_GETTING_PRICEBOARD_ZERO)
-            {
-                mContext.mPriceboard.savePriceboard();
-
-                if (mContext.mPriceboard.hasNextFile(1))
-                {
-                    mNetState = STATE_PREPARING_UPDATE_REALTIME;
-                    setStatusMsg("priceboard ZERO success. Starting realtime update");
-                }
-                else
-                {
-                    setStatusMsg("failed to get priceboard-zero");
-                    mNetState = STATE_NORMAL;
-                }
-                updateItemsAfterNetDone();
-            }
-            if (mNetState == STATE_UPDATING_REALTIME)
-            {
-                mNetState = STATE_NORMAL;
-                mTimer.reset();
-                //  refresh: priceboard, 2 indices, realtime charts
-                mPriceboard.invalidate();
-                updateItemsAfterNetDone();
-
-                if (mContext.mLatestClientVersion > Context.VERSION && !mContext.mLastestClientVersionAsk)
-                {
-                    showNewVersionDialog();
-                }
-                /*
-                if (mContext.mPriceboardNextfileError > 4)
-                {
-                    mContext.mPriceboardNextfileError = 0;
-                    mNetState = STATE_PREPARING_PRICEBOARD_ZERO;
-                    setStatusMsg("restarting from ZERO priceboard");
-                }
-
-                updateItemsAfterNetDone();
-                */
-            }
-/*
-            if (mSubScreen)
-                mSubScreen.invalidate();
-*/
-            /*
-             mUITable.updateTable();
-             //mTable.updateTable();
-             if (mQueryCnt++ < 6)
-             mTimer.expireTimer();
-     
-             */
-            Utils.trace("==========Network DONE.");
         }
 
         void killvnChart()
@@ -1295,39 +937,125 @@ namespace stock123.app
             }
             mContext.mTradeHistoryManager.removeAllElements();
 
+            showContactingServerDlg();
             //-------------------login--------------------
-            mNetProtocol.resetRequest();
+            NetProtocol net = mContext.createNetProtocol();
 
             if (createAcc == 1)
             {
-                mNetProtocol.requestLogin(mContext.mEmail, mContext.mPassword, createAcc);
+                net.requestLogin(mContext.mEmail, mContext.mPassword, createAcc);
             }
             else
             {
-                //mNetProtocol.requestLoginNew(mContext.mEmail, mContext.mPassword, createAcc);
-                mNetProtocol.requestLoginNew(mContext.mEmail, mContext.mPassword, createAcc);
+                net.requestLoginNew(mContext.mEmail, mContext.mPassword, createAcc);
             }
-            mNetProtocol.requestGetShareIDs();
-            mNetProtocol.requestIndicesIDs();
+            net.requestGetShareIDs();
+            net.requestIndicesIDs();
 
-            //if (mContext.getShareGroupCount() == 0)
-                mNetProtocol.requestShareGroup();
+            net.requestShareGroup();
 
             if (Utils.getDateAsInt() - mContext.mCompanyUpdateTime >= 2
                 || mContext.mShareManager.getCompanyInfoCount() == 0)	//	2days
             {
-                mNetProtocol.requestGetCompanyInfo();
+                net.requestGetCompanyInfo();
             }
-            
-            mNetProtocol.requestGetUserData();
 
-            updateLatestData();
+            net.requestGetUserData();
+
+            updateLatestData(net);
             //================================================
-            mNetProtocol.flushRequest();
+            net.flushRequest();
             mNetState = STATE_LOGGING;
+
+            net.onDoneDelegate = (sender, ok) =>
+            {
+                if (mContext.isOnline())
+                {
+                    mContext.saveProfile();
+
+                    updateUI();
+
+                    mNetState = STATE_PREPARING_PRICEBOARD_ZERO;
+                    mTimer.expireTimer();
+                    setStatusMsg("LOGIN success. Starting priceboard ZERO");
+
+                    bool showContactingDlg = true;
+
+                    if (mContext.mLatestClientVersion > C.CLIENT_VERSION)
+                    {
+                        if (true)//mContext.noupdate)
+                        {
+                            showContactingDlg = false;
+                            showNewVersionDialog();
+                        }
+                        else if (true)//showDialogYesNo("Đã có phiên bản vnChart mới, bạn có muốn tải về không?"))
+                        {
+                            //showWeb(mContext.mLatestClientVersionURL);
+                            mNetState = STATE_DOWNLOAD_NEW_VERSION_PREPARING;
+                        }
+                        //mContext.mLatestClientVersion = -1;
+                    }
+
+                    if (mContext.mIsFirstTime)
+                    {
+                        mContext.mIsShowWhatNew = true;
+                        //showHelp(0);
+                        mContext.saveProfile();
+                    }
+                    else if (!mContext.mIsShowWhatNew && mContext.mEmail.CompareTo("thuyps@gmail.com") != 0)
+                    {
+                        //mContext.mIsShowWhatNew = true;
+                        mContext.saveProfile();
+                        //showHelp(-1);
+
+                        showContactingDlg = false;
+                    }
+
+                    if (showContactingDlg)
+                    {
+                        showContactingServerDlg();
+                    }
+                    else
+                    {
+                        hideContactingServerDlg();
+                    }
+                }
+                else
+                {
+                    string err = "Lỗi mạng";
+                    string status = err;
+                    if (sender.getLastError() != null && sender.getLastError().Length > 0)
+                    {
+                        err = sender.getLastError();
+                    }
+                    else if (hasServerNotification(sender))
+                    {
+                        err = null;
+                        status = null;
+                    }
+
+                    if (err != null)
+                        showDialogOK(err);
+                    if (status != null)
+                        setStatusMsg(status);
+                    //mNetState = STATE_NORMAL;
+                    mNetState = STATE_LOGIN_REQUIRED;
+
+                    showLoginDialog(err);
+                }
+            };
 
             //  show dialog
             showContactingServerDlg();
+        }
+
+        void hideContactingServerDlg()
+        {
+            if (mStartupDialog != null)
+            {
+                mStartupDialog.Close();
+                mStartupDialog = null;
+            }
         }
 
         void showContactingServerDlg()
@@ -1343,7 +1071,7 @@ namespace stock123.app
             setStatusMsg(C.S_CONTACTING_SERVER);
         }
 
-        public void updateLatestData()
+        public void updateLatestData(NetProtocol net)
         {
             int date = 0;
 
@@ -1355,7 +1083,7 @@ namespace stock123.app
                 l -= 6;
                 date = Utils.dateFromNumber(l);
             }
-            mNetProtocol.requestGetAllShares2(date);
+            net.requestGetAllShares2(date);
 
             int devidedDate = mContext.mLastDayOfShareUpdate;
             if (devidedDate == 0)
@@ -1367,7 +1095,6 @@ namespace stock123.app
 
         void reloadAllData()
         {
-            mNetProtocol.cancelNetwork();
             mContext.logout();
 
             mContext.clearAllSavedData();
@@ -1409,6 +1136,8 @@ namespace stock123.app
 
         void showLoginDialog(string title)
         {
+            hideContactingServerDlg();
+
             DlgLogin dlg = new DlgLogin(title, mContext.mEmail, mContext.mPassword);
             dlg.ShowDialog();
             if (dlg.mDlgResult == DlgLogin.DLG_LOGIN)
@@ -1448,8 +1177,7 @@ namespace stock123.app
                 if (Utils.isValidEmail(email))
                 {
                     mContext.mEmail = email;
-                    mRequestResetPassword = false;
-                    mNetState = STATE_RESETING_PASSWORD_PREPARING;
+                    requestResetPassword(email);
                 }
                 else
                 {
@@ -1569,7 +1297,6 @@ namespace stock123.app
             {
                 try
                 {
-                    mNetProtocol.cancelNetwork();
                     mContext.logout();
                     mNetState = STATE_NORMAL;
                     updateUI();
@@ -2402,9 +2129,8 @@ namespace stock123.app
                     DlgResetPass dlg = new DlgResetPass();
                     if (dlg.ShowDialog() == DialogResult.OK)
                     {
-                        mRequestChangePassword = true;
-                        mRequestNewPassword = dlg.getNewPassword();
-                        mTimer.expireTimer();
+                        String newPassword = dlg.getNewPassword();
+                        requestChangePassword(newPassword);
                     }
                 }
                 else
@@ -2416,8 +2142,8 @@ namespace stock123.app
             {
                 if (mContext.isOnline())
                 {
-                    mRequestResetPassword = true;
-                    mTimer.expireTimer();
+                    //string email = dlg.getEmail();
+                    requestResetPassword(mContext.mEmail);
                 }
                 else
                 {
@@ -2426,14 +2152,66 @@ namespace stock123.app
             }
         }
 
-        bool hasServerNotification()
+        void requestChangePassword(String newPassword)
         {
-            int serverNotificationCode = mNetProtocol.getServerNotificationCode();
+            NetProtocol net = mContext.createNetProtocol();
+
+            net.onDoneDelegate = (sender, ok) =>
+            {
+                String msg = null;
+                if (ok)
+                {
+                    String err = sender.getLastError();
+                    if (err != null)
+                    {
+                        msg = err;
+                    }
+                }
+                else
+                {
+                    msg = "Có lỗi sảy ra khi kết nối server!";
+                }
+                showDialogOK(msg);
+            };
+
+            net.requestSetPassword(newPassword);
+            net.flushRequest();
+        }
+
+        void requestResetPassword(String email)
+        {
+            NetProtocol net = mContext.createNetProtocol();
+
+            net.onDoneDelegate = (sender, ok) =>
+            {
+                String msg = null;
+                if (ok)
+                {
+                    String err = sender.getLastError();
+                    if (err != null)
+                    {
+                        msg = err;
+                    }
+                }
+                else
+                {
+                    msg = "Có lỗi sảy ra khi kết nối server!";
+                }
+                showDialogOK(msg);
+            };
+
+            net.requestResetPassword(email);
+            net.flushRequest();
+        }
+
+        bool hasServerNotification(NetProtocol net)
+        {
+            int serverNotificationCode = net.getServerNotificationCode();
             if (serverNotificationCode > 0)
             {
                 if (NetProtocol.SN_SESSION_TIMEOUT == serverNotificationCode)
                 {
-                    mNetProtocol.cancelNetwork();
+                    net.cancelNetwork();
                     mContext.logout();
                     updateUI();
                 }
@@ -2449,12 +2227,12 @@ namespace stock123.app
                     {
                         showWeb(C.URL_EXPAND_ACCOUNT);
                     }
-                    mNetProtocol.resetServerNotification();
+                    net.resetServerNotification();
                 }
                 else
                 {
-                    msg = mNetProtocol.getServerNotificationMsg();
-                    mNetProtocol.resetServerNotification();
+                    msg = net.getServerNotificationMsg();
+                    net.resetServerNotification();
                     if (msg != null && msg.Length > 0)
                     {
                         showDialogOK(msg);
@@ -2631,12 +2409,10 @@ namespace stock123.app
             {
                 setTitle("  -Nhóm: " + g.getName());
 
+                doUpdatePriceboardGroupShare();
             }
 
             recreatePriceboard();
-
-            //updateUI();
-            mTimerGlobal.expireTimer();
         }
 
         void onGlobalNetEvent(int evt, int aIntParameter, object aParameter)
@@ -2924,7 +2700,8 @@ namespace stock123.app
             int today = Utils.getDateAsInt();
 
             long delta = Utils.dateToNumber(today) - Utils.dateToNumber(AppConfig.appConfig.allShareUpdateDate);
-            if (delta > 10)
+            long delta2 = Utils.dateToNumber(today) - Utils.dateToNumber(mContext.mLastDayOfShareUpdate);
+            if (delta > 10 || delta2 > 10)
             {
                 String url = Context.getInstance().configJson.url_all_share2;
                 if (url != null && url.Length > 0)
@@ -2957,6 +2734,202 @@ namespace stock123.app
         override public int getWorkingH()
         {
             return getH() - getToolbarH() - getStatusbarH() - 30;
+        }
+
+        void doUpdatePriceboardGroupShare()
+        {
+            NetProtocol net = mContext.createNetProtocol();
+            net.onDoneDelegate = (sender, ok) =>
+            {
+                updateItemsAfterNetDone();
+            };
+            //  current priceboard
+            stShareGroup currentGroup = mContext.getCurrentShareGroup();
+            xVector v = new xVector();
+
+            if (currentGroup != null)
+            {
+                for (int i = 0; i < currentGroup.getTotal(); i++)
+                {
+                    String code = currentGroup.getCodeAt(i);
+                    int id = mContext.mShareManager.getShareID(code);
+                    v.addElement((Int32)id);
+                }
+            }
+            if (v.size() > 0)
+            {
+                net.requestGetPriceboard(v);
+            }
+            //---------------------------
+            net.flushRequest();
+        }
+
+        void doUpdateRealtime()
+        {
+            NetProtocol net = mContext.createNetProtocol();
+            net.onDoneDelegate = (sender, ok) =>
+            {
+                hideContactingServerDlg();
+
+                if (mNetState == STATE_GETTING_PRICEBOARD_ZERO)
+                {
+                    if (ok)
+                    {
+                        mIsLoadIndicesDataAtStartup = true;
+                    }
+
+                    if (mContext.mEmail.CompareTo("thuyps@gmail.com") == 0 && mContext.mPassword.CompareTo("1") == 0)
+                    {
+                        //  clear default user
+                        mContext.mEmail = "";
+                        mContext.mPassword = "";
+                        mContext.saveProfile();
+                        mContext.logout();
+                        updateUI();
+
+                        mNetState = STATE_LOGIN_REQUIRED;
+                        showLoginDialog("Login hệ thống");
+                    }
+
+                    //  check alarm after getting priceboard zero
+                    mIsShowAlarmDialog = false;
+                }
+                if (mNetState == STATE_GETTING_PRICEBOARD_ZERO)
+                {
+                    mContext.mPriceboard.savePriceboard();
+
+                    setStatusMsg("failed to get priceboard-zero");
+                    mNetState = STATE_NORMAL;
+
+                    updateItemsAfterNetDone();
+                }
+                if (mNetState == STATE_UPDATING_REALTIME)
+                {
+                    mNetState = STATE_NORMAL;
+                    mTimer.reset();
+                    //  refresh: priceboard, 2 indices, realtime charts
+                    mPriceboard.invalidate();
+                    updateItemsAfterNetDone();
+
+                    if (mContext.mLatestClientVersion > Context.VERSION && !mContext.mLastestClientVersionAsk)
+                    {
+                        showNewVersionDialog();
+                    }
+                }
+            };
+            //  get priceboard reference + zero
+            if (mNetState == STATE_PREPARING_PRICEBOARD_ZERO)
+            {
+                //  indices
+                if (!mIsLoadIndicesDataAtStartup)
+                {
+                    for (int i = 0; i < mContext.mShareManager.getVnindexCnt(); i++)
+                    {
+                        Share share = mContext.mShareManager.getVnindexShareAt(i);
+                        if (share == null)
+                            break;
+                        share.loadShareFromFile(false);
+                        int date = share.getLastCandleDate();
+                        if (date == 0)
+                        {
+                            date = Utils.getDateAsInt(5000);
+                        }
+                        else
+                        {
+                            long l = Utils.dateToNumber(date);
+                            date = Utils.dateFromNumber(l - 10);
+                        }
+                        net.requestGet1ShareData(share.mID, date);
+                    }
+                    //  loadShareFromFile makes mClose,mOpen... incorrect, fix it
+                    if (mContext.getSelectedShare() != null)
+                    {
+                        mContext.getSelectedShare().clearCalculations();
+                        if (mContext.getSelectedShare().isIndex())
+                            mContext.getSelectedShare().loadShareFromFile(false);
+                        else
+                            mContext.getSelectedShare().loadShareFromCommonData(false);
+                    }
+                    //=========================
+                }
+                //mNetProtocol.requestPriceboardRef(-1);
+                net.requestPriceboardInitial(-1, null);
+
+                net.requestOpens();
+
+                //  json indices
+                VTDictionary dict = new VTDictionary();
+                dict.setValueInt(JSONHandler.kMessageID, JSONHandler.JMSG_LIST_INDICES);
+                net.requestJSONMessage(dict.toJson());
+
+                mNetState = STATE_GETTING_PRICEBOARD_ZERO;
+            }
+            //  realtime update
+            else if (mNetState == STATE_PREPARING_UPDATE_REALTIME)
+            {
+                //  check if user changed his favorite group
+                if (mContext.mIsFavorGroupChanged)
+                {
+                    xDataOutput o = mContext.getUserDataAsStream();
+                    net.requestSaveUserData(o);
+                    o = null;
+                }
+                mContext.mIsFavorGroupChanged = false;
+                //  intraday history
+                if (mRealtimeChart != null)
+                {
+                    TradeHistory tradehistory = mRealtimeChart.getTradeHistory();
+                    if (tradehistory != null)
+                    {
+                        net.requestTradeHistory(tradehistory.mCode, tradehistory.getFloorID(), 0, tradehistory.getLastTime());
+                    }
+                }
+                //  vnindex & hastc
+                for (int t = 0; t < mContext.mPriceboard.getIndicesCount(); t++)
+                {
+                    stPriceboardStateIndex pi = mContext.mPriceboard.getPriceboardIndexAt(t);
+
+                    if (pi.id != 0)
+                    {
+                        TradeHistory trade = mContext.getTradeHistory(pi.id);
+                        net.requestTradeHistory(pi.code, pi.marketID, 0, trade.getLastTime());
+
+                        //  online index
+                        //mNetProtocol.requestOnlineIndex(pi.marketID);
+                    }
+                }
+
+                //  current priceboard
+                stShareGroup currentGroup = mContext.getCurrentShareGroup();
+                xVector v = new xVector();
+
+                if (currentGroup != null)
+                {
+                    for (int i = 0; i < currentGroup.getTotal(); i++)
+                    {
+                        String code = currentGroup.getCodeAt(i);
+                        int id = mContext.mShareManager.getShareID(code);
+                        v.addElement((Int32)id);
+                    }
+                }
+                if (v.size() > 0)
+                {
+                    net.requestGetPriceboard(v);
+                }
+                //======opens=========
+                if (mTimerRequestOpen.isExpired())
+                {
+                    Utils.trace("--------timer is expired-----------");
+                    mTimerRequestOpen.reset();
+
+                    net.requestOpens();
+                }
+                //=========================
+                
+                mNetState = STATE_UPDATING_REALTIME;
+            }
+            //---------------------------
+            net.flushRequest();
         }
     }
 }
