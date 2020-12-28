@@ -83,7 +83,7 @@ namespace xlib.framework
         {
             try
             {
-                xMainApplication.getxMainApplication().postMessage(this, mListener, xBaseControl.EVT_NET_CONNECTING, 0, null);
+                xMainApplication.getxMainApplication().postMessageInUIThread(this, mListener, xBaseControl.EVT_NET_CONNECTING, 0, null);
                 //mURL = "http://soft123.com.vn:8888/SmaSrv/SSTK";// "http://soft123.com.vn/web/home";
                 Uri uri = new Uri(mURL);
 
@@ -131,7 +131,7 @@ namespace xlib.framework
                 Stream dataStream = res.GetResponseStream();
                 BinaryReader reader = new BinaryReader(dataStream);
 
-                xMainApplication.getxMainApplication().postMessage(this, mListener, xBaseControl.EVT_NET_CONNECTED, 0, null);
+                xMainApplication.getxMainApplication().postMessageInUIThread(this, mListener, xBaseControl.EVT_NET_CONNECTED, 0, null);
 
                 int c = 0;
                 mResponseData.reset();
@@ -165,7 +165,7 @@ namespace xlib.framework
 
                     if (cnt >= 1024)
                     {
-                        xMainApplication.getxMainApplication().postMessage(this, mListener, xBaseControl.EVT_NET_DATA_AVAILABLE, mResponseData.size(), mResponseData.getBytes());
+                        xMainApplication.getxMainApplication().postMessageInUIThread(this, mListener, xBaseControl.EVT_NET_DATA_AVAILABLE, mResponseData.size(), mResponseData.getBytes());
                         cnt = 0;
                     }
 
@@ -173,15 +173,15 @@ namespace xlib.framework
                 }
                 res.Close();
 
-                xMainApplication.getxMainApplication().postMessage(this, mListener, xBaseControl.EVT_NET_DONE, mResponseData.size(), mResponseData.getBytes());
+                xMainApplication.getxMainApplication().postMessageInUIThread(this, mListener, xBaseControl.EVT_NET_DONE, mResponseData.size(), mResponseData.getBytes());
             }
             catch (IOException e)
             {
-                xMainApplication.getxMainApplication().postMessage(this, mListener, xBaseControl.EVT_NET_ERROR, 0, e.Message);
+                xMainApplication.getxMainApplication().postMessageInUIThread(this, mListener, xBaseControl.EVT_NET_ERROR, 0, e.Message);
             }
             catch (Exception e2)
             {
-                xMainApplication.getxMainApplication().postMessage(this, mListener, xBaseControl.EVT_NET_ERROR, 0, e2.Message);
+                xMainApplication.getxMainApplication().postMessageInUIThread(this, mListener, xBaseControl.EVT_NET_ERROR, 0, e2.Message);
             }
         }
 

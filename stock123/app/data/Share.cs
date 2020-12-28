@@ -501,6 +501,11 @@ namespace stock123.app.data
 
         public void loadShareFromCommonData(bool appendToday)
         {
+            if (isIndex())
+            {
+                return;
+            }
+
             clearCalculations();
 
             mLastScope = -1;
@@ -843,8 +848,7 @@ namespace stock123.app.data
                         pSMA3 = new float[maxCandle];
                         pSMA4 = new float[maxCandle];
                         pSMA5 = new float[maxCandle];
-                        pEMA = new float[maxCandle];
-                        pEMAIndicator = new float[maxCandle];
+
                     }
                     break;
                 case ChartBase.CHART_STOCHASTIC_FAST:
@@ -896,6 +900,9 @@ namespace stock123.app.data
                 pDouble2 = new double[maxCandle];
 
                 pSMAVolume = new float[maxCandle];
+
+                pEMA = new float[maxCandle];
+                pEMAIndicator = new float[maxCandle];
             }
 
         }
@@ -3543,7 +3550,10 @@ namespace stock123.app.data
         int mIsIndex = -1;
         public bool isIndex()
         {
-            if (mCode.Length > 0 && mCode[0] == '^')
+            if (mCode.Length > 0 && mCode[0] == '^' 
+                || mCode.IndexOf("HNX30") == 0 
+                || mCode.IndexOf("HNX30") == 0
+                || mCode.IndexOf("VN30") == 0)
             {
                 mIsIndex = 1;
                 return true;

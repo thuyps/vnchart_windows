@@ -79,10 +79,12 @@ namespace stock123.app.chart
             {
                 ChartBase c = (ChartBase)mAttachedCharts.elementAt(i);
                 c.setRefChart(this);
+                c.setSize(this);
             }
             if (mChartSMA != null)
             {
                 mChartSMA.setRefChart(this);
+                mChartSMA.setSize(this);
             }
             //-----------------------------------
 

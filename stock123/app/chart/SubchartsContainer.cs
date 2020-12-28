@@ -319,7 +319,9 @@ namespace stock123.app.chart
             base.invalidate();
 
             if (mCurrentChart != null)
+            {
                 mCurrentChart.invalidate();
+            }
         }
 
         virtual public void onEvent(Object sender, int aEvent, int aIntParameter, Object aParameter)
@@ -647,6 +649,12 @@ namespace stock123.app.chart
         public void setShare(Share share)
         {
             mShare = share;
+
+            if (mCurrentChart != null)
+            {
+                mCurrentChart.setShare(share);
+                invalidate();
+            }
         }
 
         public void setChartMaster(ChartBase chartMaster)

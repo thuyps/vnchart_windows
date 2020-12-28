@@ -618,7 +618,7 @@ namespace stock123.app
                             }
                             else
                             {
-                                mTimer.setExpiration(30 * 1000);
+                                mTimer.setExpiration(20 * 1000);
                             }
 
                             doUpdateRealtime();
@@ -2283,7 +2283,7 @@ namespace stock123.app
                 ids[i] = shareID;
                 stPriceboardState ps = mContext.mPriceboard.getPriceboard(shareID);
 
-                if (ps != null && ps.getRef() > 0 && ps.getCurrentPrice() > 0)
+                if (ps != null && ps.getRef() > 0 && ps.getCurrentPrice() > 0 && ps.total_volume > 0)
                 {
                     int inc;
                     if (g.getGroupType() == stShareGroup.ID_GROUP_MOST_VOL)
@@ -2898,6 +2898,9 @@ namespace stock123.app
                         //mNetProtocol.requestOnlineIndex(pi.marketID);
                     }
                 }
+
+                //  priceboard
+                net.requestPriceboardInitial(-1, null);
 
                 //  current priceboard
                 stShareGroup currentGroup = mContext.getCurrentShareGroup();

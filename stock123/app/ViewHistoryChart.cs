@@ -1638,6 +1638,7 @@ namespace stock123.app
                 {
                     if (!share.loadShareFromFile(applyTodayCandle))
                     {
+
                         share.loadShareFromCommonData(true);
                     }
                 }
