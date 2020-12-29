@@ -1355,7 +1355,11 @@ namespace stock123.app.chart
         public Share getShare(int days)
         {
             Share share = getShare();
-            return share.getCandleCnt() >= days ? share : null;
+            if (share != null)
+            {
+                return share.getCandleCnt() >= days ? share : null;
+            }
+            return null;
         }
         public Share getShare()
         {

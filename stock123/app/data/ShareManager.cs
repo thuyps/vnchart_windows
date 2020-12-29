@@ -265,6 +265,10 @@ namespace stock123.app.data
             {
                 mShareIDs = di.getBytes();
             }
+            else
+            {
+                return;
+            }
 
             vMarketIDs.removeAllElements();
             vIDs.removeAllElements();

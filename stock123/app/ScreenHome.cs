@@ -932,7 +932,10 @@ namespace stock123.app
         public void login(int createAcc)
         {
             if (!mContext.isValidEmailPassword()){
-                mNetState = STATE_NORMAL;
+                mNetState = STATE_LOGIN_REQUIRED;
+
+                showLoginDialog("Login hệ thống");
+
                 return;
             }
             mContext.mTradeHistoryManager.removeAllElements();
@@ -1002,7 +1005,7 @@ namespace stock123.app
                         //showHelp(0);
                         mContext.saveProfile();
                     }
-                    else if (!mContext.mIsShowWhatNew && mContext.mEmail.CompareTo("thuyps@gmail.com") != 0)
+                    else if (!mContext.mIsShowWhatNew)
                     {
                         //mContext.mIsShowWhatNew = true;
                         mContext.saveProfile();
@@ -1152,6 +1155,7 @@ namespace stock123.app
             }
             else if (dlg.mDlgResult == DlgLogin.DLG_OFFLINE)
             {
+                xMainApplication.getxMainApplication().exitApplication();
             }
             else if (dlg.mDlgResult == DlgLogin.DLG_REGISTER)
             {
@@ -2778,10 +2782,11 @@ namespace stock123.app
                         mIsLoadIndicesDataAtStartup = true;
                     }
 
-                    if (mContext.mEmail.CompareTo("thuyps@gmail.com") == 0 && mContext.mPassword.CompareTo("1") == 0)
+                    if (mContext.mEmail == null 
+                        || mContext.mEmail.Length == 0 
+                        || mContext.mEmail.CompareTo("@gmail.com") == 0 || mContext.isOnline() == false)
                     {
                         //  clear default user
-                        mContext.mEmail = "";
                         mContext.mPassword = "";
                         mContext.saveProfile();
                         mContext.logout();

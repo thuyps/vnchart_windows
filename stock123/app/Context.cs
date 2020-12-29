@@ -866,8 +866,8 @@ namespace stock123.app
                     return true;
                 }
             }else{
-                mEmail = "thuyps@gmail.com";
-                mPassword = "1";
+                mEmail = "@gmail.com";
+                mPassword = "";// "1";
             }
 
             return true;
