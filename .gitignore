@@ -13,3 +13,20 @@ stock123/bin/Release/vnchart/data/database5.dat
 stock123/bin/Release/vnchart/data/options.dat
 stock123/bin/Release/vnchart/data/priceboard.dat
 stock123/bin/Release/vnchart/data/profile.dat
+installer/setup_vnchart722.exe
+installer/vnchart722.zip
+installer/installsimple-portable/InstallSimple 3.0 portable/Config.ini
+installer/installsimple-portable/InstallSimple 3.0 portable/Documentation.chm
+installer/installsimple-portable/InstallSimple 3.0 portable/Home Page.url
+installer/installsimple-portable/InstallSimple 3.0 portable/InstallSimple.exe
+installer/installsimple-portable/InstallSimple 3.0 portable/License.txt
+installer/installsimple-portable/InstallSimple 3.0 portable/ReadMe.txt
+installer/installsimple-portable/InstallSimple 3.0 portable/WhatsNew.txt
+installer/installsimple-portable/InstallSimple 3.0 portable/images/1.bmp
+installer/installsimple-portable/InstallSimple 3.0 portable/images/2.bmp
+stock123/bin/vnchart/Newtonsoft.Json.dll
+stock123/bin/vnchart/Newtonsoft.Json.xml
+stock123/bin/vnchart/res.dat
+stock123/bin/vnchart/vnChart.exe
+stock123/bin/setup_vnchart.exe
+stock123/bin/vnchart721.zip

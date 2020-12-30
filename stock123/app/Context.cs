@@ -2620,7 +2620,7 @@ namespace stock123.app
             net.setServerURL(ServerURL);
 
             //  for test only
-            //net.setServerURL("http://192.168.1.10:8080/srv/");
+            net.setServerURL("http://192.168.1.30:8080/srv/");
 
             return net;
         }

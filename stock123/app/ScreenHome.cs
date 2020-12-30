@@ -983,7 +983,7 @@ namespace stock123.app
                     setStatusMsg("LOGIN success. Starting priceboard ZERO");
 
                     bool showContactingDlg = true;
-
+                    /*
                     if (mContext.mLatestClientVersion > C.CLIENT_VERSION)
                     {
                         if (true)//mContext.noupdate)
@@ -998,6 +998,7 @@ namespace stock123.app
                         }
                         //mContext.mLatestClientVersion = -1;
                     }
+                     */
 
                     if (mContext.mIsFirstTime)
                     {
@@ -2794,6 +2795,7 @@ namespace stock123.app
 
                         mNetState = STATE_LOGIN_REQUIRED;
                         showLoginDialog("Login hệ thống");
+                        return;
                     }
 
                     //  check alarm after getting priceboard zero
@@ -2807,6 +2809,11 @@ namespace stock123.app
                     mNetState = STATE_NORMAL;
 
                     updateItemsAfterNetDone();
+
+                    if (mContext.mLatestClientVersion > C.CLIENT_VERSION && !mContext.mLastestClientVersionAsk)
+                    {
+                        showNewVersionDialog();
+                    }
                 }
                 if (mNetState == STATE_UPDATING_REALTIME)
                 {
@@ -2815,13 +2822,9 @@ namespace stock123.app
                     //  refresh: priceboard, 2 indices, realtime charts
                     mPriceboard.invalidate();
                     updateItemsAfterNetDone();
-
-                    if (mContext.mLatestClientVersion > Context.VERSION && !mContext.mLastestClientVersionAsk)
-                    {
-                        showNewVersionDialog();
-                    }
                 }
             };
+            //=end of network done's callback================================
             //  get priceboard reference + zero
             if (mNetState == STATE_PREPARING_PRICEBOARD_ZERO)
             {
