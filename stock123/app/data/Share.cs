@@ -2111,6 +2111,9 @@ namespace stock123.app.data
         {
             if (mIsCalcSMA)
                 return;
+
+            initIndicatorMemory(ChartBase.CHART_SMA);
+
             mIsCalcSMA = true;
 
             int len = getCandleCount();
@@ -2278,6 +2281,8 @@ namespace stock123.app.data
 
         public void calcRSICustom(float[] price, int period, float[] outRSI)
         {
+            initIndicatorMemory(ChartBase.CHART_RSI);
+
             int cnt = getCandleCount();
             if (cnt < 4)
                 return;
@@ -3005,7 +3010,6 @@ namespace stock123.app.data
         public static void calcBollinger(float[] prices, int cnt, int period, float d, float[] lower, float[] upper)
         {
             //	int start = 0;
-
             if (cnt < period)
             {
                 for (int i = 0; i < cnt; i++)
