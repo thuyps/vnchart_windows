@@ -175,6 +175,13 @@ namespace xlib.ui
             }
         }
 
+        public void selectPage(xTabPage page)
+        {
+            TabControl tabControl = (TabControl)this.getControl();
+
+            tabControl.SelectTab((TabPage)page.getControl());
+        }
+
         public void selectLastPage(){
             TabControl tabControl = (TabControl)this.getControl();
             tabControl.SelectTab(getPageCount()-1);

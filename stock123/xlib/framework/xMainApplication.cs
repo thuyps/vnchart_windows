@@ -128,7 +128,14 @@ namespace xlib.framework
 
         public void postMessageInUIThread(Object sender, xIEventListener listener, int evt, int intParam, Object param)
         {
-            mAppForm.Invoke(new PostMessage(this.postMessage), sender, listener, evt, intParam, param);
+            try
+            {
+                mAppForm.Invoke(new PostMessage(this.postMessage), sender, listener, evt, intParam, param);
+            }
+            catch (Exception e)
+            {
+            }
+
         }
 
         private void processPostMessage()

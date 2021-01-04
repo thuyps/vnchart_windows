@@ -98,12 +98,39 @@ namespace stock123.app
             }
         }
 
+        xTabPage getTabPageOfShare(Share share)
+        {
+            for (int i = 0; i < mTab.getPageCount(); i++)
+            {
+                xTabPage page = mTab.getPageAtIndex(i);
+                if (page.userData != null && page.userData == share)
+                {
+                    ViewHistoryChart his = (ViewHistoryChart)page.userData2;
+                    if (his.mScreenType == ViewHistoryChart.TYPE_CHART)
+                    {
+                        return page;
+                    }
+                }
+            }
+
+            return null;
+        }
+
         public void createNewHistory(Share oriShare)
         {
-            if (mScreens.size() > 20)
+            if (mScreens.size() > 30)
             {
                 return;
             }
+
+            xTabPage exist = getTabPageOfShare(oriShare);
+            ViewHistoryChart his;
+            if (exist != null)
+            {
+                mTab.selectPage(exist);
+                return;
+            }
+            //--------------------
 
             Share share = oriShare;
             if (share != null && share.getShareID() > 0)
@@ -113,7 +140,7 @@ namespace stock123.app
                 share.setID(oriShare.getShareID());
             }
 
-            ViewHistoryChart his = new ViewHistoryChart(share);
+            his = new ViewHistoryChart(share);
             his.setSize(mTab.getW(), mTab.getH());
             //his.onActivate();
             mScreens.addElement(his);
@@ -127,6 +154,9 @@ namespace stock123.app
                 }
             }
             xTabPage page = new xTabPage(title);
+            page.userData = oriShare;
+            page.userData2 = his;
+
             his.Tag = page;
 
             page.addControl(his);

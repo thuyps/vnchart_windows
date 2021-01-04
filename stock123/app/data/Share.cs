@@ -685,7 +685,7 @@ namespace stock123.app.data
                     }
                     break;
                 case ChartBase.CHART_ADX:
-                    if (pADX != null || realloc){
+                    if (pADX == null || realloc){
                         pADX = new float[maxCandle];
                         pPLUS_DI = new float[maxCandle];
                         pMINUS_DI = new float[maxCandle];

@@ -10,6 +10,9 @@ namespace xlib.ui
 {
     public class xTabPage: xBaseControl
     {
+        public Object userData;
+        public Object userData2;
+
         public xTabPage(string title)
             : base(null)
         {
