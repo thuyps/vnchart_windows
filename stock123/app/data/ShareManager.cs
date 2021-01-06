@@ -618,6 +618,7 @@ namespace stock123.app.data
             int pos = 8;
             byte b0 = (byte)((share_id >> 8) & 0xff);
             byte b1 = (byte)(share_id & 0xff);
+            share_cnt = 0;  //  share_cnt khong phan anh dung sinh ra loi
             if (share_cnt == 0)
             {
                 share_cnt = (mCommonData.Length - 8) / item_size;
