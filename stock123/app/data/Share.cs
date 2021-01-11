@@ -141,6 +141,9 @@ namespace stock123.app.data
         public float[] pATR;
         
         public float[] pComparingPrice;
+        public float[] pCRS;
+        public float[] pCRS_MA1;
+        public float[] pCRS_MA2;
         //===============================================
         //  shared memory
         static public int[] mSharedCVolume;
@@ -785,6 +788,14 @@ namespace stock123.app.data
                     if (realloc || pComparingPrice == null)
                     {
                         pComparingPrice = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_COMPARING_RS:
+                    if (realloc || pCRS == null)
+                    {
+                        pCRS = new float[maxCandle];
+                        pCRS_MA1 = new float[maxCandle];
+                        pCRS_MA2 = new float[maxCandle];
                     }
                     break;
                 case ChartBase.CHART_PAST_1_YEAR:
@@ -6387,6 +6398,74 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
                 period = 14;
 
             TRUERANGE_Average(period, pATR);
+        }
+
+        public void calcCRS(Share baseShare, int period1, int period2)
+        {
+            if (baseShare == null)
+            {
+                return;
+            }
+
+            baseShare.loadShareFromFile(true);
+
+            initIndicatorMemory(ChartBase.CHART_COMPARING_RS);
+
+            int cnt = getCandleCount();
+            int baseCnt = baseShare.getCandleCount();
+
+            int cntRS = cnt < baseCnt ? cnt : baseCnt;
+            int j = 0;
+            if (cntRS < cnt)
+            {
+                int firsts = cnt - cntRS;
+                for (j = 0; j < firsts; j++)
+                {
+                    pCRS[j] = 1;
+                    pCRS_MA1[j] = 1;
+                    pCRS_MA2[j] = 1;
+                }
+            }
+
+            int k = baseCnt - cntRS;
+            float priceLast = 1;
+            float baseCloseLast = 1;
+
+            float zoom = 0;
+
+            for (; j < cnt; j++)
+            {
+                float price = getClose(j);
+                float baseClose = baseShare.getClose(k);
+
+                if (zoom == 0 && price > 0 && baseClose > 0)
+                {
+                    zoom = baseClose / price;
+                }
+
+                k++;
+
+                if (price == 0)
+                {
+                    price = priceLast;
+                }
+                if (baseClose == 0)
+                {
+                    baseClose = baseCloseLast;
+                }
+                priceLast = price;
+                baseCloseLast = baseClose;
+
+                pCRS[j] = price / baseClose;
+
+                if (zoom > 0)
+                {
+                    pCRS[j] *= zoom;
+                }
+            }
+
+            SMA(pCRS, cntRS, period1, pCRS_MA1);
+            SMA(pCRS, cntRS, period2, pCRS_MA2);
         }
 
         public void calcComparingShare()

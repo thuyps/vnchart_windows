@@ -95,6 +95,7 @@
     <Compile Include="app\chart\ChartNhomnganhTangtruong.cs" />
     <Compile Include="app\chart\ChartTangtruongGroup.cs" />
     <Compile Include="app\chart\ChartStatistics.cs" />
+    <Compile Include="app\chart\ChartComparativeRS.cs" />
     <Compile Include="app\chart\IndexCandle.cs" />
     <Compile Include="app\chart\QuotePoint.cs" />
     <Compile Include="app\chart\Drawer.cs" />
