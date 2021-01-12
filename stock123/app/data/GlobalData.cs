@@ -11,9 +11,12 @@ namespace stock123.app.data
     public class GlobalData
     {
         public const String kVNIndices = "vnindices";
+        public const String kCRSMethodRatio = "crs_ratio";
+        public const String kCRSMethodPercent = "crs_percent";
         public const String kCRSBaseSymbol = "crs_base";
         public const String kCRSBaseMa1 = "crs_ma1";
         public const String kCRSBaseMa2 = "crs_ma2";
+        public const String kCRSPeriod = "crs_period";
 
         static VTDictionary data = new VTDictionary();
         static VTDictionary dataPriceboard = new VTDictionary();

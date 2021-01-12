@@ -144,6 +144,10 @@ namespace stock123.app.data
         public float[] pCRS;
         public float[] pCRS_MA1;
         public float[] pCRS_MA2;
+
+        public float[] pCRS_Percent;
+        public float[] pCRS_MA1_Percent;
+        public float[] pCRS_MA2_Percent;
         //===============================================
         //  shared memory
         static public int[] mSharedCVolume;
@@ -790,12 +794,20 @@ namespace stock123.app.data
                         pComparingPrice = new float[maxCandle];
                     }
                     break;
-                case ChartBase.CHART_COMPARING_RS:
+                case ChartBase.CHART_CRS_RATIO:
                     if (realloc || pCRS == null)
                     {
                         pCRS = new float[maxCandle];
                         pCRS_MA1 = new float[maxCandle];
                         pCRS_MA2 = new float[maxCandle];
+                    }
+                    break;
+                case ChartBase.CHART_CRS_PERCENT:
+                    if (realloc || pCRS == null)
+                    {
+                        pCRS_Percent = new float[maxCandle];
+                        pCRS_MA1_Percent = new float[maxCandle];
+                        pCRS_MA2_Percent = new float[maxCandle];
                     }
                     break;
                 case ChartBase.CHART_PAST_1_YEAR:
@@ -6409,7 +6421,7 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
 
             baseShare.loadShareFromFile(true);
 
-            initIndicatorMemory(ChartBase.CHART_COMPARING_RS);
+            initIndicatorMemory(ChartBase.CHART_CRS_RATIO);
 
             int cnt = getCandleCount();
             int baseCnt = baseShare.getCandleCount();
@@ -6466,6 +6478,69 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
 
             SMA(pCRS, cntRS, period1, pCRS_MA1);
             SMA(pCRS, cntRS, period2, pCRS_MA2);
+        }
+
+        public void calcCRSPercent(Share baseShare, int period, int ma1, int ma2)
+        {
+            if (baseShare == null)
+            {
+                return;
+            }
+
+            baseShare.loadShareFromFile(true);
+
+            initIndicatorMemory(ChartBase.CHART_CRS_PERCENT);
+
+            int cnt = getCandleCount();
+            int baseCnt = baseShare.getCandleCount();
+
+            int j = 0;
+            
+            float[] pClose = pTMP;
+            float[] pBase = pTMP1;
+            int k = baseCnt - 1;
+
+            for (j = cnt -1; j >= 0; j--)
+            {
+                pClose[j] = getClose(j);
+
+                if (k >= 0)
+                {
+                    pBase[j] = baseShare.getClose(k);
+                }
+                else
+                {
+                    pBase[j] = baseShare.getClose(0);
+                }
+            }
+            //---------------------------------
+            //  RS = ((close / sma(close, length) / (base / sma(base, length)))-1.0)*100
+            SMA(pClose, cnt, period, pTMP2);
+            SMA(pBase, cnt, period, pTMP3);
+            for (j = 0; j < cnt; j++)
+            {
+                if (pTMP2[j] > 0 && pTMP3[j] > 0)
+                {
+                    float c = pClose[j] / pTMP2[j];
+                    float b = pBase[j] / pTMP3[j];
+
+                    pCRS_Percent[j] = (c / b - 1.0f) / 100;
+                }
+                else
+                {
+                    if (j > 0)
+                    {
+                        pCRS_Percent[j] = pCRS_Percent[j - 1];
+                    }
+                    else
+                    {
+                        pCRS_Percent[j] = 0;
+                    }
+                }
+            }
+
+            SMA(pCRS_Percent, cnt, ma1, pCRS_MA1_Percent);
+            SMA(pCRS_Percent, cnt, ma2, pCRS_MA2_Percent);
         }
 
         public void calcComparingShare()

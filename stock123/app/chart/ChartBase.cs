@@ -83,7 +83,8 @@ namespace stock123.app.chart
         public const int CHART_PAST_1_YEAR = 41;
         public const int CHART_PAST_2_YEARS = 42;
         public const int CHART_COMPARING_SECOND_SHARE = 43;
-        public const int CHART_COMPARING_RS = 44;
+        public const int CHART_CRS_RATIO = 44;
+        public const int CHART_CRS_PERCENT = 45;
 
         //--------------------------------------------
 

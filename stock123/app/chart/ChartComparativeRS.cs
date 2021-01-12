@@ -13,39 +13,77 @@ namespace stock123.app.chart
 {
     public class ChartComparativeRS : ChartBase
     {
+
         short[] mPricelines = new short[10];
         short[] mChartEMA1;
         short[] mChartEMA2;
         Share baseShare;
         int baseMAPeriod1;
         int baseMAPeriod2;
+        int mPeriod;
         //==============================
 
-        public ChartComparativeRS(Font f)
+        public ChartComparativeRS(int chartType, Font f)
             : base(f)
         {
-            mChartType = CHART_COMPARING_RS;
+            setChartType(chartType);
 
             loadSavedBase();
         }
 
         public void loadSavedBase()
         {
-            String symbol = GlobalData.getData().getValueString(GlobalData.kCRSBaseSymbol);
-            if (symbol == null)
+            if (mChartType == CHART_CRS_RATIO)
             {
-                symbol = "^VNINDEX";
+                String s = GlobalData.getData().getValueString(GlobalData.kCRSMethodRatio);
+                String symbol = "^VNINDEX";
+                int ma1 = 5;
+                int ma2 = 20;
+                if (s != null && s.Length > 0)
+                {
+                    VTDictionary dict = new VTDictionary(s);
+                    symbol = dict.getValueString(GlobalData.kCRSBaseSymbol);
+                    if (symbol == null)
+                    {
+                        symbol = "^VNINDEX";
+                    }
+
+                    if (dict.hasKey(GlobalData.kCRSBaseMa1))
+                    {
+                        ma1 = dict.getValueInt(GlobalData.kCRSBaseMa1);
+                        ma2 = dict.getValueInt(GlobalData.kCRSBaseMa2);
+                    }
+                }
+                setBaseSymbol(symbol, ma1, ma2);
+
             }
-            int ma1 = 5;
-            int ma2 = 20;
+            else if (mChartType == CHART_CRS_PERCENT)
+            {
+                String s = GlobalData.getData().getValueString(GlobalData.kCRSMethodPercent);
+                String symbol = "^VNINDEX";
+                int ma1 = 5;
+                int ma2 = 20;
+                int period = 20;
+                if (s != null && s.Length > 0)
+                {
+                    VTDictionary dict = new VTDictionary(s);
+                    symbol = dict.getValueString(GlobalData.kCRSBaseSymbol);
+                    if (symbol == null)
+                    {
+                        symbol = "^VNINDEX";
+                    }
 
-            if (GlobalData.getData().hasKey(GlobalData.kCRSBaseMa1)){
-                ma1 = GlobalData.getData().getValueInt(GlobalData.kCRSBaseMa1);
-                ma2 = GlobalData.getData().getValueInt(GlobalData.kCRSBaseMa2);
+                    if (dict.hasKey(GlobalData.kCRSBaseMa1))
+                    {
+                        ma1 = dict.getValueInt(GlobalData.kCRSBaseMa1);
+                        ma2 = dict.getValueInt(GlobalData.kCRSBaseMa2);
+                        period = dict.getValueInt(GlobalData.kCRSPeriod);
+                    }
+                }
+                setBaseSymbol(symbol, ma1, ma2);
+                mPeriod = period;
             }
-
-            setBaseSymbol(symbol, ma1, ma2);
-
+            
         }
 
         public void setBaseSymbol(String symbol, int ma1, int ma2)
@@ -73,6 +111,21 @@ namespace stock123.app.chart
             {
                 return;
             }
+
+            if (mChartType == CHART_CRS_RATIO)
+            {
+                drawComparativeCRSRatio(g);
+            }
+            else if (mChartType == CHART_CRS_PERCENT)
+            {
+                drawComparativeCRSPercent(g);
+            }
+        }
+
+        void drawComparativeCRSRatio(xGraphics g)
+        {
+            Share share = getShare();
+
             if (detectShareCursorChanged())
             {
                 share.calcCRS(baseShare, baseMAPeriod1, baseMAPeriod2);
@@ -116,12 +169,89 @@ namespace stock123.app.chart
             }
             //===============================================
             //  CRS
-            g.setColor(0xff00f000);
+            g.setColor(0xffffffff);
             g.drawLines(mChartLineXY, mChartLineLength, 1.5f);
 
             if (baseMAPeriod1 > 0)
             {
-                g.setColor(C.COLOR_MAGENTA);
+                g.setColor(C.COLOR_GREEN);
+                g.drawLines(mChartEMA1, mChartLineLength, 1.0f);
+            }
+            if (baseMAPeriod2 > 0)
+            {
+                g.setColor(C.COLOR_YELLOW);
+                g.drawLines(mChartEMA2, mChartLineLength, 1.0f);
+            }
+
+            renderCursor(g);
+
+            renderDrawer(g);
+        }
+
+        void drawComparativeCRSPercent(xGraphics g)
+        {
+            Share share = getShare();
+
+            if (detectShareCursorChanged())
+            {
+                share.calcCRSPercent(baseShare, mPeriod, baseMAPeriod1, baseMAPeriod2);
+
+                mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
+
+                float min = 0xffffff;
+                float max = -0xffffff;
+
+                for (int i = share.mBeginIdx; i <= share.mEndIdx; i++)
+                {
+                    if (share.pCRS_Percent[i] > max) max = share.pCRS_Percent[i];
+                    if (share.pCRS_Percent[i] < min) min = share.pCRS_Percent[i];
+                }
+
+                pricesToYs(share.pCRS_Percent, share.mBeginIdx, mChartLineXY, mChartLineLength, min, max);
+
+                float[] tmp = { 0 };
+                pricesToYs(tmp, 0, mPricelines, 1, min, max);
+
+                if (baseMAPeriod1 > 0)
+                {
+                    mChartEMA1 = allocMem(mChartEMA1, mChartLineLength * 2);
+
+                    pricesToYs(share.pCRS_MA1_Percent, share.mBeginIdx, mChartEMA1, mChartLineLength, min, max);
+                }
+                if (baseMAPeriod2 > 0)
+                {
+                    mChartEMA2 = allocMem(mChartEMA2, mChartLineLength * 2);
+
+                    pricesToYs(share.pCRS_MA2_Percent, share.mBeginIdx, mChartEMA2, mChartLineLength, min, max);
+                }
+            }
+
+            if (mChartLineLength == 0)
+            {
+                return;
+            }
+
+            //========================
+            if (mShouldDrawGrid)
+            {
+                drawGrid(g);
+            }
+            //===============================================
+            String[] ss = { "0" };
+            for (int i = 0; i < 1; i++)
+            {
+                g.setColor(C.COLOR_FADE_YELLOW);
+                g.drawLine(0, mPricelines[2 * i + 1], getW() - 20, mPricelines[2 * i + 1]);
+                g.setColor(C.COLOR_FADE_YELLOW0);
+                g.drawString(mFont, ss[i], getW() - 20, mPricelines[2 * i + 1], xGraphics.VCENTER);
+            }
+            //  CRS
+            g.setColor(0xffffffff);
+            g.drawLines(mChartLineXY, mChartLineLength, 1.5f);
+
+            if (baseMAPeriod1 > 0)
+            {
+                g.setColor(C.COLOR_GREEN);
                 g.drawLines(mChartEMA1, mChartLineLength, 1.0f);
             }
             if (baseMAPeriod2 > 0)
@@ -139,7 +269,14 @@ namespace stock123.app.chart
         {
             xVector v = new xVector(1);
 
-            v.addElement(new stTitle("CRS", 0xffffffff));
+            if (mChartType == CHART_CRS_RATIO)
+            {
+                v.addElement(new stTitle("cRS ratio", 0xffffffff));
+            }
+            else if (mChartType == CHART_CRS_PERCENT)
+            {
+                v.addElement(new stTitle("cRS %%", 0xffffffff));
+            }
 
             return v;
         }

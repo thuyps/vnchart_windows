@@ -115,7 +115,8 @@ namespace stock123.app.chart
                 ChartBase.CHART_ROC,
                 ChartBase.CHART_PVT,
                 ChartBase.CHART_RSI,
-                ChartBase.CHART_COMPARING_RS,
+                ChartBase.CHART_CRS_RATIO,
+                ChartBase.CHART_CRS_PERCENT,
                 ChartBase.CHART_STOCHASTIC_FAST,
                 ChartBase.CHART_STOCHASTIC_SLOW,
                 ChartBase.CHART_STOCHRSI,
@@ -143,7 +144,8 @@ namespace stock123.app.chart
                             "Rate of Change (ROC)",
                             "Price Volume Trend (PVT)",
                             "Relative Strength Index (RSI)",
-                            "Comparative Relative Strength (RS - CRS)",
+                            "Comparative Relative Strength ratio (RS)",
+                            "Comparative Relative Strength %% (RS %%)",
                             "Stochastic Fast",
                             "Stochastic Full",
                             "StochRSI",
@@ -536,9 +538,15 @@ namespace stock123.app.chart
                 c.setChartType(ChartBase.CHART_ATR);
                 c.mShouldDrawCursor = true;
             }
-            else if (chartID == ChartBase.CHART_COMPARING_RS)
+            else if (chartID == ChartBase.CHART_CRS_RATIO)
             {
-                c = new ChartComparativeRS(f);
+                c = new ChartComparativeRS(chartID, f);
+                ((ChartComparativeRS)c).setBaseSymbol("^VNINDEX", 5, 20);
+                c.mShouldDrawCursor = true;
+            }
+            else if (chartID == ChartBase.CHART_CRS_PERCENT)
+            {
+                c = new ChartComparativeRS(chartID, f);
                 ((ChartComparativeRS)c).setBaseSymbol("^VNINDEX", 5, 20);
                 c.mShouldDrawCursor = true;
             }
