@@ -803,7 +803,7 @@ namespace stock123.app.data
                     }
                     break;
                 case ChartBase.CHART_CRS_PERCENT:
-                    if (realloc || pCRS == null)
+                    if (realloc || pCRS_Percent == null)
                     {
                         pCRS_Percent = new float[maxCandle];
                         pCRS_MA1_Percent = new float[maxCandle];
@@ -1918,6 +1918,11 @@ namespace stock123.app.data
             if (mEndIdx == 0)
                 mEndIdx = mCandleCnt - 1;
             mSelectedCandle = mEndIdx;
+        }
+
+        public void invalideModifiedKey()
+        {
+            mModifiedKey2 = (int)Utils.currentTimeMillis();
         }
 
         public int getModifiedKey()

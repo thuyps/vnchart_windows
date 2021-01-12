@@ -2610,6 +2610,7 @@ namespace stock123.app
             }
         }
 
+        NetProtocol netRealtime;
         void selectShare(int shareID)
         {
             Share share = mContext.mShareManager.getShare(shareID);
@@ -2617,6 +2618,7 @@ namespace stock123.app
             {
                 return;
             }
+
             if (share.isRealtime())
             {
                 share.loadShareFromFile(false);
@@ -2624,6 +2626,22 @@ namespace stock123.app
             else
             {
                 selectShare(share);
+            }
+
+            if (mRealtimeChart != null)
+            {
+                TradeHistory tradehistory = mRealtimeChart.getTradeHistory();
+                if (tradehistory != null)
+                {
+                    netRealtime = Context.getInstance().createNetProtocol();
+                    netRealtime.requestTradeHistory(tradehistory.mCode, tradehistory.getFloorID(), 0, tradehistory.getLastTime());
+                    netRealtime.flushRequest();
+
+                    netRealtime.onDoneDelegate = (sender, ok) =>
+                    {
+                        updateItemsAfterNetDone();
+                    };
+                }
             }
         }
 
@@ -2884,6 +2902,7 @@ namespace stock123.app
                 }
                 mContext.mIsFavorGroupChanged = false;
                 //  intraday history
+                /*
                 if (mRealtimeChart != null)
                 {
                     TradeHistory tradehistory = mRealtimeChart.getTradeHistory();
@@ -2892,6 +2911,7 @@ namespace stock123.app
                         net.requestTradeHistory(tradehistory.mCode, tradehistory.getFloorID(), 0, tradehistory.getLastTime());
                     }
                 }
+                 */
                 //  vnindex & hastc
                 for (int t = 0; t < mContext.mPriceboard.getIndicesCount(); t++)
                 {

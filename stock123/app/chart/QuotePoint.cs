@@ -84,7 +84,7 @@ namespace stock123.app.chart
             if (ps.getRef() > 0)
                 changePercent = (change * 100) / ps.getRef();
             sb.Length = 0;
-            sb.AppendFormat("{0:F1} ({1:F2}%)", (float)(change / 10), changePercent);
+            sb.AppendFormat("{0:F1} ({1:F2}%)", (float)(change), changePercent);
             
             f = mContext.getFontText();
 

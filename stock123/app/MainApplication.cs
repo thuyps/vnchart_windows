@@ -105,6 +105,11 @@ namespace stock123.app
             return mInstance;
         }
 
+        static public void dispatchBlock(Action fn)
+        {
+            MainApplication.getInstance().Invoke(fn);
+        }
+
         Color mOldBackColor;
         Size mOldSize;
         Rectangle mRestoreRec;

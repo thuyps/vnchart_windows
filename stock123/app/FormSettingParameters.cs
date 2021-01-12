@@ -1148,6 +1148,11 @@ namespace stock123.app
             tf.setPosition(120, y);
             mContainer.addControl(tf);
 
+            if (defaultText != null)
+            {
+                tf.setText(defaultText);
+            }
+
             return tf;
         }
 
@@ -1186,6 +1191,8 @@ namespace stock123.app
                 if (mShare != null)
                 {
                     mShare.clearCalculations();
+                    mShare.invalideModifiedKey();
+
                     mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, 0);
                 }
             }
@@ -1193,8 +1200,12 @@ namespace stock123.app
             {
                 if (aIntParameter == C.ID_DLG_BUTTON_OK)
                 {
+                    mShare.invalideModifiedKey();
+
                     mContext.saveOptions();
                     this.Close();
+
+                    mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, 0);
                 }
                 if (aIntParameter == C.ID_DLG_BUTTON_RESET)
                 {
@@ -1343,6 +1354,10 @@ namespace stock123.app
 
                             String s = mTextField1.getText();
                             d.setValueString(GlobalData.kCRSBaseSymbol, s);
+
+                            s = d.toJson();
+                            GlobalData.getData().setValueString(GlobalData.kCRSMethodRatio, s);
+
                             GlobalData.saveData();
                         }
                         break;
@@ -1357,6 +1372,9 @@ namespace stock123.app
 
                             String s = mTextField1.getText();
                             d.setValueString(GlobalData.kCRSBaseSymbol, s);
+
+                            s = d.toJson();
+                            GlobalData.getData().setValueString(GlobalData.kCRSMethodPercent, s);
                             GlobalData.saveData();
                         }
                         break;

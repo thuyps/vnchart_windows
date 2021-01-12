@@ -17,7 +17,7 @@ namespace stock123.app.chart
         short[] mPricelines = new short[10];
         short[] mChartEMA1;
         short[] mChartEMA2;
-        Share baseShare;
+
         int baseMAPeriod1;
         int baseMAPeriod2;
         int mPeriod;
@@ -81,14 +81,37 @@ namespace stock123.app.chart
             
         }
 
-        public void setBaseSymbol(String symbol, int ma1, int ma2)
+        Share baseShare()
         {
+            String symbol = "^VNINDEX";
+            if (mChartType == CHART_CRS_RATIO)
+            {
+                VTDictionary dict = GlobalData.getCRSRatio();
+                symbol = dict.getValueString(GlobalData.kCRSBaseSymbol);
+                if (symbol == null)
+                {
+                    symbol = "^VNINDEX";
+                }
+            }
+            else if (mChartType == CHART_CRS_PERCENT)
+            {
+                VTDictionary dict = GlobalData.getCRSPercent();
+                symbol = dict.getValueString(GlobalData.kCRSBaseSymbol);
+                if (symbol == null)
+                {
+                    symbol = "^VNINDEX";
+                }
+            }
             Share share = Context.getInstance().mShareManager.getShare(symbol);
             if (share == null)
             {
                 share = Context.getInstance().mShareManager.getShare("^VNINDEX");
             }
-            baseShare = share;
+            return share;
+        }
+
+        public void setBaseSymbol(String symbol, int ma1, int ma2)
+        {
             baseMAPeriod1 = ma1;
             baseMAPeriod2 = ma2;
         }
@@ -102,7 +125,7 @@ namespace stock123.app.chart
                 return;
             Share share = getShare(3);
 
-            if (share == null || baseShare == null)
+            if (share == null || baseShare() == null)
             {
                 return;
             }
@@ -123,7 +146,8 @@ namespace stock123.app.chart
 
             if (detectShareCursorChanged())
             {
-                share.calcCRS(baseShare, baseMAPeriod1, baseMAPeriod2);
+                loadSavedBase();
+                share.calcCRS(baseShare(), baseMAPeriod1, baseMAPeriod2);
 
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
 
@@ -189,7 +213,8 @@ namespace stock123.app.chart
 
             if (detectShareCursorChanged())
             {
-                share.calcCRSPercent(baseShare, mPeriod, baseMAPeriod1, baseMAPeriod2);
+                loadSavedBase();
+                share.calcCRSPercent(baseShare(), mPeriod, baseMAPeriod1, baseMAPeriod2);
 
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
 

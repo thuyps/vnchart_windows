@@ -10,6 +10,11 @@ namespace stock123.app.utils
 {
     static class AsyncUtils
     {
+        static public void dispatchBlockInMain(Action fn)
+        {
+            MainApplication.dispatchBlock(fn);
+        }
+
         static public void DelayCall(int msec, Action fn)
         {
             // Grab the dispatcher from the current executing thread
