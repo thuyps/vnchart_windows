@@ -291,11 +291,18 @@ namespace stock123.app.chart
 
             if (mChartType == CHART_CRS_RATIO)
             {
-                v.addElement(new stTitle("cRS ratio", 0xffffffff));
+                String s;
+                s = String.Format("RS ({0}/{1})", mShare.getCode(), baseShare().getCode());
+                v.addElement(new stTitle(s, 0xffffffff));
             }
             else if (mChartType == CHART_CRS_PERCENT)
             {
-                v.addElement(new stTitle("cRS %%", 0xffffffff));
+                String s;
+                int idx = mShare.getCursor();
+                s = String.Format("cRS ({0}/{1})=[c/ma({2})]/[base/maBase({3})]", mShare.getCode(), 
+                    baseShare().getCode(), mPeriod, mPeriod);
+;
+                v.addElement(new stTitle(s, 0xffffffff));
             }
 
             return v;

@@ -6417,7 +6417,7 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
             TRUERANGE_Average(period, pATR);
         }
 
-        public void calcCRS(Share baseShare, int period1, int period2)
+        public void calcCRS(Share baseShare, int ma1, int ma2)
         {
             if (baseShare == null)
             {
@@ -6431,58 +6431,43 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
             int cnt = getCandleCount();
             int baseCnt = baseShare.getCandleCount();
 
-            int cntRS = cnt < baseCnt ? cnt : baseCnt;
             int j = 0;
-            if (cntRS < cnt)
+
+            float[] pClose = pTMP;
+            float[] pBase = pTMP1;
+            int k = baseCnt - 1;
+
+            for (j = cnt - 1; j >= 0; j--)
             {
-                int firsts = cnt - cntRS;
-                for (j = 0; j < firsts; j++)
+                pClose[j] = getClose(j);
+
+                if (k >= 0)
+                {
+                    pBase[j] = baseShare.getClose(k);
+                }
+                else
+                {
+                    pBase[j] = baseShare.getClose(0);
+                }
+                k--;
+            }
+            //---------------------------------
+            float zoom = pBase[cnt-1]/pClose[cnt-1];
+            //  RS = (close / base)*100
+            for (j = 0; j < cnt; j++)
+            {
+                if (pClose[j] > 0 && pBase[j] > 0)
+                {
+                    pCRS[j] = pClose[j]*zoom/pBase[j];
+                }
+                else
                 {
                     pCRS[j] = 1;
-                    pCRS_MA1[j] = 1;
-                    pCRS_MA2[j] = 1;
                 }
             }
 
-            int k = baseCnt - cntRS;
-            float priceLast = 1;
-            float baseCloseLast = 1;
-
-            float zoom = 0;
-
-            for (; j < cnt; j++)
-            {
-                float price = getClose(j);
-                float baseClose = baseShare.getClose(k);
-
-                if (zoom == 0 && price > 0 && baseClose > 0)
-                {
-                    zoom = baseClose / price;
-                }
-
-                k++;
-
-                if (price == 0)
-                {
-                    price = priceLast;
-                }
-                if (baseClose == 0)
-                {
-                    baseClose = baseCloseLast;
-                }
-                priceLast = price;
-                baseCloseLast = baseClose;
-
-                pCRS[j] = price / baseClose;
-
-                if (zoom > 0)
-                {
-                    pCRS[j] *= zoom;
-                }
-            }
-
-            SMA(pCRS, cntRS, period1, pCRS_MA1);
-            SMA(pCRS, cntRS, period2, pCRS_MA2);
+            SMA(pCRS, cnt, ma1, pCRS_MA1);
+            SMA(pCRS, cnt, ma2, pCRS_MA2);
         }
 
         public void calcCRSPercent(Share baseShare, int period, int ma1, int ma2)
@@ -6517,6 +6502,7 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
                 {
                     pBase[j] = baseShare.getClose(0);
                 }
+                k--;
             }
             //---------------------------------
             //  RS = ((close / sma(close, length) / (base / sma(base, length)))-1.0)*100
@@ -6528,6 +6514,11 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
                 {
                     float c = pClose[j] / pTMP2[j];
                     float b = pBase[j] / pTMP3[j];
+
+                    if (j == 2480)
+                    {
+                        j = 2480;
+                    }
 
                     pCRS_Percent[j] = (c / b - 1.0f) / 100;
                 }

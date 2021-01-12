@@ -1156,6 +1156,29 @@ namespace stock123.app
             return tf;
         }
 
+        xTextField addText2(int y, string label, string defaultText)
+        {
+            int w = mContainer.getW();
+            xLabel l = xLabel.createSingleLabel(label);
+            l.setPosition(44, y);
+            mContainer.addControl(l);
+            l.setAlign(xGraphics.LEFT);
+            l.setSize(w, l.getH());
+
+            y += l.getH()+4;
+            //  text field
+            xTextField tf = xTextField.createTextField(200);
+            tf.setPosition(120, y);
+            mContainer.addControl(tf);
+
+            if (defaultText != null)
+            {
+                tf.setText(defaultText);
+            }
+
+            return tf;
+        }
+
         void addSlider(int y, string label, float min, float max, float step, xFloat o, int zoomValue)
         {            //t = o;
             xFloat f = new xFloat();
@@ -1200,6 +1223,7 @@ namespace stock123.app
             {
                 if (aIntParameter == C.ID_DLG_BUTTON_OK)
                 {
+                    updateOptionValues();
                     mShare.invalideModifiedKey();
 
                     mContext.saveOptions();
@@ -1621,7 +1645,7 @@ namespace stock123.app
             }
 
             //  difference
-            mTextField1 = addText(y, "So sánh với mã", symbol);
+            mTextField1 = addText2(y, "Mã so sánh: (^VNINDEX, ^HASTC, ^UPCOM, VNM...)", symbol);
             y += 44;
 
             //  MA1 & MA2
@@ -1655,7 +1679,7 @@ namespace stock123.app
             }
 
             //  difference
-            mTextField1 = addText(y, "So sánh với mã", symbol);
+            mTextField1 = addText2(y, "Mã so sánh: (^VNINDEX, ^HASTC, ^UPCOM, VNM...)", symbol);
             y += 44;
 
             //  ref
