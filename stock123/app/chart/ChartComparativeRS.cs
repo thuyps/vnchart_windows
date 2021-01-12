@@ -35,51 +35,46 @@ namespace stock123.app.chart
         {
             if (mChartType == CHART_CRS_RATIO)
             {
-                String s = GlobalData.getData().getValueString(GlobalData.kCRSMethodRatio);
                 String symbol = "^VNINDEX";
                 int ma1 = 5;
                 int ma2 = 20;
-                if (s != null && s.Length > 0)
+                VTDictionary dict = GlobalData.getCRSRatio();
+                symbol = dict.getValueString(GlobalData.kCRSBaseSymbol);
+                if (symbol == null)
                 {
-                    VTDictionary dict = new VTDictionary(s);
-                    symbol = dict.getValueString(GlobalData.kCRSBaseSymbol);
-                    if (symbol == null)
-                    {
-                        symbol = "^VNINDEX";
-                    }
-
-                    if (dict.hasKey(GlobalData.kCRSBaseMa1))
-                    {
-                        ma1 = dict.getValueInt(GlobalData.kCRSBaseMa1);
-                        ma2 = dict.getValueInt(GlobalData.kCRSBaseMa2);
-                    }
+                    symbol = "^VNINDEX";
                 }
+
+                if (dict.hasKey(GlobalData.kCRSBaseMa1))
+                {
+                    ma1 = dict.getValueInt(GlobalData.kCRSBaseMa1);
+                    ma2 = dict.getValueInt(GlobalData.kCRSBaseMa2);
+                }
+                
                 setBaseSymbol(symbol, ma1, ma2);
 
             }
             else if (mChartType == CHART_CRS_PERCENT)
             {
-                String s = GlobalData.getData().getValueString(GlobalData.kCRSMethodPercent);
                 String symbol = "^VNINDEX";
                 int ma1 = 5;
                 int ma2 = 20;
                 int period = 20;
-                if (s != null && s.Length > 0)
-                {
-                    VTDictionary dict = new VTDictionary(s);
-                    symbol = dict.getValueString(GlobalData.kCRSBaseSymbol);
-                    if (symbol == null)
-                    {
-                        symbol = "^VNINDEX";
-                    }
 
-                    if (dict.hasKey(GlobalData.kCRSBaseMa1))
-                    {
-                        ma1 = dict.getValueInt(GlobalData.kCRSBaseMa1);
-                        ma2 = dict.getValueInt(GlobalData.kCRSBaseMa2);
-                        period = dict.getValueInt(GlobalData.kCRSPeriod);
-                    }
+                VTDictionary dict = GlobalData.getCRSPercent();
+                symbol = dict.getValueString(GlobalData.kCRSBaseSymbol);
+                if (symbol == null)
+                {
+                    symbol = "^VNINDEX";
                 }
+
+                if (dict.hasKey(GlobalData.kCRSBaseMa1))
+                {
+                    ma1 = dict.getValueInt(GlobalData.kCRSBaseMa1);
+                    ma2 = dict.getValueInt(GlobalData.kCRSBaseMa2);
+                    period = dict.getValueInt(GlobalData.kCRSPeriod);
+                }
+
                 setBaseSymbol(symbol, ma1, ma2);
                 mPeriod = period;
             }

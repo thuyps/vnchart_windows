@@ -551,6 +551,10 @@ namespace stock123.app.data
 
         public Share getShare(string code)
         {
+            if (code == null || code.Length == 0)
+            {
+                return null;
+            }
             int shareID = getShareID(code);
             if (shareID > 0)
             {

@@ -91,5 +91,38 @@ namespace stock123.app.data
                 }
             }
         }
+
+        static public VTDictionary getCRSRatio()
+        {
+            if (getData().hasKey(kCRSMethodRatio))
+            {
+                String s = getData().getValueString(kCRSMethodRatio);
+                return new VTDictionary(s);
+            }
+
+            VTDictionary d = new VTDictionary();
+            d.setValueString(kCRSBaseSymbol, "^VNINDEX");
+            d.setValueInt(kCRSBaseMa1, 3);
+            d.setValueInt(kCRSBaseMa2, 20);
+
+            return d;
+        }
+
+        static public VTDictionary getCRSPercent()
+        {
+            if (getData().hasKey(kCRSMethodPercent))
+            {
+                String s = getData().getValueString(kCRSMethodPercent);
+                return new VTDictionary(s);
+            }
+
+            VTDictionary d = new VTDictionary();
+            d.setValueString(kCRSBaseSymbol, "^VNINDEX");
+            d.setValueInt(kCRSPeriod, 20);
+            d.setValueInt(kCRSBaseMa1, 3);
+            d.setValueInt(kCRSBaseMa2, 20);
+
+            return d;
+        }
     }
 }

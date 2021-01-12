@@ -24,6 +24,9 @@ namespace stock123.app
         xFloat mValue3 = new xFloat();
         xFloat mValue4 = new xFloat();
         xFloat mValue5 = new xFloat();
+
+        xTextField mTextField1;
+        xTextField mTextField2;
         int IDX = 1;
 
         Share mShare;
@@ -47,6 +50,8 @@ namespace stock123.app
                 ChartBase.CHART_ADL,
                 ChartBase.CHART_CHAIKIN,
                 ChartBase.CHART_ROC,
+                ChartBase.CHART_CRS_RATIO,
+                ChartBase.CHART_CRS_PERCENT,
                 ChartBase.CHART_ZIGZAG,
                 ChartBase.CHART_VOLUME,
                 ChartBase.CHART_STOCHRSI,
@@ -110,7 +115,7 @@ namespace stock123.app
             mContainer.addControl(bt);
 
             y = bt.getBottom();
-            this.Size = new Size(this.Size.Width, y + mContainer.getY() + 42);  //  42 = borders + bottom space Y
+            this.Size = new Size(this.Size.Width, y + mContainer.getY() + 50);  //  42 = borders + bottom space Y
         }
 
         private void InitializeComponent()
@@ -150,6 +155,8 @@ namespace stock123.app
                 "Accumulation Distribution Line - (ADL)",
                 "Chaikin Oscillator",
                 "Rate of Change (ROC)",
+                "Comparative Relative Strength ratio (RS)",
+                "Comparative Relative Strength percent (cRS %)",
                 "Zigzag",
                 "Volume",
                 "StochRSI",
@@ -273,6 +280,12 @@ namespace stock123.app
                     break;
                 case ChartBase.CHART_MASSINDEX:
                     setupMassIndex();
+                    break;
+                case ChartBase.CHART_CRS_RATIO:
+                    setupRSRatio();
+                    break;
+                case ChartBase.CHART_CRS_PERCENT:
+                    setupRSPercent();
                     break;
             }
         }
@@ -1120,6 +1133,24 @@ namespace stock123.app
             addOKButton(y);
         }
 
+        xTextField addText(int y, string label, string defaultText)
+        {
+            int w = mContainer.getW();
+            xLabel l = xLabel.createSingleLabel(label);
+            l.setPosition(0, y);
+            mContainer.addControl(l);
+            l.setAlign(xGraphics.RIGHT);
+            l.setSize(100, l.getH());
+
+            //y += l.getH();
+            //  text field
+            xTextField tf = xTextField.createTextField(200);
+            tf.setPosition(120, y);
+            mContainer.addControl(tf);
+
+            return tf;
+        }
+
         void addSlider(int y, string label, float min, float max, float step, xFloat o, int zoomValue)
         {            //t = o;
             xFloat f = new xFloat();
@@ -1302,6 +1333,32 @@ namespace stock123.app
                         break;
                     case ChartBase.CHART_CFM:
                         mContext.mOptCFMPeriod = mValue1.Value;
+                        break;
+
+                    case ChartBase.CHART_CRS_RATIO:
+                        {
+                            VTDictionary d = GlobalData.getCRSRatio();
+                            d.setValueInt(GlobalData.kCRSBaseMa1, (int)mValue1.Value);
+                            d.setValueInt(GlobalData.kCRSBaseMa2, (int)mValue2.Value);
+
+                            String s = mTextField1.getText();
+                            d.setValueString(GlobalData.kCRSBaseSymbol, s);
+                            GlobalData.saveData();
+                        }
+                        break;
+
+                    case ChartBase.CHART_CRS_PERCENT:
+                        {
+                            VTDictionary d = GlobalData.getCRSRatio();
+                            d.setValueInt(GlobalData.kCRSBaseMa1, (int)mValue1.Value);
+                            d.setValueInt(GlobalData.kCRSBaseMa2, (int)mValue2.Value);
+
+                            d.setValueInt(GlobalData.kCRSPeriod, (int)mValue3.Value);
+
+                            String s = mTextField1.getText();
+                            d.setValueString(GlobalData.kCRSBaseSymbol, s);
+                            GlobalData.saveData();
+                        }
                         break;
                 }
             }
@@ -1523,6 +1580,84 @@ namespace stock123.app
 
             addSlider(y, "Period", 1, 150, 1, mValue2, 1);
             y += 44;
+            //========================
+            addOKButton(y);
+        }
+
+        void setupRSRatio()
+        {
+            mContainer.removeAllControls();
+
+            int y = 0;
+
+            VTDictionary config = GlobalData.getCRSRatio();
+
+            String symbol = config.getValueString(GlobalData.kCRSBaseSymbol);
+            int ma1 = config.getValueInt(GlobalData.kCRSBaseMa1);
+            int ma2 = config.getValueInt(GlobalData.kCRSBaseMa2);
+
+            Share share = Context.getInstance().mShareManager.getShare(symbol);
+            if (share == null)
+            {
+                symbol = "^VNINDEX";
+            }
+
+            //  difference
+            mTextField1 = addText(y, "So sánh với mã", symbol);
+            y += 44;
+
+            //  MA1 & MA2
+            mValue1.Value = ma1;
+            addSlider(y, "MA 1", 0, 50, 1, mValue1, 1);
+            y += 44;
+            mValue2.Value = ma2;
+            addSlider(y, "MA 2", 0, 100, 1, mValue2, 1);
+            y += 44;
+
+            //========================
+            addOKButton(y);
+        }
+
+        void setupRSPercent()
+        {
+            mContainer.removeAllControls();
+
+            int y = 0;
+
+            VTDictionary config = GlobalData.getCRSPercent();
+
+            String symbol = config.getValueString(GlobalData.kCRSBaseSymbol);
+            int ma1 = config.getValueInt(GlobalData.kCRSBaseMa1);
+            int ma2 = config.getValueInt(GlobalData.kCRSBaseMa2);
+
+            Share share = Context.getInstance().mShareManager.getShare(symbol);
+            if (share == null)
+            {
+                symbol = "^VNINDEX";
+            }
+
+            //  difference
+            mTextField1 = addText(y, "So sánh với mã", symbol);
+            y += 44;
+
+            //  ref
+            mValue3.Value = config.getValueInt(GlobalData.kCRSPeriod);
+            if (mValue3.Value == 0)
+            {
+                mValue3.Value = 20;
+            }
+            addSlider(y, "Thời gian tham chiếu", 3, 100, 1, mValue3, 1);
+            y += 44;
+
+            //  MA1 & MA2
+            mValue1.Value = ma1;
+            addSlider(y, "MA 1", 0, 50, 1, mValue1, 1);
+            y += 44;
+
+            mValue2.Value = ma2;
+            addSlider(y, "MA 2", 0, 100, 1, mValue2, 1);
+            y += 44;
+
             //========================
             addOKButton(y);
         }
