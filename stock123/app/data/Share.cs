@@ -6506,20 +6506,27 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
             }
             //---------------------------------
             //  RS = ((close / sma(close, length) / (base / sma(base, length)))-1.0)*100
-            SMA(pClose, cnt, period, pTMP2);
-            SMA(pBase, cnt, period, pTMP3);
+            SMA(pClose, cnt, 3, pTMP2);
+            SMA(pBase, cnt, 3, pTMP3);
             for (j = 0; j < cnt; j++)
             {
-                if (pTMP2[j] > 0 && pTMP3[j] > 0)
+                float m1;
+                float m2;
+                if (j >= period)
                 {
-                    float c = pClose[j] / pTMP2[j];
-                    float b = pBase[j] / pTMP3[j];
-
-                    if (j == 2480)
-                    {
-                        j = 2480;
-                    }
-
+                    m1 = pTMP2[j - period];
+                    m2 = pTMP3[j - period];
+                }
+                else
+                {
+                    m1 = pTMP2[0];
+                    m2 = pTMP3[0];
+                }
+                if (m1 > 0 && m2 > 0)
+                {
+                    float c = pClose[j]/m1;
+                    float b = pBase[j]/m2;
+                    
                     pCRS_Percent[j] = (c / b - 1.0f) / 100;
                 }
                 else

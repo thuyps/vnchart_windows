@@ -299,7 +299,7 @@ namespace stock123.app.chart
             {
                 String s;
                 int idx = mShare.getCursor();
-                s = String.Format("cRS ({0}/{1})=[c/ma({2})]/[base/maBase({3})]", mShare.getCode(), 
+                s = String.Format("cRS ({0}/{1})=[c/c({2})]/[base/base({3})]", mShare.getCode(), 
                     baseShare().getCode(), mPeriod, mPeriod);
 ;
                 v.addElement(new stTitle(s, 0xffffffff));

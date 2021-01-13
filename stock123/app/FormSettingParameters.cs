@@ -155,8 +155,8 @@ namespace stock123.app
                 "Accumulation Distribution Line - (ADL)",
                 "Chaikin Oscillator",
                 "Rate of Change (ROC)",
-                "Comparative Relative Strength ratio (RS)",
-                "Comparative Relative Strength percent (cRS %)",
+                "Relative Strength Comparative (RS=A/B)",
+                "Relative Strength Comparative (RS=[A/A(period)]/[B/B(period)])",
                 "Zigzag",
                 "Volume",
                 "StochRSI",
@@ -1688,16 +1688,16 @@ namespace stock123.app
             {
                 mValue3.Value = 20;
             }
-            addSlider(y, "Thời gian tham chiếu", 3, 100, 1, mValue3, 1);
+            addSlider(y, "Period", 1, 50, 1, mValue3, 1);
             y += 44;
 
             //  MA1 & MA2
             mValue1.Value = ma1;
-            addSlider(y, "MA 1", 0, 50, 1, mValue1, 1);
+            addSlider(y, "MA 1", 0, 20, 1, mValue1, 1);
             y += 44;
 
             mValue2.Value = ma2;
-            addSlider(y, "MA 2", 0, 100, 1, mValue2, 1);
+            addSlider(y, "MA 2", 0, 50, 1, mValue2, 1);
             y += 44;
 
             //========================
