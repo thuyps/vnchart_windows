@@ -13,6 +13,8 @@ namespace stock123.app.chart
 {
     public class ChartComparativeRS : ChartBase
     {
+        float[] priceValues = { 0, 0, 0, 0, 0};
+        int priceValuesCnt = 0;
 
         short[] mPricelines = new short[10];
         short[] mChartEMA1;
@@ -160,6 +162,15 @@ namespace stock123.app.chart
                     if (share.pCRS[i] < min) min = share.pCRS[i];
                 }
 
+                float dis = (max - min);
+                priceValuesCnt = 4;
+                for (int i = 0; i < priceValuesCnt; i++)
+                {
+                    priceValues[i] = min + (i+0.5f)*(dis / 4);
+                }
+
+                pricesToYs(priceValues, 0, mPricelines, priceValuesCnt, min, max);
+
                 pricesToYs(share.pCRS, share.mBeginIdx, mChartLineXY, mChartLineLength, min, max);
 
                 if (baseMAPeriod1 > 0)
@@ -185,6 +196,15 @@ namespace stock123.app.chart
             if (mShouldDrawGrid)
             {
                 drawGrid(g);
+            }
+
+            for (int i = 0; i < priceValuesCnt; i++)
+            {
+                String priceS = String.Format("{0:F3}", priceValues[i]);
+                g.setColor(C.COLOR_FADE_YELLOW);
+                g.drawLine(0, mPricelines[2 * i + 1], getW() - 34, mPricelines[2 * i + 1]);
+                g.setColor(C.COLOR_FADE_YELLOW0);
+                g.drawString(mFont, priceS, getW() -2, mPricelines[2 * i + 1], xGraphics.VCENTER|xGraphics.RIGHT);
             }
             //===============================================
             //  CRS
@@ -227,6 +247,15 @@ namespace stock123.app.chart
                     if (share.pCRS_Percent[i] < min) min = share.pCRS_Percent[i];
                 }
 
+                float dis = (max - min);
+                priceValuesCnt = 4;
+                for (int i = 0; i < priceValuesCnt; i++)
+                {
+                    priceValues[i] = min + (i + 0.5f) * (dis / 4);
+                }
+
+                pricesToYs(priceValues, 0, mPricelines, priceValuesCnt, min, max);
+
                 pricesToYs(share.pCRS_Percent, share.mBeginIdx, mChartLineXY, mChartLineLength, min, max);
 
                 float[] tmp = { 0 };
@@ -257,13 +286,13 @@ namespace stock123.app.chart
                 drawGrid(g);
             }
             //===============================================
-            String[] ss = { "0" };
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < priceValuesCnt; i++)
             {
+                String priceS = String.Format("{0:F3}", priceValues[i]);
                 g.setColor(C.COLOR_FADE_YELLOW);
-                g.drawLine(0, mPricelines[2 * i + 1], getW() - 20, mPricelines[2 * i + 1]);
+                g.drawLine(0, mPricelines[2 * i + 1], getW() - 34, mPricelines[2 * i + 1]);
                 g.setColor(C.COLOR_FADE_YELLOW0);
-                g.drawString(mFont, ss[i], getW() - 20, mPricelines[2 * i + 1], xGraphics.VCENTER);
+                g.drawString(mFont, priceS, getW() - 2, mPricelines[2 * i + 1], xGraphics.VCENTER|xGraphics.RIGHT);
             }
             //  CRS
             g.setColor(0xffffffff);

@@ -76,9 +76,9 @@ namespace stock123.app.chart
             for (int i = 0; i < 3; i++)
             {
                 g.setColor(C.COLOR_FADE_YELLOW);
-                g.drawLine(0, mPricelines[2 * i + 1], getW() - 20, mPricelines[2 * i + 1]);
+                g.drawLine(0, mPricelines[2 * i + 1], getW() - 34, mPricelines[2 * i + 1]);
                 g.setColor(C.COLOR_FADE_YELLOW0);
-                g.drawString(mFont, ss[i], getW() - 20, mPricelines[2 * i + 1], xGraphics.VCENTER);
+                g.drawString(mFont, ss[i], getW() - 3, mPricelines[2 * i + 1], xGraphics.VCENTER | xGraphics.RIGHT);
             }
 
             //  fast: pink

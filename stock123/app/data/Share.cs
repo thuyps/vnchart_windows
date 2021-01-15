@@ -6453,7 +6453,10 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
             }
             //---------------------------------
             float zoom = pBase[cnt-1]/pClose[cnt-1];
-            //  RS = (close / base)*100
+            if (zoom < 10) zoom = 1;
+            else if (zoom < 100) zoom = 10;
+            else if (zoom < 1000) zoom = 100;
+            else zoom = 1000;
             for (j = 0; j < cnt; j++)
             {
                 if (pClose[j] > 0 && pBase[j] > 0)
@@ -6490,6 +6493,8 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
             float[] pBase = pTMP1;
             int k = baseCnt - 1;
 
+            int date = (2020 << 16) | (3 << 8) | 30;
+
             for (j = cnt -1; j >= 0; j--)
             {
                 pClose[j] = getClose(j);
@@ -6512,6 +6517,12 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
             {
                 float m1;
                 float m2;
+
+                if (getDate(j) == date)
+                {
+                    j = j;
+                }
+
                 if (j >= period)
                 {
                     m1 = pTMP2[j - period];
@@ -6527,7 +6538,7 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
                     float c = pClose[j]/m1;
                     float b = pBase[j]/m2;
                     
-                    pCRS_Percent[j] = (c / b - 1.0f) / 100;
+                    pCRS_Percent[j] = (c / b - 1.0f) * 100;
                 }
                 else
                 {

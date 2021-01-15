@@ -67,8 +67,8 @@ namespace stock123.app.chart
                 drawGrid(g);
             //===============================================
             g.setColor(C.COLOR_FADE_YELLOW);
-            g.drawHorizontalLine(0, mY20, mW - 20);
-            g.drawHorizontalLine(0, mY40, mW - 20);
+            g.drawHorizontalLine(0, mY20, mW - 34);
+            g.drawHorizontalLine(0, mY40, mW - 34);
 
             g.setColor(C.COLOR_FADE_YELLOW0);
             g.drawString(mFont, "20", 0 + mW - 2, mY20, xGraphics.RIGHT | xGraphics.VCENTER);

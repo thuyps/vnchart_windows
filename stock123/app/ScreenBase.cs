@@ -564,7 +564,7 @@ namespace stock123.app
 
                 mContext.mAlarmManager.saveAlarms();
 
-                mContext.mIsFavorGroupChanged = true;
+                mContext.uploadUserData();
             }
         }
 

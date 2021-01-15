@@ -62,15 +62,15 @@ namespace stock123.app.chart
                 if (i == 0 || i == 4 || i == 2)
                 {
                     g.setColor(C.COLOR_GRAY_DARK);
-                    g.drawLineDotHorizontal(0, mPricelines[2 * i + 1], getW() - 20, mPricelines[2 * i + 1]);
+                    g.drawLineDotHorizontal(0, mPricelines[2 * i + 1], getW() - 34, mPricelines[2 * i + 1]);
                 }
                 else
                 {
                     g.setColor(C.COLOR_FADE_YELLOW);
-                    g.drawLine(0, mPricelines[2 * i + 1], getW() - 20, mPricelines[2 * i + 1]);
+                    g.drawLine(0, mPricelines[2 * i + 1], getW() - 34, mPricelines[2 * i + 1]);
                 }
                 g.setColor(C.COLOR_FADE_YELLOW0);
-                g.drawString(mFont, ss[i], getW() - 20, mPricelines[2 * i + 1], xGraphics.VCENTER);
+                g.drawString(mFont, ss[i], getW() - 2, mPricelines[2 * i + 1], xGraphics.VCENTER | xGraphics.RIGHT);
             }
 
             //  stochRSI
