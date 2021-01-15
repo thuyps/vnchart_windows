@@ -1475,31 +1475,59 @@ namespace stock123.app.data
 
         public int getVolume()
         {
+            if (getCandleCnt() == 0)
+            {
+                return 0;
+            }
             return mCVolume[mSelectedCandle];
         }
 
         public float getOpen()
         {
+            if (getCandleCnt() == 0)
+            {
+                return 0;
+            }
             return mCOpen[mSelectedCandle];
         }
 
         public float getClose()
         {
+            if (getCandleCnt() == 0)
+            {
+                return 0;
+            }
+            if (getCandleCnt() == 0)
+            {
+                return 0;
+            }
             return mCClose[mSelectedCandle];
         }
 
         public float getHighest()
         {
+            if (getCandleCnt() == 0)
+            {
+                return 0;
+            }
             return mCHighest[mSelectedCandle];
         }
 
         public float getLowest()
         {
+            if (getCandleCnt() == 0)
+            {
+                return 0;
+            }
             return mCLowest[mSelectedCandle];
         }
 
         public float getRef()
         {
+            if (getCandleCnt() == 0)
+            {
+                return 0;
+            }
             float reference = 0;
             try
             {
@@ -6417,7 +6445,7 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
             TRUERANGE_Average(period, pATR);
         }
 
-        public void calcCRS(Share baseShare, int ma1, int ma2)
+        public void calcRSPrice(Share baseShare, int ma1, int ma2)
         {
             if (baseShare == null)
             {
@@ -6453,7 +6481,10 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
             }
             //---------------------------------
             float zoom = pBase[cnt-1]/pClose[cnt-1];
-            //  RS = (close / base)*100
+            if (zoom < 10) zoom = 1;
+            else if (zoom < 100) zoom = 10;
+            else if (zoom < 1000) zoom = 100;
+            else zoom = 1000;
             for (j = 0; j < cnt; j++)
             {
                 if (pClose[j] > 0 && pBase[j] > 0)
@@ -6470,7 +6501,7 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
             SMA(pCRS, cnt, ma2, pCRS_MA2);
         }
 
-        public void calcCRSPercent(Share baseShare, int period, int ma1, int ma2)
+        public void calcRSPerformance(Share baseShare, int period, int ma1, int ma2)
         {
             if (baseShare == null)
             {
@@ -6489,6 +6520,8 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
             float[] pClose = pTMP;
             float[] pBase = pTMP1;
             int k = baseCnt - 1;
+
+            int date = (2020 << 16) | (3 << 8) | 30;
 
             for (j = cnt -1; j >= 0; j--)
             {
@@ -6512,6 +6545,12 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
             {
                 float m1;
                 float m2;
+
+                if (getDate(j) == date)
+                {
+                    j = j;
+                }
+
                 if (j >= period)
                 {
                     m1 = pTMP2[j - period];
@@ -6527,7 +6566,7 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
                     float c = pClose[j]/m1;
                     float b = pBase[j]/m2;
                     
-                    pCRS_Percent[j] = (c / b - 1.0f) / 100;
+                    pCRS_Percent[j] = (c / b - 1.0f) * 100;
                 }
                 else
                 {

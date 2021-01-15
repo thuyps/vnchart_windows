@@ -1744,7 +1744,7 @@ namespace stock123.app
                             g.price = (int)(m / (g.volume + vol));
                             g.volume += vol;
 
-                            mContext.mIsFavorGroupChanged = true;
+                            mContext.uploadUserData();
                             showGainlossTable();
                         }
                         else
@@ -1773,7 +1773,7 @@ namespace stock123.app
                         if (vol > 0 && vol < g.volume)
                         {
                             g.volume -= vol;
-                            mContext.mIsFavorGroupChanged = true;
+                            mContext.uploadUserData();
 
                             showGainlossTable();
                         }
@@ -1805,8 +1805,8 @@ namespace stock123.app
                     if (shareID > 0)
                     {
                         mContext.mGainLossManager.addGainLoss(code, date, price, vol);
-        
-                        mContext.mIsFavorGroupChanged = true;
+
+                        mContext.uploadUserData();
 
                         showGainlossTable();
                     }
@@ -1853,8 +1853,7 @@ namespace stock123.app
                             if (g.isFavorGroup())
                             {
                                 mContext.saveFavorGroup();
-                                mContext.mIsFavorGroupChanged = true;
-                                mTimer.expireTimer();
+                                mContext.uploadUserData();
                             }
                             else
                                 mContext.saveDefinedShareGroup();
@@ -1897,8 +1896,7 @@ namespace stock123.app
                                 else
                                     mContext.saveDefinedShareGroup();
 
-                                mContext.mIsFavorGroupChanged = true;
-                                mTimer.expireTimer();
+                                mContext.uploadUserData();
 
                                 recreatePriceboard();
                             }
@@ -1932,8 +1930,7 @@ namespace stock123.app
                         mContext.setCurrentShareGroup(g);
                         mContext.saveFavorGroup();
 
-                        mContext.mIsFavorGroupChanged = true;
-                        mTimer.expireTimer();
+                        mContext.uploadUserData();
 
                         updateUI();
                     }
@@ -1955,8 +1952,7 @@ namespace stock123.app
                         mContext.selectDefaultShareGroup();
                         updateUI();
 
-                        mContext.mIsFavorGroupChanged = true;
-                        mTimer.expireTimer();
+                        mContext.uploadUserData();
                     }
                 }
                 else
@@ -2894,6 +2890,7 @@ namespace stock123.app
             else if (mNetState == STATE_PREPARING_UPDATE_REALTIME)
             {
                 //  check if user changed his favorite group
+                /*
                 if (mContext.mIsFavorGroupChanged)
                 {
                     xDataOutput o = mContext.getUserDataAsStream();
@@ -2901,6 +2898,7 @@ namespace stock123.app
                     o = null;
                 }
                 mContext.mIsFavorGroupChanged = false;
+                 */
                 //  intraday history
                 /*
                 if (mRealtimeChart != null)

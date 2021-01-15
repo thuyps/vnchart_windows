@@ -145,7 +145,7 @@ namespace stock123.app.chart
                             "Price Volume Trend (PVT)",
                             "Relative Strength Index (RSI)",
                             "Relative Strength Comparative (RS=A/B)",
-                            "Relative Strength Comparative (RS=[A/A(period)]/[B/B(period)])",
+                            "Relative Price performance (RS=[A/A(period)]/[B/B(period)])",
                             "Stochastic Fast",
                             "Stochastic Full",
                             "StochRSI",

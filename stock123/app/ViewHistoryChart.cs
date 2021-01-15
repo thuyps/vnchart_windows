@@ -1420,6 +1420,10 @@ namespace stock123.app
                     //}
 
                     share.loadShareFromCommonData(true);
+                    if (share.getCandleCnt() == 0)
+                    {
+                        continue;
+                    }
 
                     int vol10 = share.getTotalVolume(5);
                     if (vol10 < 0)

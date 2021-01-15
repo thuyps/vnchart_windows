@@ -1669,6 +1669,22 @@ namespace stock123.app
             mAlarmManager.clearAll();
         }
 
+        NetProtocol netUserData;
+        public void uploadUserData()
+        {
+            xDataOutput o = this.getUserDataAsStream();
+
+            netUserData = createNetProtocol();
+            netUserData.requestSaveUserData(o);
+
+            netUserData.onDoneDelegate = (sender, ok) =>
+                {
+                    Utils.trace("user data saved");
+                };
+
+            netUserData.flushRequest();
+        }
+
         public xDataOutput getUserDataAsStream()
         {
             xDataOutput o = new xDataOutput(5 * 1024);

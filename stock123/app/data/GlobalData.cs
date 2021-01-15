@@ -102,7 +102,7 @@ namespace stock123.app.data
 
             VTDictionary d = new VTDictionary();
             d.setValueString(kCRSBaseSymbol, "^VNINDEX");
-            d.setValueInt(kCRSBaseMa1, 3);
+            d.setValueInt(kCRSBaseMa1, 5);
             d.setValueInt(kCRSBaseMa2, 0);
 
             return d;
@@ -118,8 +118,8 @@ namespace stock123.app.data
 
             VTDictionary d = new VTDictionary();
             d.setValueString(kCRSBaseSymbol, "^VNINDEX");
-            d.setValueInt(kCRSPeriod, 20);
-            d.setValueInt(kCRSBaseMa1, 3);
+            d.setValueInt(kCRSPeriod, 5);
+            d.setValueInt(kCRSBaseMa1, 5);
             d.setValueInt(kCRSBaseMa2, 0);
 
             return d;

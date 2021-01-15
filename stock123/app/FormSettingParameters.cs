@@ -156,7 +156,7 @@ namespace stock123.app
                 "Chaikin Oscillator",
                 "Rate of Change (ROC)",
                 "Relative Strength Comparative (RS=A/B)",
-                "Relative Strength Comparative (RS=[A/A(period)]/[B/B(period)])",
+                "Relative Price performance (RS=[A/A(period)]/[B/B(period)])",
                 "Zigzag",
                 "Volume",
                 "StochRSI",
