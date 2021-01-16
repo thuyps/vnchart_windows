@@ -16,7 +16,7 @@ namespace stock123.app
 {
     public class C
     {
-        public const int CLIENT_VERSION = 722;
+        public const int CLIENT_VERSION = 726;
 
         public const int DATE_BEGIN = (2001 << 16) | (1 << 8) | 1;
         public const string URL_EXPAND_ACCOUNT = "http://soft123.com.vn/web/expand_date?device=PC";
@@ -151,7 +151,7 @@ namespace stock123.app
         public const int ID_MARKET_INDEX = 1205;
 
         public const int ID_SET_ALARM = 1206;
-        public const int ID_SHOW_SHARES_CHANGED_IN_GROUP = 1207;
+        public const int ID_EXPORT_TO_EXCEL = 1207;
 
         public const int ID_ADD_SHARE_GAINLOSS = 1210;
         public const int ID_REMOVE_SHARE_GAINLOSS = 1211;
@@ -305,6 +305,7 @@ namespace stock123.app
         public const int ID_EDIT_ZIGZAG = 1464;
 
         public const int ID_CAPTURE_IMAGE = 1470;
+        public const int ID_RELOAD_DATA_OF_SYMBOL = 1471;
 
         public const int ID_TS_VSTOP = 1480;
         //-------------------------------------------

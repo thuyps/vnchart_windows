@@ -39,6 +39,8 @@ namespace stock123.app
         float[] mFilterLowPrice = { 1000 };
         float[] mFilterHiPrice = { 30000 };
 
+        String sortedColumn = null;
+
         xContainer mLeftPanel;  //  quote list & search control
         xContainer mRightPanel;
         xVector mPanels = new xVector(2);
@@ -372,6 +374,8 @@ namespace stock123.app
                 mTableList = new xContainer();
                 mTableList.setSize(mLeftPanel.getW(), mLeftPanel.getH() - search.getH());
                 mLeftPanel.addControl(mTableList);
+
+
                 //===================
             }
             if (mScreenType == TYPE_CHART)
@@ -484,10 +488,20 @@ namespace stock123.app
 
             float[] columnPercents = { 30, 28, 34, 8 }; //  code, price, value
             String[] columnTexts = { "Mã CP", "Giá", "▼ GTGD tỉ", "" };
-
+            sortedColumn = "GTGD (tỉ)";
+            //-------------------
             xListView list = xListView.createListView(this, columnTexts, columnPercents, w-20, h, mContext.getImageList(C.IMG_MARKET_ICONS, 20, 21));
             list.setID(C.ID_PRICEBOARD_TABLE);
             list.setBackgroundColor(C.COLOR_GRAY);
+
+            int[] ids0 = { 
+                                 C.ID_EXPORT_TO_EXCEL};
+            String[] texts0 = {
+                                      "Xuất danh sách mã ra file excel(csv)"};
+
+            list.setListener(this);
+            list.setMenuContext(ids0, texts0, 1);
+            //-------------------
 
             list.setColumnHeaderTextColor(2, C.COLOR_RED);
 
@@ -535,8 +549,10 @@ namespace stock123.app
             });
             list.setColumnClickHandler(columnClick);
 
+
             //  always add vnindex & hastc
             int i = 0;
+                        /*
             for (i = 0; i < mContext.mShareManager.getVnindexCnt(); i++)
             {
                 Share share = mContext.mShareManager.getVnindexShareAt(i);
@@ -547,6 +563,7 @@ namespace stock123.app
                     r.update();
                 }
             }
+             */
             for (i = 0; i < shares.size(); i++)
             {
                 Share share = (Share)shares.elementAt(i);
@@ -1656,6 +1673,14 @@ namespace stock123.app
         void processMenuContext(int idx)
         {
             int chart = -1;
+
+            if (idx == C.ID_EXPORT_TO_EXCEL)
+            {
+                ShareSortUtils.exportGroupToCSV(mFilteredShares, sortedColumn);
+
+                return;
+            }
+
             if (idx == C.ID_EDIT_BOLLINGER)
             {
                 chart = ChartBase.CHART_BOLLINGER;
@@ -1686,6 +1711,22 @@ namespace stock123.app
                 {
                     Utils.captureViewAsImage(mRightPanel, dlg.FileName);
                 }
+            }
+            else if (idx == C.ID_RELOAD_DATA_OF_SYMBOL)
+            {
+                Share.deleteSavedFile(mShare.getCode());
+
+                reloadShare(mShare, true);
+
+                refreshCharts();
+
+                if (mNetProtocol != null)
+                {
+                    mNetProtocol.cancelNetwork();
+                }
+                mNetProtocol = mContext.createNetProtocol();
+                mNetProtocol.setListener(this);
+                mNetState = NETSTATE_GET_QUOTE_DATA_PREPARING;
             }
             if (chart != -1)
             {
@@ -1766,6 +1807,10 @@ namespace stock123.app
                      for (int i = 0; i < mFilteredShares.size(); i++)
                      {
                          Share share = (Share)mFilteredShares.elementAt(i);
+                         //if (share.getCode().CompareTo("STB") == 0)
+                         //{
+                             //Utils.trace("stb");
+                         //}
                          mContext.mShareManager.loadShareFromCommon(share, 250, true);
                          bool fired = true;
                          for (int j = 0; j < filterSet.getFilterItemCnt(); j++)
@@ -1888,10 +1933,11 @@ namespace stock123.app
             if (share != null && share != mShare)
             {
                 mShare = new Share();
-                mShare.allocMemoryUsingShared(false);
 
                 mShare.setCode(share.getCode(), share.getMarketID());
                 mShare.setID(share.getID());
+
+                mShare.allocMemoryUsingShared(false);
 
                 reloadShare(mShare, true);
 
@@ -1915,9 +1961,17 @@ namespace stock123.app
             cm.Items.Add("PE");
             cm.Items.Add("Khối lượng");
             cm.Items.Add("Khối lượng thay đổi (TB3/TB15)");
+            cm.Items.Add("-");
+            cm.Items.Add("Xuất danh sách ra file excel(csv)");
 
             cm.ItemClicked += new ToolStripItemClickedEventHandler(
                 (sender, item) => {
+                    if (item.ClickedItem.Text.CompareTo("Xuất danh sách ra file excel(csv)") == 0)
+                    {
+                        ShareSortUtils.exportGroupToCSV(mFilteredShares, sortedColumn);
+                        return;
+                    }
+
                     float[] columnPercents = { 30, 28, 34, 8}; //  code, price, value
 
                     String[] columnTexts = { "Mã CP", "Giá", "---", "" };
@@ -1950,7 +2004,7 @@ namespace stock123.app
                     else if (item.ClickedItem.Text.CompareTo("Giá trị giao dịch") == 0)
                     {
                         sortType = ShareSortUtils.SORT_TRADE_VALUE;
-                        columnTexts[2] = "GTGD tỉ";
+                        columnTexts[2] = "GTGD (tỉ)";
                     }
                     else if (item.ClickedItem.Text.CompareTo("Khối lượng") == 0)
                     {
@@ -1962,7 +2016,7 @@ namespace stock123.app
                         sortType = ShareSortUtils.SORT_THAYDOI_VOL;
                         columnTexts[2] = "+/-Vol(%)";
                     }
-                    
+                    sortedColumn = columnTexts[2];
 
                     ShareSortUtils.doSort(mFilteredShares, sortType);
 

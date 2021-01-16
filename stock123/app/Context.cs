@@ -246,9 +246,9 @@ namespace stock123.app
         public bool mOptFilterKLTB30Use = true;
         public int mOptFilterGTGD = 100;
         public bool mOptFilterHiPriceUse = false;
-        public int mOptFilterHiPrice = 50000;
+        public int mOptFilterHiPrice = 500000;
         public bool mOptFilterLowPriceUse = true;
-        public int mOptFilterLowPrice = 6000;
+        public int mOptFilterLowPrice = 1000;
 
         public bool mOptFilterVNIndex = true;
         public bool mOptFilterHNX = true;

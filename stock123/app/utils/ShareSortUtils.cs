@@ -6,6 +6,7 @@ using xlib.framework;
 using stock123.app.data;
 using stock123.app;
 using stock123.app.table;
+using System.Windows.Forms;
 
 namespace stock123.app.utils
 {
@@ -181,8 +182,8 @@ namespace stock123.app.utils
 
                 if (!share.isIndex() && ps != null)
                 {
-                    share.mSortParam = ps.current_volume_1;
-                    share.mCompareText = RowNormalShare.volumeToString(ps.current_volume_1);
+                    share.mSortParam = ps.total_volume;
+                    share.mCompareText = RowNormalShare.volumeToString(ps.total_volume);
                 }
                 else
                 {
@@ -388,6 +389,135 @@ namespace stock123.app.utils
                     share.mSortParam = 0;
                     share.mCompareText = "0";
                 }
+            }
+        }
+
+        static public void exportGroupToCSV(xVector v, String sortedColumn)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "CSV files (*.csv)|";
+            saveFileDialog1.Title = "Lưu danh sách mã ra file excel";
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                String filepath = saveFileDialog1.FileName;
+                if (!filepath.Contains(".csv"))
+                {
+                    filepath = filepath + ".csv";
+                }
+                _exportGroupToCSV(v, sortedColumn, filepath);
+            }
+
+        }
+
+        static public void exportGroupToCSV(stShareGroup g)
+        {
+            xVector v = new xVector();
+            for (int i = 0; i < g.getTotal(); i++)
+            {
+                String code = g.getCodeAt(i);
+                if (code != null)
+                {
+                    Share share = Context.getInstance().mShareManager.getShare(code);
+                    if (share != null)
+                    {
+                        v.addElement(share);
+                    }
+                }
+            }
+            if (v.size() > 0)
+            {
+                exportGroupToCSV(v, null);
+            }
+        }
+
+        static public void _exportGroupToCSV(xVector v, String sortedColumn, String filepath)
+        {
+            String cols = "Market, Symbol, Close, Open, Hi, Lo, Volume, Company\n";
+            if (sortedColumn != null)
+            {
+                cols = String.Format("Market, Symbol, Close, Open, Hi, Lo, Volume, {0}, Company\n", sortedColumn);
+            }
+
+            //xFileManager.removeFile(filepath);
+
+            try{
+                Encoding encoding = Encoding.GetEncoding("UTF-8");
+                System.IO.FileStream fs = new System.IO.FileStream(filepath, System.IO.FileMode.Create);
+                System.IO.StreamWriter writer = new System.IO.StreamWriter(fs, encoding);
+                writer.Write(cols);
+
+                for (int i = 0; i < v.size(); i++)
+                {
+                    Share share = (Share)v.elementAt(i);
+                    
+                    if (share != null)
+                    {
+                        stPriceboardState ps = Context.getInstance().mPriceboard.getPriceboard(share.getCode());
+                        
+                        if (ps != null & share != null)
+                        {
+                            share.loadShareFromCommonData(true);
+
+                            String market = "-";
+                        
+                            if (ps.getMarketID() == 1)
+                            {
+                                market = "HSX";
+                            }
+                            else if (ps.getMarketID() == 2)
+                            {
+                                market = "HNX";
+                            }
+                            else if (ps.getMarketID() == 3)
+                            {
+                                market = "UPC";
+                            }
+
+                            share.selectCandle(share.getCandleCnt() - 1);
+                            String price = String.Format("{0:F2}", share.getClose());
+                            String open = String.Format("{0:F2}", share.getOpen());
+                            String hi = String.Format("{0:F2}", share.getHighest());
+                            String lo = String.Format("{0:F2}", share.getLowest());
+
+                            stCompanyInfo inf = Context.getInstance().mShareManager.getCompanyInfo(ps.id);
+                            String company = "";
+                            String vonhoa = "0";
+                            if (inf != null)
+                            {
+                                company = inf.company_name;
+                                vonhoa = "" + inf.vontt;
+                            }
+
+                            String line = "";
+                            if (sortedColumn != null)
+                            {
+                                line = String.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6:D},{7},{8}\n",
+                                    market, ps.code,        //  0, 1
+                                    price, open, hi, lo,    //  2, 3, 4, 5
+                                    share.getVolume(),
+                                    share.mCompareText,
+                                    company
+                                );
+                            }
+                            else
+                            {
+                                line = String.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6:D},{7}\n",
+                                    market, ps.code,        //  0, 1
+                                    price, open, hi, lo,    //  2, 3, 4, 5
+                                    share.getVolume(),
+                                    company
+                                );
+                            }
+
+
+                            writer.Write(line);
+                        }
+                    }
+                }
+                writer.Close();
+            }
+            catch(Exception e){
+                
             }
         }
     }
