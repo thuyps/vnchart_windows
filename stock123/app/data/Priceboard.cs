@@ -337,7 +337,7 @@ namespace stock123.app.data
             for (int i = 0; i < mIndices.size(); i++)
             {
                 idx = (stPriceboardStateIndex)mIndices.elementAt(i);
-                if (idx.code.Equals(code))
+                if (idx != null && idx.code != null && idx.code.Equals(code))
                 {
                     return idx;
                 }
