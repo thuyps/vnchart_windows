@@ -937,6 +937,10 @@ namespace stock123.app.data
 
         public void allocMemoryUsingShared(bool useSharedMemory)
         {
+            if (isIndex())
+            {
+                useSharedMemory = false;
+            }
             if (useSharedMemory)
             {
                 if (mSharedCClose == null)
@@ -3610,10 +3614,11 @@ namespace stock123.app.data
         int mIsIndex = -1;
         public bool isIndex()
         {
-            if (mCode.Length > 0 && mCode[0] == '^' 
+            if (mCode != null && mCode.Length > 0 && (mCode[0] == '^' 
                 || mCode.IndexOf("HNX30") == 0 
                 || mCode.IndexOf("HNX30") == 0
                 || mCode.IndexOf("VN30") == 0)
+                )
             {
                 mIsIndex = 1;
                 return true;

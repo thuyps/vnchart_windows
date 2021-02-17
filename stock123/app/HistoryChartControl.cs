@@ -209,7 +209,11 @@ namespace stock123.app
                 C.ID_TS_CHARTHLC,
                 C.ID_TS_CHARTOHLC, -1,
                 C.ID_EDIT_BOLLINGER, C.ID_EDIT_ENVELOP, C.ID_EDIT_ICHIMOKU, C.ID_EDIT_PSAR, C.ID_EDIT_ZIGZAG, -1, 
-                C.ID_CAPTURE_IMAGE };
+                C.ID_CAPTURE_IMAGE,
+                -1,
+                C.ID_RELOAD_DATA_OF_SYMBOL
+
+                        };
             string[] texts = {
                                 "Kiểu đồ thị Line",
                 "Kiểu đồ thị Nến",
@@ -223,7 +227,10 @@ namespace stock123.app
                                 "Thông số Parabollic (PSAR)",
                                 "Thông số Zigzag",
                                 "",
-                                "Lưu file ảnh"};
+                                "Lưu file ảnh",
+                                "",
+                                "Tải lại dữ liệu của mã"
+                             };
             setMenuContext(ids, texts, ids.Length);
         }
 
@@ -991,7 +998,7 @@ namespace stock123.app
                             -1000,  //  PVT
                             ChartBase.CHART_RSI,
                                             ChartBase.CHART_CRS_RATIO,
-                ChartBase.CHART_CRS_PERCENT,
+                //ChartBase.CHART_CRS_PERCENT,
                             -1000,  //ChartBase.CHART_STOCHASTIC_FAST,
                             -1000,  //ChartBase.CHART_STOCHASTIC_SLOW,
                             -1000,  //ChartBase.CHART_STOCHRSI,
@@ -1014,7 +1021,7 @@ namespace stock123.app
                             "******Price Volume Trend",
                             "Relative Strength Index (RSI)",
                                                         "Relative Strength (RS=A/B) Comparative",
-                            "Relative Price performance (RS=[A/A(period)]/[B/B(period)])",
+                            //"Relative Price performance (RS=[A/A(period)]/[B/B(period)])",
                             "******Stochastic Fast",
                             "******Stochastic Slow",
                             "******StochRSI",
@@ -1047,7 +1054,7 @@ namespace stock123.app
                 ChartBase.CHART_PVT,
                 ChartBase.CHART_RSI,
                                 ChartBase.CHART_CRS_RATIO,
-                ChartBase.CHART_CRS_PERCENT,
+                //ChartBase.CHART_CRS_PERCENT,
                 ChartBase.CHART_STOCHASTIC_FAST,
                 ChartBase.CHART_STOCHASTIC_SLOW,
                 ChartBase.CHART_STOCHRSI,
@@ -1075,7 +1082,7 @@ namespace stock123.app
                             "Price Volume Trend (PVT)",
                             "Relative Strength Index (RSI)",
                                                         "Relative Strength Comparative (RS=A/B)",
-                            "Relative Price performance (RS=[A/A(period)]/[B/B(period)])",
+                            //"Relative Price performance (RS=[A/A(period)]/[B/B(period)])",
                             "Stochastic Fast",
                             "Stochastic Full",
                             "StochRSI",

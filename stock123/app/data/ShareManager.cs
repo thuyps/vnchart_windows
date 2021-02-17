@@ -535,9 +535,10 @@ namespace stock123.app.data
 
             //  not found, create a new
             s = new Share();
-            s.allocMemoryUsingShared(true);
             s.setID(shareID);
             s.setCode(getShareCode(shareID), marketID);
+
+            s.allocMemoryUsingShared(true);
 
             mShares.Add(shareID, s);
 
@@ -582,16 +583,15 @@ namespace stock123.app.data
             int marketID = getShareMarketID(shareID);
 
             s = new Share();
-
-            s.allocMemoryUsingShared(true);
-
             s.setID(shareID);
+            s.setCode(getShareCode(shareID), marketID);
+
             if (shareID == 752)
             {
                 s.mCode = "^VN30";
             }
 
-            s.setCode(getShareCode(shareID), marketID);
+            s.allocMemoryUsingShared(true);
             //s.loadShare();
 
             mShares.Add(shareID, s);

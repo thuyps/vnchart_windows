@@ -1496,8 +1496,14 @@ namespace stock123.app
                 int[] ids = new int[cnt];
                 String[] texts = new String[cnt];
                 //==================
-                int[] ids0 = { C.ID_ADD_SHARE, C.ID_REMOVE_SHARE, -1, C.ID_ADD_GROUP, C.ID_REMOVE_GROUP, -1, C.ID_SHOW_SHARES_CHANGED_IN_GROUP, -1, C.ID_SET_ALARM };
-                String[] texts0 = { "Thêm cổ phiếu", "Xóa CP khỏi d/s", "", "Thêm nhóm yêu thích", "Xóa nhóm", "", "Thay đổi cổ phiếu trong nhóm", "", "Cài đặt cảnh báo" };
+                int[] ids0 = { C.ID_ADD_SHARE, C.ID_REMOVE_SHARE, -1, 
+                                 C.ID_ADD_GROUP, C.ID_REMOVE_GROUP, -1, 
+                                 C.ID_SET_ALARM , -1, 
+                                 C.ID_EXPORT_TO_EXCEL};
+                String[] texts0 = { "Thêm cổ phiếu", "Xóa CP khỏi d/s", "", 
+                                      "Thêm nhóm yêu thích", "Xóa nhóm", "", 
+                                      "Cài đặt cảnh báo", "", 
+                                      "Xuất danh sách mã ra file excel(csv)"};
 
                 int i;
                 for (i = 0; i < ids0.Length; i++)
@@ -1980,12 +1986,12 @@ namespace stock123.app
                     showDialogOK("Bạn chưa chọn cổ phiếu nào.");
                 }
             }
-            else if (idx == C.ID_SHOW_SHARES_CHANGED_IN_GROUP)
+            else if (idx == C.ID_EXPORT_TO_EXCEL)
             {
                 stShareGroup g = mContext.getCurrentShareGroup();
                 if (g != null)
                 {
-                    //showTangtruongOfGroup(g);
+                    app.utils.ShareSortUtils.exportGroupToCSV(g);
                 }
             }
         }
