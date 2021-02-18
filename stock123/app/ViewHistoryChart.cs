@@ -1382,7 +1382,13 @@ namespace stock123.app
                     int shareID = mContext.mShareManager.getShareIDAt(i, market);
                     share = mContext.mShareManager.getShare(shareID);
 
-                    if (!share.isIndex())
+                    if (share == null)
+                    {
+                        shareID = mContext.mShareManager.getShareIDAt(i, market);
+                        share = mContext.mShareManager.getShare(shareID);
+                    }
+
+                    if (share != null && !share.isIndex())
                     {
                         v0.addElement(share);
                     }
