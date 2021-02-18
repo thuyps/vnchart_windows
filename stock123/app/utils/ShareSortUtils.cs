@@ -24,6 +24,8 @@ namespace stock123.app.utils
         public const int SORT_SYMBOL = 9;
         public const int SORT_PRICE = 10;
 
+        public const int SORT_DUMUA_DUBAN = 11;
+
         static public void doSort(xVector v, int type)
         {
             bool revert = false;
@@ -81,6 +83,53 @@ namespace stock123.app.utils
             {
                 v.makeReverse();
             }
+        }
+
+        static public String sortTypeToString(int type)
+        {
+            String title = "";
+            if (type == SORT_RSI)
+            {
+                title = "RSI";
+            }
+            else if (type == SORT_MFI)
+            {
+                title = "MFI";
+            }
+            else if (type == SORT_EPS)
+            {
+                title = "EPS";
+            }
+            else if (type == SORT_PE)
+            {
+                title = "PE";
+            }
+            else if (type == SORT_VonHoa)
+            {
+                title = "Vốn hoá";
+            }
+            else if (type == SORT_TRADE_VALUE)
+            {
+                title = "Giá trị GD";
+            }
+            else if (type == SORT_THAYDOI_VOL)
+            {
+                title = "Thay đổi\nVolume";
+            }
+            else if (type == SORT_VOLUME)
+            {
+                title = "Volume";
+            }
+            else if (type == SORT_SYMBOL)
+            {
+                title = "Mã";
+            }
+            else if (type == SORT_PRICE)
+            {
+                title = "Giá";
+            }
+
+            return title;
         }
 
         static void sort(xVector v)
@@ -212,7 +261,7 @@ namespace stock123.app.utils
                     {
                         share.mSortParam = inf.volume * ps.current_price_1;
                         double t = share.mSortParam;
-                        share.mCompareText = RowNormalShare.volumeToString((int)t);
+                        share.mCompareText = RowNormalShare.valueMToString(t, true);
                     }
                     else
                     {
@@ -242,7 +291,7 @@ namespace stock123.app.utils
                     {
                         share.mSortParam = ps.current_price_1 * ps.total_volume;
                         double t = share.mSortParam / 1000;
-                        share.mCompareText = RowNormalShare.volumeToString((int)t);
+                        share.mCompareText = RowNormalShare.valueMToString((int)t, true);
                     }
                     else
                     {

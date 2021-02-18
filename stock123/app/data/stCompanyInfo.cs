@@ -24,7 +24,7 @@ namespace stock123.app.data
         public int book_value;
         public int ROA;
         public int ROE;
-        public int volume;					//	KL niem yet
+        public int volume;					//	KL niem yet, don vi x1000
         public int vontt;
         public int volumeOwnedByForeigner;	//	KL hold by foreigner
         public int max52weeks;

@@ -9,6 +9,7 @@ using xlib.ui;
 using xlib.utils;
 
 using stock123.app.data;
+using stock123.app.utils;
 
 namespace stock123.app.table
 {
@@ -23,6 +24,7 @@ namespace stock123.app.table
         public int mCandleColumeIdx = 1;
 
         protected const int COLOR_NONE = 1;
+        int sortType;
 
         public RowNormalShare(xIEventListener listener, int _id, int w, int h)
             :base(listener)
@@ -33,12 +35,19 @@ namespace stock123.app.table
 
             setSize(w, h);
 
+            sortType = ShareSortUtils.SORT_DUMUA_DUBAN;
+
             createRow(_id, w, h);
         }
 
         public void setParent(TablePriceboard parent)
         {
             mParent = parent;
+        }
+
+        public void setSortType(int type)
+        {
+            sortType = type;
         }
 
         virtual protected void createRow(int _id, int w, int h)
@@ -49,6 +58,7 @@ namespace stock123.app.table
 
             if (_id >= 0)
             {
+                uint BG_ORANGE = 0xffff8000;
                 uint BG_GRAY = 0x90606060;
                 uint BG0 = COLOR_NONE;
                 if (_id >= 0 && (_id % 2) == 0)
@@ -69,17 +79,17 @@ namespace stock123.app.table
 		            				fsmallB, fsmallB, 
 		            				fnormal, fnormal, fnormal, 
 		            				fsmallB,        //  cao thap
-		            				fsmall, 
                                     fsmallB,        /// volume
+                 		            fsmall,         //  sort column 
                                     f};
                 float[] percents = {6.5f, 3.7f,          //  11
 		                8, 8, 8.5f,    //  Du mua      =   25
 		                9, 6.5f,    //  khop / +-   =   15.5   
 		                8.5f, 8, 8,    //  Du ban      =   25
 		                6.5f,       //  cao/thap    =   6.5
-                        7.5f,       //  Du cung cau =   7.0
-                        10, 2, -1};    //  Volume      =   10.5
-                uint[] colors = { BG_GRAY, BG0, BG0, BG0, BG0, BG_GRAY, BG_GRAY, BG0, BG0, BG0, BG_GRAY, BG_GRAY, BG_GRAY, COLOR_NONE };
+                        10,       //  Volume =   10.0
+                        7.5f, 2, -1};    //  Sort column      =   7.5
+                uint[] colors = { BG_GRAY, BG0, BG0, BG0, BG0, BG_GRAY, BG_GRAY, BG0, BG0, BG0, BG_GRAY, BG_GRAY, BG0, COLOR_NONE };
                 init(w, h, percents, font, colors);
                 if (_id <= 0)
                 {
@@ -341,7 +351,7 @@ namespace stock123.app.table
             if (getID() == 0)
             {
                 //  code
-                setCellValue(0, "Mã/TC", C.COLOR_GRAY);
+                setCellValue(0, "▼ Mã\nTC", C.COLOR_ORANGE);
 
                 setCellValue(2, "M3/KL", C.COLOR_GRAY);
                 setCellValue(3, "M2/KL", C.COLOR_GRAY);
@@ -356,7 +366,7 @@ namespace stock123.app.table
 
                 setCellValue(10, "H/L", C.COLOR_GRAY);
 
-                setCellValue(11, "Vol Dư\nM/B", C.COLOR_GRAY);
+                setCellValue(11, "TổngKL", C.COLOR_GRAY);
                 /*
                 c = getCellAt(11);
                 if (c != null)
@@ -366,7 +376,14 @@ namespace stock123.app.table
                 }
                  */
 
-                setCellValue(12, "TổngKL", C.COLOR_GRAY);
+                if (sortType == ShareSortUtils.SORT_DUMUA_DUBAN)
+                {
+                    setCellValue(12, "▼ Dư\nM/B", C.COLOR_ORANGE);
+                }
+                else
+                {
+                    setCellValue(12, "▼ " + ShareSortUtils.sortTypeToString(sortType), C.COLOR_ORANGE);
+                }
             }
 
             if (getID() == 0)
@@ -380,6 +397,11 @@ namespace stock123.app.table
 
             if (item == null)
                 return;
+
+            Share share = ctx.mShareManager.getShare(ps.id);
+            if (share == null){
+                return;
+            }
 
             String s;
 
@@ -443,22 +465,37 @@ namespace stock123.app.table
             //  cao - thap
             setCellValue(10, String.Format("{0:F2}", item.getMax()), ctx.valToColorF(item.getMax(), item.getCe(), item.getRef(), item.getFloor()));
             addCellValue1(10, String.Format("{0:F2}", item.getMin()), ctx.valToColorF(item.getMin(), item.getCe(), item.getRef(), item.getFloor()));
-            //  cung - cau
-            int buy = item.getRemainBuyVolume0() + item.getRemainBuyVolume1() + item.getRemainBuyVolume2();
-            int sell = item.getRemainSellVolume0() + item.getRemainSellVolume1() + item.getRemainSellVolume2();
-            String sbuy = volumeToString(buy);
-            String ssell = volumeToString(sell);
-            setCellValue(11, sbuy, C.COLOR_ORANGE);
-            c = getCellAt(11);
-            if (c != null)
-            {
-                c.text2 = ssell;
-                c.textColor2 = C.COLOR_ORANGE;
-            }
-            
+
             //  total volume
             s = volumeToString(item.getTotalVolume());
-            setCellValue(12, s, C.COLOR_WHITE);
+            setCellValue(11, s, C.COLOR_WHITE);
+            
+            //  cung - cau
+            if (sortType == ShareSortUtils.SORT_DUMUA_DUBAN)
+            {
+                int buy = item.getRemainBuyVolume0() + item.getRemainBuyVolume1() + item.getRemainBuyVolume2();
+                int sell = item.getRemainSellVolume0() + item.getRemainSellVolume1() + item.getRemainSellVolume2();
+                String sbuy = volumeToString(buy);
+                String ssell = volumeToString(sell);
+                setCellValue(12, sbuy, C.COLOR_ORANGE);
+                c = getCellAt(12);
+                if (c != null)
+                {
+                    c.text2 = ssell;
+                    c.textColor2 = C.COLOR_ORANGE;
+                }
+            }
+            else
+            {
+                setCellValue(12, share.mCompareText, C.COLOR_ORANGE);
+                c = getCellAt(12);
+                if (c != null)
+                {
+                    c.text2 = null;
+                    c.textColor2 = C.COLOR_ORANGE;
+                }
+            }
+
         }
 
         public static String volumeToString(int v)
@@ -467,10 +504,43 @@ namespace stock123.app.table
             String s;
             if (vf > 0)
             {
-                if (v > 10)
+                if (vf > 10)
                     s = String.Format("{0:F1}", vf);
                 else
                     s = String.Format("{0:F2}", vf);
+            }
+            else
+                s = "-";
+
+            return s;
+        }
+
+        public static String valueMToString(double v, bool toBillion)
+        {
+            double vf = v;
+            if (toBillion)
+            {
+                vf /= 1000.0f;
+            }
+            String s;
+            if (vf > 0)
+            {
+                if (vf > 1000)
+                {
+                    s = "" + (int)vf;
+                }
+                else if (vf > 10)
+                {
+                    s = String.Format("{0:F1}", vf);
+                }
+                else if (v > 1)
+                {
+                    s = String.Format("{0:F2}", vf);
+                }
+                else
+                {
+                    s = String.Format("{0:F3}", vf);
+                }
             }
             else
                 s = "-";
@@ -692,14 +762,40 @@ namespace stock123.app.table
 
         static ToolTip mToolTip = null;
 
+        public delegate void OnShowSortMenu(Control senderControl);
+        public delegate void OnSortABC(Control senderControl);
+        public OnShowSortMenu onShowSortMenu;
+        public OnSortABC onSortABC;
+
         public override void onMouseUp(int x, int y)
         {
             if (mDoubleClicked)
                 return;
             base.onMouseUp(x, y);
-           
+
             if (getID() <= 0)
+            {
+                if (getID() == 0)
+                {
+                    int cellW = (int)(getW()*7.5f/100);
+                    if ((x > getW() - cellW) && x < getW())
+                    {
+                        if (onShowSortMenu != null)
+                        {
+                            onShowSortMenu(getControl());
+                        }
+                    }
+                    else if (x < 6 * getW() / 100)
+                    {
+                        if (onSortABC != null)
+                        {
+                            onSortABC(getControl());
+                        }
+                    }
+                }
                 return;
+            }
+            //-------------------
 
             mParent.selectRow(this);
 
