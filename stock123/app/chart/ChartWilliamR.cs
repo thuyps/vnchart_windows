@@ -14,6 +14,7 @@ namespace stock123.app.chart
     class ChartWilliamR: ChartBase
     {
         short[] mChartEMA;
+        short[] mChartEMA2;
         short[] mPricelines = new short[10];
         public ChartWilliamR(Font f)
             : base(f)
@@ -32,6 +33,9 @@ namespace stock123.app.chart
 
             if (share == null)
                 return;
+
+            int ma1 = 0;
+            int ma2 = 0;
             if (detectShareCursorChanged())
             {
                 share.calcWilliamR();
@@ -42,18 +46,22 @@ namespace stock123.app.chart
                 float[] tmp = { -20, -50, -80 };
                 pricesToYs(tmp, 0, mPricelines, 3, -100, 0);
 
-                if (mContext.mOptWR_EMA > 0)
+                ma1 = GlobalData.getData().getValueInt(GlobalData.kWilliamR_MA1);
+                ma2 = GlobalData.getData().getValueInt(GlobalData.kWilliamR_MA2);
+
+                if (ma1 > 0)
                 {
                     mChartEMA = allocMem(mChartEMA, mChartLineLength * 2);
-                    if (mContext.mOptWR_EMA_ON[0])
-                    {
-                        Share.EMA(share.pWilliamR, share.getCandleCount(), (int)mContext.mOptWR_EMA, share.pEMAIndicator);
-                    }
-                    else
-                    {
-                        Share.SMA(share.pWilliamR, 0, share.getCandleCount(), (int)mContext.mOptWR_EMA, share.pEMAIndicator);
-                    }
+                    Share.SMA(share.pWilliamR, 0, share.getCandleCount(), ma1, share.pEMAIndicator);
+
                     pricesToYs(share.pEMAIndicator, share.mBeginIdx, mChartEMA, mChartLineLength, -100, 0);
+                }
+                if (ma2 > 0)
+                {
+                    mChartEMA2 = allocMem(mChartEMA2, mChartLineLength * 2);
+                    Share.SMA(share.pWilliamR, 0, share.getCandleCount(), ma2, share.pEMAIndicator);
+
+                    pricesToYs(share.pEMAIndicator, share.mBeginIdx, mChartEMA2, mChartLineLength, -100, 0);
                 }
             }
 
@@ -80,10 +88,17 @@ namespace stock123.app.chart
             g.setColor(0xffff8000);
             g.drawLines(mChartLineXY, mChartLineLength, 1.5f);
 
-            if (mContext.mOptWR_EMA > 0)
+            ma1 = GlobalData.getData().getValueInt(GlobalData.kWilliamR_MA1);
+            ma2 = GlobalData.getData().getValueInt(GlobalData.kWilliamR_MA2);
+            if (ma1 > 0)
             {
                 g.setColor(C.COLOR_MAGENTA);
                 g.drawLines(mChartEMA, mChartLineLength, 1.0f);
+            }
+            if (ma2 > 0)
+            {
+                g.setColor(C.COLOR_CYAN);
+                g.drawLines(mChartEMA2, mChartLineLength, 1.0f);
             }
 
             renderCursor(g);

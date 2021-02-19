@@ -161,6 +161,9 @@ namespace stock123.app.data
         static int[] mSharedNNBan;
         bool mIsUsingSharedMemory;
 
+        static public float[] pStaticTMP;
+        static public float[] pStaticTMP1;
+
         //================================================
 
         //  candles
@@ -954,6 +957,9 @@ namespace stock123.app.data
                     mSharedCRef = new float[MAX_CANDLE_CHART_COUNT];
                     mSharedNNMua = new int[MAX_CANDLE_CHART_COUNT];
                     mSharedNNBan = new int[MAX_CANDLE_CHART_COUNT];
+
+                    pStaticTMP = new float[MAX_CANDLE_CHART_COUNT];
+                    pStaticTMP1 = new float[MAX_CANDLE_CHART_COUNT];
                 }
                 mCVolume = mSharedCVolume;
                 mCDate = mSharedCDate;

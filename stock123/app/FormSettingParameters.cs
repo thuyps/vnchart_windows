@@ -509,22 +509,19 @@ namespace stock123.app
             mValue1.Value = mContext.mOptWilliamRPeriod;
             addSlider(y, "Period", 5, 50, 1, mValue1, 1);
             y += 44;
-            //===============option EMA
+            //===============optionEMA
+
+            int ma1 = GlobalData.getData().getValueInt(GlobalData.kWilliamR_MA1);
+            int ma2 = GlobalData.getData().getValueInt(GlobalData.kWilliamR_MA2);
             if (IDX == 0)
             {
-                xCheckbox cb = xCheckbox.createCheckbox("EMA (bỏ chọn để vẽ SMA)", mContext.mOptWR_EMA_ON, this, 250);
-                cb.setPosition(50, y);
+                mValue2.Value = ma1;
+                addSlider(y, "SMA 1", 0, 50, 1, mValue2, 1);
+                y += 44;
 
-                mContainer.addControl(cb);
-                y = cb.getBottom();
-                mValue2.Value = mContext.mOptWR_EMA;
-                if (true)//cb.isCheck())
-                {
-                    addSlider(y, "EMA Period", 0, 50, 1, mValue2, 1);
-                    y += 44;
-                }
-                else
-                    y += 10;
+                mValue3.Value = ma2;
+                addSlider(y, "SMA 2", 0, 50, 1, mValue3, 1);
+                y += 44;
             }
             //========================
             
@@ -1284,7 +1281,11 @@ namespace stock123.app
                     case ChartBase.CHART_WILLIAMR:
                         mContext.mOptWilliamRPeriod = mValue1.Value;
                         if (IDX == 0)
-                            mContext.mOptWR_EMA = mValue2.Value;
+                        {
+                            GlobalData.getData().setValueInt(GlobalData.kWilliamR_MA1, (int)mValue2.Value);
+                            GlobalData.getData().setValueInt(GlobalData.kWilliamR_MA2, (int)mValue3.Value);
+                            GlobalData.saveData();
+                        }
                         break;
                     case ChartBase.CHART_STOCHRSI:
                         mContext.mOptStochRSIPeriod = mValue1.Value;

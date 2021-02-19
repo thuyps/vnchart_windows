@@ -17,6 +17,8 @@ namespace stock123.app.data
         public const String kCRSBaseMa1 = "crs_ma1";
         public const String kCRSBaseMa2 = "crs_ma2";
         public const String kCRSPeriod = "crs_period";
+        public const String kWilliamR_MA1 = "wr_ma1";
+        public const String kWilliamR_MA2 = "wr_ma2";
 
         static VTDictionary data = new VTDictionary();
         static VTDictionary dataPriceboard = new VTDictionary();
