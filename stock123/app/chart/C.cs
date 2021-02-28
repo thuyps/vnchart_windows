@@ -16,7 +16,7 @@ namespace stock123.app
 {
     public class C
     {
-        public const int CLIENT_VERSION = 726;
+        public const int CLIENT_VERSION = 727;
 
         public const int DATE_BEGIN = (2001 << 16) | (1 << 8) | 1;
         public const string URL_EXPAND_ACCOUNT = "http://soft123.com.vn/web/expand_date?device=PC";
@@ -183,6 +183,7 @@ namespace stock123.app
         public const int ID_SWITCH_VIEW = 1236;
         public const int ID_SELECT_SHARE_CANDLE = 1237;
         public const int ID_CHANGES_STATISTICS_VIEW = 1238;
+        public const int ID_SELECT_SHARE_CANDLE_RT = 1239;
 
         public const int ID_SHOW_FILTER_PARAMETER_FORM = 1241;
 

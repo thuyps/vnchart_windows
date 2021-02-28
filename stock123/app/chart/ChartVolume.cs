@@ -152,7 +152,9 @@ namespace stock123.app.chart
             {
                 int idx = share.getCursor();
                 {
-                    int vol = share.getVolume(idx);
+                    long vol = share.getVolume(idx);
+                    vol *= share.mVolumeDivided;
+
                     String s = Utils.formatNumber(vol);
                     Utils.sb.Length = 0;
                     Utils.sb.AppendFormat("Vol: {0}", s);

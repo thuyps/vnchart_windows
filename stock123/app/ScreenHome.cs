@@ -781,7 +781,18 @@ namespace stock123.app
                     {
                         //selectShare(share);
 
-                        goChartScreen(share.getShareID());//share.mID);
+                        goChartScreen(share.getShareID(), true);//share.mID);
+                        mNetState = STATE_NORMAL;
+                    }
+                }
+                else if (aIntParameter == C.ID_SELECT_SHARE_CANDLE_RT)
+                {
+                    share = (Share)aParameter;
+                    if (share != null)
+                    {
+                        //selectShare(share);
+
+                        goChartScreen(share.getShareID(), false);//share.mID);
                         mNetState = STATE_NORMAL;
                     }
                 }
@@ -852,7 +863,9 @@ namespace stock123.app
                     int marketID = (Int32)aParameter;
                     stPriceboardStateIndex pi = mContext.mPriceboard.getPriceboardIndexOfMarket(marketID);
                     if (pi != null)
-                        goChartScreen(pi.id);
+                    {
+                        goChartScreen(pi.id, true);
+                    }
                 }
                 if (aIntParameter == C.ID_MARKET_INDEX)
                 {
@@ -911,7 +924,7 @@ namespace stock123.app
                     stPriceboardStateIndex pi = mContext.mPriceboard.getPriceboardIndexOfMarket(idx.getMarketID());
                     if (pi != null)
                     {
-                        goChartScreen(pi.id);
+                        goChartScreen(pi.id, true);
                     }
                 }
             }
@@ -2085,11 +2098,11 @@ namespace stock123.app
             int shareID = mContext.mShareManager.getShareID(code);
             if (shareID > 0)
             {
-                goChartScreen(shareID);
+                goChartScreen(shareID, true);
             }
         }
 
-        void goChartScreen(int shareID)
+        void goChartScreen(int shareID, bool historyChart)
         {
             /*
             doNotRecreateHomeScreen = true;
@@ -2103,6 +2116,7 @@ namespace stock123.app
             goNextScreen(MainApplication.SCREEN_SEARCH);
              * */
             Share share = mContext.mShareManager.getShare(shareID);
+            share.mIsRealtime = !historyChart;
             ScreenRoot.instance().createNewHistory(share);
         }
 
@@ -2723,10 +2737,10 @@ namespace stock123.app
         bool needDownloadAllShare()
         {
             int today = Utils.getDateAsInt();
-
-            long delta = Utils.dateToNumber(today) - Utils.dateToNumber(AppConfig.appConfig.allShareUpdateDate);
+            
+            long deltaAllshare = Utils.dateToNumber(today) - Utils.dateToNumber(AppConfig.appConfig.allShareUpdateDate);
             long delta2 = Utils.dateToNumber(today) - Utils.dateToNumber(mContext.mLastDayOfShareUpdate);
-            if (delta > 10 || delta2 > 10)
+            if (deltaAllshare > 2 || delta2 > 7)
             {
                 String url = Context.getInstance().configJson.url_all_share2;
                 if (url != null && url.Length > 0)

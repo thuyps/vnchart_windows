@@ -119,6 +119,8 @@ namespace stock123.app
                     if (share.isRealtime())
                     {
                         mNetState = NETSTATE_NORMAL;
+
+                        share.loadShareFromFile(false);
                     }
                     else
                     {

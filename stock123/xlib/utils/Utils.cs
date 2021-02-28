@@ -562,7 +562,7 @@ namespace xlib.utils
             return s;
         }
 
-        public static String formatNumber(int number)
+        public static String formatNumber(long number)
         {
             if (number == 0)
             {

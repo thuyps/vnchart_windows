@@ -250,6 +250,8 @@ namespace stock123.app.data
         public float mCompare2ShareChartHigh = 0;
         public float mCompare2ShareChartLo = 0;
         public String mCompare2ShareCode;
+
+        public int mVolumeDivided = 1;
         //=====================================================================
 
         public Share()
@@ -557,6 +559,7 @@ namespace stock123.app.data
 
         public bool loadShareFromFile(bool appendToday)
         {
+            mVolumeDivided = 1;
             if (isRealtime())
             {
                 appendToday = false;
@@ -640,6 +643,7 @@ namespace stock123.app.data
         //  load share from saved file
         bool loadShare()
         {
+            mVolumeDivided = 1;
             if (isIndex())
             {
                 loadShareFromFile(false);
@@ -1247,10 +1251,14 @@ namespace stock123.app.data
         public void saveShare()
         {
             if (mShouldSaveData == false)
+            {
                 return;
+            }
 
-            if (mCandleType != CANDLE_DAILY)
+            if (!isRealtime() && mCandleType != CANDLE_DAILY)
+            {
                 return;
+            }
 
             mShouldSaveData = false;
             if (mCandleCnt == 0)
@@ -1287,9 +1295,13 @@ namespace stock123.app.data
         String getShareName()
         {
             if (isRealtime())
+            {
                 return "rt";
+            }
             else
+            {
                 return mCode;
+            }
         }
 
         static public void deleteSavedFile(string code)
@@ -4573,12 +4585,12 @@ namespace stock123.app.data
             int begin = cnt - days;
             if (days == 0)
                 return 0;
-            int total = 0;
+            double total = 0;
             for (int i = begin; i < cnt; i++)
             {
                 total += getVolume(i);
             }
-            mTotalVolume10 = total / days;
+            mTotalVolume10 = (int)(total / days);
 
             return mTotalVolume10;
         }
@@ -5834,16 +5846,25 @@ namespace stock123.app.data
             int cnt = getCandleCount();
 
             if (cnt < 4)
+            {
                 return;
+            }
             int last = 100;
 
             int D = 0;
-            int V = 0;
+            long V = 0;
             float C = 0;
             float H = 0;
             float L = 0;
             float O = 0;
             int j = 0;
+
+            int vol = getAveVolumeInDays(5);
+            if (vol > 10000000)
+            {
+                mVolumeDivided = 100;
+            }
+
             for (int i = 0; i < cnt; i++)
             {
                 int date = mCDate[i];
@@ -5862,7 +5883,12 @@ namespace stock123.app.data
                         mCHighest[j] = H;
                         mCLowest[j] = L;
                         mCOpen[j] = O;
-                        mCVolume[j] = V;
+                        mCVolume[j] = (int)(V/mVolumeDivided);
+
+                        if (j == 503)
+                        {
+                            j = 503;
+                        }
 
                         j++;
                     }
@@ -5895,7 +5921,7 @@ namespace stock123.app.data
                 mCHighest[j] = H;
                 mCLowest[j] = L;
                 mCOpen[j] = O;
-                mCVolume[j] = V;
+                mCVolume[j] = (int)(V/mVolumeDivided);
 
                 j++;
             }
@@ -5907,16 +5933,16 @@ namespace stock123.app.data
 
         public void toMonthly()
         {
-            int divi = 1;
-            if (isIndex())
-            {
-                divi = 1000;
-            }
-
             int cnt = getCandleCount();
             if (cnt < 20)
                 return;
             int last = 100;
+
+            int vol = getAveVolumeInDays(5);
+            if (vol > 10000000)
+            {
+                mVolumeDivided = 100;
+            }
 
             int D = 0;
             long V = 0;
@@ -5941,7 +5967,7 @@ namespace stock123.app.data
                         mCHighest[j] = H;
                         mCLowest[j] = L;
                         mCOpen[j] = O;
-                        mCVolume[j] = (int)(V/divi);
+                        mCVolume[j] = (int)(V/mVolumeDivided);
 
                         j++;
                     }
@@ -5980,7 +6006,7 @@ namespace stock123.app.data
                 mCHighest[j] = H;
                 mCLowest[j] = L;
                 mCOpen[j] = O;
-                mCVolume[j] = (int)(V/divi);
+                mCVolume[j] = (int)(V/mVolumeDivided);
 
                 j++;
             }

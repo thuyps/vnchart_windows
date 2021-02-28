@@ -138,6 +138,7 @@ namespace stock123.app
                 share = new Share(Share.MAX_CANDLE_CHART_COUNT);
                 share.setCode(oriShare.getCode(), 0);
                 share.setID(oriShare.getShareID());
+                share.mIsRealtime = oriShare.mIsRealtime;
             }
 
             his = new ViewHistoryChart(share);
@@ -186,6 +187,13 @@ namespace stock123.app
             mTab.addPage(page);
 
             mTab.selectLastPage();
+        }
+
+        public void showDetailRealtimeChart(TradeHistory trade)
+        {
+            Share share = trade.saveToShare();
+
+            createNewHistory(share);
         }
     }
 }

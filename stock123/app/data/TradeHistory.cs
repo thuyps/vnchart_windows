@@ -396,5 +396,30 @@ namespace stock123.app.data
 
             return true;
         }
+
+        public Share saveToShare()
+        {
+            Share share = new Share();
+            share.mIsRealtime = true;
+            share.allocMemoryUsingShared(false);
+
+            int cnt = getTransactionCount();
+
+            float c = 0;
+            int v = 0;
+            for (int i = 0; i < cnt; i++)
+            {
+                int time = getTime(i);
+
+                v = getTradeVolume(i);
+                c = getPrice(i);
+
+                share.addMoreCandle(c, c, c, c, c, v, time);
+            }
+
+            share.saveShare();
+
+            return share;
+        }
     }
 }
