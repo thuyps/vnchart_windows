@@ -2907,7 +2907,7 @@ namespace stock123.app
                 mNetState = STATE_GETTING_PRICEBOARD_ZERO;
             }
             //  realtime update
-            else if (mNetState == STATE_PREPARING_UPDATE_REALTIME)
+            if (mNetState == STATE_PREPARING_UPDATE_REALTIME || mNetState == STATE_GETTING_PRICEBOARD_ZERO)
             {
                 //  check if user changed his favorite group
                 /*
