@@ -1505,7 +1505,7 @@ namespace stock123.app.data
                 {
                     share.mSortParam = inf.volume;
                     Utils.sb.Length = 0;
-                    Utils.sb.AppendFormat(format, (double)(inf.volume/1000000));
+                    Utils.sb.AppendFormat(format, (double)(inf.volume/1000));
                     share.mCompareText = Utils.sb.ToString();
                 }
             }

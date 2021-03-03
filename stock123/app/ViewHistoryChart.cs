@@ -388,14 +388,14 @@ namespace stock123.app
 
             if (mScreenType == TYPE_SEARCH)
             {
-                recreateTableList();
+                recreateTableList(-1);
             }
         }
 
-        void recreateTableList()
+        void recreateTableList(int sortType)
         {
             mTableList.removeAllControls();
-            xListView list = createFilteredList(mTableList.getW(), mTableList.getH());
+            xListView list = createFilteredList(sortType, mTableList.getW(), mTableList.getH());
             list.setPosition(0, 0);
 
             mTableList.addControl(list);
@@ -481,12 +481,16 @@ namespace stock123.app
                 mMainHistoryChartControl.toogleDrawingTool();
         }
 
-        xListView createFilteredList(int w, int h)
+        xListView createFilteredList(int sortType, int w, int h)
         {
             xVector shares = mFilteredShares;
             int cnt = shares.size();
 
-            ShareSortUtils.doSort(shares, ShareSortUtils.SORT_TRADE_VALUE);
+            if (sortType == -1)
+            {
+                sortType = ShareSortUtils.SORT_TRADE_VALUE;
+            }
+            ShareSortUtils.doSort(shares, sortType);
 
             float[] columnPercents = { 30, 28, 34, 8 }; //  code, price, value
             String[] columnTexts = { "Mã CP", "Giá", "▼ GTGD tỉ", "" };
@@ -627,7 +631,7 @@ namespace stock123.app
                 dlg.ShowDialog();
 
                 doFilter();
-                recreateTableList();
+                recreateTableList(-1);
             }
             if (buttonID == C.ID_GOTO_HOME_SCREEN)
             {
@@ -676,10 +680,10 @@ namespace stock123.app
                                 "Vol tăng đột biến",
                                 "Tăng giá (theo %)",
                                 "Giảm giá (theo %)",
-                                "KL lớn nhất trong ngày",
-                                "CP rẻ/đắt nhất",
+                                //"KL lớn nhất trong ngày",
+                                //"CP rẻ/đắt nhất",
                                 "KLCP niêm yết",
-                                "Vốn hóa thị trường",
+                                //"Vốn hóa thị trường",
                                 "Heiken"
                            };
             int[] ids = {   
@@ -688,10 +692,10 @@ namespace stock123.app
                             C.ID_SORT_BASE + C.SORT_VOL_DOTBIEN,
                             C.ID_SORT_BASE + C.SORT_MOST_INCREASE,
                             C.ID_SORT_BASE + C.SORT_MOST_DECREASE, 
-                            C.ID_SORT_BASE + C.SORT_TODAY_BIGGEST_VOLUME,
-                            C.ID_SORT_BASE + C.SORT_LOWEST_PRICE,
+                            //C.ID_SORT_BASE + C.SORT_TODAY_BIGGEST_VOLUME,
+                            //C.ID_SORT_BASE + C.SORT_LOWEST_PRICE,
                             C.ID_SORT_BASE + C.SORT_ON_MARKET_VOLUME,
-                            C.ID_SORT_BASE + C.SORT_VONHOATT,                           
+                            //C.ID_SORT_BASE + C.SORT_VONHOATT,                           
                             C.ID_SORT_BASE + C.SORT_HEIKEN
                             };
 
@@ -1079,7 +1083,7 @@ namespace stock123.app
                     dlg.ShowDialog();
 
                     doFilter();
-                    recreateTableList();
+                    recreateTableList(-1);
                 }
             }
             if (evt == xBaseControl.EVT_ON_ROW_SELECTED)
@@ -1106,6 +1110,7 @@ namespace stock123.app
 
         void doSortBasic(int sort)
         {
+            int sortType = -1;
             if (sort == mCurrentSort)
             {
                 mSortTopToBottom = !mSortTopToBottom;
@@ -1219,7 +1224,7 @@ namespace stock123.app
 
             reorderFinal(mSortTopToBottom);
 
-            recreateTableList();
+            recreateTableList(ShareSortUtils.SORT_IGNORE);
             refreshCharts();
         }
         /*
@@ -1348,7 +1353,7 @@ namespace stock123.app
             //-------------------------
             reorderFinal(mSortTopToBottom);
             //-------------------------
-            recreateTableList();
+            recreateTableList(ShareSortUtils.SORT_IGNORE);
         }
 
         void reorderFinal(bool sortTopToBottom)
@@ -1536,7 +1541,7 @@ namespace stock123.app
                 mFilteredShares.addElement(share);
             }
             //============now recreate the list
-            recreateTableList();
+            recreateTableList(ShareSortUtils.SORT_IGNORE);
         }
 
         xTabControl mSearchControl = null;
@@ -1571,17 +1576,17 @@ namespace stock123.app
             page.addControl(controls);
             tab.addPage(page);
 
-            page = new xTabPage("Cơ bản1");
+            page = new xTabPage("Cơ bản");
             controls = createFilterBasicControls(w - 20, h - 30);
             page.setSize(controls);
             page.addControl(controls);
             tab.addPage(page);
-
+            /*
             page = new xTabPage("Cơ bản2");
             controls = createFilterBasicControls2(w - 20, h - 30);
             page.setSize(controls);
             page.addControl(controls);
-            tab.addPage(page);
+            tab.addPage(page);*/
             //==========candle=========
             /*
             page = new xTabPage("Candle");
@@ -1778,7 +1783,7 @@ namespace stock123.app
                 }
             }
 
-            recreateTableList();
+            recreateTableList(ShareSortUtils.SORT_IGNORE);
             refreshCharts();
         }
 

@@ -12,6 +12,8 @@ namespace stock123.app.utils
 {
     class ShareSortUtils
     {
+        public const int SORT_IGNORE = -2;
+        public const int SORT_DEFAULT = -1;
         public const int SORT_RSI = 0;
         public const int SORT_MFI = 1;
         public const int SORT_VonHoa = 2;
@@ -28,6 +30,14 @@ namespace stock123.app.utils
 
         static public void doSort(xVector v, int type)
         {
+            if (type == SORT_IGNORE)
+            {
+                return;
+            }
+            if (type == SORT_DEFAULT)
+            {
+                type = SORT_GiaTriGiaoDich;
+            }
             bool revert = false;
             if (type == SORT_RSI)
             {
