@@ -491,11 +491,11 @@ namespace stock123.app.utils
 
         static public void _exportGroupToCSV(xVector v, String sortedColumn, String filepath)
         {
-            String cols = "Market, Symbol, Close, Open, Hi, Lo, Volume, Company\n";
-            if (sortedColumn != null)
-            {
-                cols = String.Format("Market, Symbol, Close, Open, Hi, Lo, Volume, {0}, Company\n", sortedColumn);
-            }
+            String cols = "Market, Symbol, Close, Open, Hi, Lo, Volume, Gia tri GD(vnd), EPS(K), PE, RSI, MFI, KL Niem yet(mil), Von Hoa(bil), Company\n";
+            //if (sortedColumn != null)
+            //{
+                //cols = String.Format("Market, Symbol, Close, Open, Hi, Lo, Volume, Gia tri GD, EPS, PE, RSI, MFI, KL Niem yet, Von Hoa, Company", sortedColumn);
+            //}
 
             //xFileManager.removeFile(filepath);
 
@@ -516,6 +516,15 @@ namespace stock123.app.utils
                         if (ps != null & share != null)
                         {
                             share.loadShareFromCommonData(true);
+                            if (share.getCandleCnt() < 3)
+                            {
+                                continue;
+                            }
+
+                            if (share.mCode.CompareTo("HPG") == 0)
+                            {
+                                int t = 0;
+                            }
 
                             String market = "-";
                         
@@ -547,8 +556,21 @@ namespace stock123.app.utils
                                 vonhoa = "" + inf.vontt;
                             }
 
+                            share.calcRSI(0);
+                            share.calcMFI(0);
+
+                            double giatriGD = ps.current_price_1 * ps.total_volume;
+                            giatriGD *= 1000;   //  to vnd
+
+                            double vontt = 0;// inf.vontt;
+                            if (vontt == 0)
+                            {
+                                vontt = inf.volume * ps.current_price_1;
+                            }
+                            vontt /= 1000;  //  to ti vnd
+
                             String line = "";
-                            if (sortedColumn != null)
+                            if (false)//sortedColumn != null)
                             {
                                 line = String.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6:D},{7},{8}\n",
                                     market, ps.code,        //  0, 1
@@ -560,10 +582,20 @@ namespace stock123.app.utils
                             }
                             else
                             {
-                                line = String.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6:D},{7}\n",
+                                //  0       1       2      3    4   5   6           7       8    9  10   11     12          13          14
+                                //Market, Symbol, Close, Open, Hi, Lo, Volume, Gia tri GD, EPS, PE, RSI, MFI, KL Niem yet, Von Hoa, Company
+                                line = String.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6:D},{7},{8:F2},{9:F2},{10:F1},{11:F1},{12:F1},{13:F1},{14}\n",
                                     market, ps.code,        //  0, 1
                                     price, open, hi, lo,    //  2, 3, 4, 5
-                                    share.getVolume(),
+                                    share.getVolume(),      //  6
+                                    giatriGD,               //  7   gia tri GD
+                                    inf.EPS/1000.0f,                //  8:   EPS
+                                    inf.PE/1000.0f,                 //  9: PE
+                                    share.pRSI[share.getCandleCnt()-1],     //  10: RSI
+                                    share.pMFI[share.getCandleCnt()-1],     //  11: MFI
+                                    ((double)inf.volume/1000),             //  12: KL niem yet
+                                    vontt,              //  13: von thi truong
+
                                     company
                                 );
                             }

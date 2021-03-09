@@ -3208,7 +3208,7 @@ namespace stock123.app.data
         - alpha is increased by 0.02 each time a new EP is recorded.
         - maximum value for the acceleration factor is normally set at 0.20,
          */
-        public void calcPSAR()
+        public void calcPSAR(float a, float aMax)
         {
             initIndicatorMemory(ChartBase.CHART_PSAR);
 
@@ -3221,9 +3221,9 @@ namespace stock123.app.data
             mIsCalcPSAR = true;
 
             float alpha0 = Context.getInstance().mOptPSAR_alpha;// 0.02f;
-            float alpha = alpha0;
+            float alpha = a > 0?a:alpha0;
             float lastAlpha = alpha;
-            float alpha_max = Context.getInstance().mOptPSAR_alpha_max;//0.2f;
+            float alpha_max = aMax > 0?aMax:Context.getInstance().mOptPSAR_alpha_max;//0.2f;
 
             float psar_next;
             float psar_last;
@@ -3352,12 +3352,12 @@ namespace stock123.app.data
     	    }
         }
 
-        public void calcVSTOP()
+        public void calcVSTOP(int period, float mult)
         {
             initIndicatorMemory(ChartBase.CHART_VSTOP);
 
-            int periodTR = (int)Context.getInstance().mOptVSTOP_ATR_Loopback;  //  20
-            float MULT = Context.getInstance().mOptVSTOP_MULT;// 2.0f;
+            int periodTR = period > 0?period: (int)Context.getInstance().mOptVSTOP_ATR_Loopback;  //  20
+            float MULT = mult > 0?mult: Context.getInstance().mOptVSTOP_MULT;// 2.0f;
             
             if (periodTR == 0){
                 periodTR = 20;

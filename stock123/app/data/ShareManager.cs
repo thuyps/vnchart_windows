@@ -2016,7 +2016,7 @@ namespace stock123.app.data
                 loadShareFromCommon(share, 70, true);
                 if (share.getCandleCount() > 10)
                 {
-                    share.calcPSAR();
+                    share.calcPSAR(0, 0);
                     if (share.isPSARReverseGreen())
                     {
                         v.addElement(share);
