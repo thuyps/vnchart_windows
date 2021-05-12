@@ -66,6 +66,8 @@ namespace stock123.app.chart
         public const int CHART_NVI = 128;
         public const int CHART_PVI = 129;
         public const int CHART_WILLIAMR = 130;
+
+        public const int CHART_STOCHRSI_2 = 131;
         //  new
         public const int CHART_PVT = 32;
         public const int CHART_CCI = 33;
@@ -204,7 +206,7 @@ namespace stock123.app.chart
 
                 String sz = (mPrices[i]).ToString("0.0");
                 g.setColor(C.COLOR_GRAY_LIGHT);
-                g.drawString(mFont, sz, getW() - 2, mPricesY[i], xGraphics.RIGHT | xGraphics.VCENTER);
+                g.drawString(mFont, sz, getW() - 8, mPricesY[i], xGraphics.RIGHT | xGraphics.VCENTER);
             }
 
             int y = getH() - 4;
@@ -250,7 +252,7 @@ namespace stock123.app.chart
 
                 String sz = (mPrices[i]).ToString("0.0");
                 g.setColor(C.COLOR_GRAY_LIGHT);
-                g.drawString(mFont, sz, getW() - 2, mPricesY[i], xGraphics.RIGHT | xGraphics.VCENTER);
+                g.drawString(mFont, sz, getW() - 8, mPricesY[i], xGraphics.RIGHT | xGraphics.VCENTER);
             }
 
             int y = getH() - 4;

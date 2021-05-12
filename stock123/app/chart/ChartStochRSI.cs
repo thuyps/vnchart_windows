@@ -14,12 +14,16 @@ namespace stock123.app.chart
     public class ChartStochRSI : ChartBase
     {
         short[] mPricelines = new short[10];
+        float[] pStochRSI;
+        float[] pStochRSISMA;
         //==============================
 
         public ChartStochRSI(Font f)
             : base(f)
         {
             mChartType = CHART_STOCHRSI;
+            pStochRSI = new float[Share.MAX_CANDLE_CHART_COUNT];
+            pStochRSISMA = new float[Share.MAX_CANDLE_CHART_COUNT];
         }
 
         public override void render(xGraphics g)
@@ -35,17 +39,27 @@ namespace stock123.app.chart
                 return;
             if (detectShareCursorChanged())
             {
-                share.calcStochRSI();
+                int period = 14;
+                if (mChartType == ChartBase.CHART_STOCHRSI)
+                {
+                    period = (int)Context.getInstance().mOptStochRSIPeriod; 
+                    //GlobalData.getData().getValueInt(GlobalData.kStockRSIPeriod1, 14);
+                }
+                else
+                {
+                    period = GlobalData.getData().getValueInt(GlobalData.kStockRSIPeriod2, 25);
+                }
+                share.calcStochRSI(period, pStochRSI, pStochRSISMA);
 
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
 
-                pricesToYs(share.pStochRSI, share.mBeginIdx, mChartLineXY, mChartLineLength, -0.1f, 1.1f);
-                float[] tmp = { 0, 0.2f, 0.5f, 0.8f, 1};
-                pricesToYs(tmp, 0, mPricelines, 5, -0.1f, 1.1f);
+                pricesToYs(pStochRSI, share.mBeginIdx, mChartLineXY, mChartLineLength, -10, 110);
+                float[] tmp = { 0, 20, 50, 80, 100};
+                pricesToYs(tmp, 0, mPricelines, 5, -10, 110);
 
                 //  SMA
                 mChartLineXY2 = allocMem(mChartLineXY2, mChartLineLength * 2);
-                pricesToYs(share.pStochRSISMA, share.mBeginIdx, mChartLineXY2, mChartLineLength, -0.1f, 1.1f);
+                pricesToYs(pStochRSISMA, share.mBeginIdx, mChartLineXY2, mChartLineLength, -10, 110);
             }
 
             if (mChartLineLength == 0)
@@ -55,22 +69,22 @@ namespace stock123.app.chart
             if (mShouldDrawGrid)
                 drawGrid(g);
             //===============================================
-            String[] ss = {"0.0",  "0.2", "0.5", "0.8", "1.0" };
+            String[] ss = {"0",  "20", "50", "80", "100" };
 
             for (int i = 0; i < 5; i++)
             {
                 if (i == 0 || i == 4 || i == 2)
                 {
                     g.setColor(C.COLOR_GRAY_DARK);
-                    g.drawLineDotHorizontal(0, mPricelines[2 * i + 1], getW() - 34, mPricelines[2 * i + 1]);
+                    g.drawLineDotHorizontal(0, mPricelines[2 * i + 1], getW() - 44, mPricelines[2 * i + 1]);
                 }
                 else
                 {
                     g.setColor(C.COLOR_FADE_YELLOW);
-                    g.drawLine(0, mPricelines[2 * i + 1], getW() - 34, mPricelines[2 * i + 1]);
+                    g.drawLine(0, mPricelines[2 * i + 1], getW() - 44, mPricelines[2 * i + 1]);
                 }
                 g.setColor(C.COLOR_FADE_YELLOW0);
-                g.drawString(mFont, ss[i], getW() - 2, mPricelines[2 * i + 1], xGraphics.VCENTER | xGraphics.RIGHT);
+                g.drawString(mFont, ss[i], getW() - 8, mPricelines[2 * i + 1], xGraphics.VCENTER | xGraphics.RIGHT);
             }
 
             //  stochRSI
@@ -95,9 +109,18 @@ namespace stock123.app.chart
                 StringBuilder sb = Utils.sb;
                 sb.Length = 0;
 
-                vs = share.pStochRSI[idx];
+                vs = pStochRSI[idx];
 
-                sb.AppendFormat("StochRSI({0:F0})={1:F1}", mContext.mOptStochRSIPeriod, vs);
+                int period = 14;
+                if (mChartType == ChartBase.CHART_STOCHRSI)
+                {
+                    period = GlobalData.getData().getValueInt(GlobalData.kStockRSIPeriod1, 14);
+                }
+                else
+                {
+                    period = GlobalData.getData().getValueInt(GlobalData.kStockRSIPeriod1, 25);
+                }
+                sb.AppendFormat("StochRSI({0:F0})={1:F1}", period, vs);
                 v.addElement(new stTitle(sb.ToString(), C.COLOR_ORANGE));
 
                 sb.Length = 0;

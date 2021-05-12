@@ -213,6 +213,15 @@ namespace xlib.utils
             return dict.ContainsKey(key);
         }
 
+        public int getValueInt(String key, int defaultValue)
+        {
+            int value = defaultValue;
+            if (hasKey(key)){
+                value = getValueInt(key);
+            }
+            return value;
+        }
+
         public int getValueInt(String key)
         {
             if (hasKey(key))

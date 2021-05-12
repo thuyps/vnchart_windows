@@ -316,7 +316,7 @@ namespace stock123.app.chart
                 g.setColor(C.COLOR_FADE_YELLOW);
                 g.drawLine(0, mPricelines[2 * i + 1], getW() - 34, mPricelines[2 * i + 1]);
                 g.setColor(C.COLOR_FADE_YELLOW0);
-                g.drawString(mFont, ss[i], getW() - 2, mPricelines[2 * i + 1], xGraphics.VCENTER|xGraphics.RIGHT);
+                g.drawString(mFont, ss[i], getW() - 8, mPricelines[2 * i + 1], xGraphics.VCENTER|xGraphics.RIGHT);
             }
 
             g.setColor(0xffff7000);
@@ -391,7 +391,7 @@ namespace stock123.app.chart
                 g.setColor(C.COLOR_FADE_YELLOW);
                 g.drawLine(0, mPricelines[2 * i + 1], getW() - 34, mPricelines[2 * i + 1]);
                 g.setColor(C.COLOR_FADE_YELLOW0);
-                g.drawString(mFont, ss[i], getW() - 2, mPricelines[2 * i + 1], xGraphics.VCENTER|xGraphics.RIGHT);
+                g.drawString(mFont, ss[i], getW() - 8, mPricelines[2 * i + 1], xGraphics.VCENTER|xGraphics.RIGHT);
             }
 
             g.setColor(0xff20dd3d);
@@ -490,15 +490,15 @@ namespace stock123.app.chart
             pricesToYs(tmp, 0, yy, 1, lo, hi);
             g.drawLine(0, yy[1], getW() - 20, yy[1]);
             g.setColor(C.COLOR_FADE_YELLOW0);
-            g.drawString(mFont, "0", getW() - 2, yy[1], xGraphics.VCENTER|xGraphics.RIGHT);
+            g.drawString(mFont, "0", getW() - 8, yy[1], xGraphics.VCENTER|xGraphics.RIGHT);
             //==============================
             StringBuilder sb = Utils.getSB();
             sb.AppendFormat("{0:F2}", hi);
-            g.drawString(mFont, sb.ToString(), getW() - 2, 0, xGraphics.RIGHT);
+            g.drawString(mFont, sb.ToString(), getW() - 8, 0, xGraphics.RIGHT);
 
             sb.Length = 0;
             sb.AppendFormat("{0:F2}", lo);
-            g.drawString(mFont, sb.ToString(), getW() - 2, getH()-mFont.Height, xGraphics.RIGHT);
+            g.drawString(mFont, sb.ToString(), getW() - 8, getH()-mFont.Height, xGraphics.RIGHT);
             //==============================
             g.setColor(C.COLOR_ORANGE);
             sb = Utils.getSB();
@@ -679,16 +679,16 @@ namespace stock123.app.chart
                 g.setColor(C.COLOR_FADE_YELLOW);
                 g.drawLine(0, yy[l*2+1], getW() - 34, yy[l*2+1]);
                 g.setColor(C.COLOR_FADE_YELLOW0);
-                g.drawString(mFont, ls[l], getW() - 2, yy[l * 2 + 1], xGraphics.VCENTER | xGraphics.RIGHT);
+                g.drawString(mFont, ls[l], getW() - 8, yy[l * 2 + 1], xGraphics.VCENTER | xGraphics.RIGHT);
             }
             //==============================
             StringBuilder sb = Utils.getSB();
             sb.AppendFormat("{0:F2}", hi);
-            g.drawString(mFont, sb.ToString(), getW() - 2, 0, xGraphics.RIGHT);
+            g.drawString(mFont, sb.ToString(), getW() - 8, 0, xGraphics.RIGHT);
 
             sb.Length = 0;
             sb.AppendFormat("{0:F2}", lo);
-            g.drawString(mFont, sb.ToString(), getW() - 2, getH() - mFont.Height, xGraphics.RIGHT);
+            g.drawString(mFont, sb.ToString(), getW() - 8, getH() - mFont.Height, xGraphics.RIGHT);
             //==============================
             g.setColor(C.COLOR_ORANGE);
             g.drawLines(mChartLineXY, mChartLineLength, 2.0f);
@@ -789,7 +789,7 @@ namespace stock123.app.chart
                 sb.Length = 0;
                 sb.AppendFormat("{0:F1}", tmp[l]);
 
-                g.drawString(mFont, sb.ToString(), getW() - 2, yy[l * 2 + 1], xGraphics.VCENTER | xGraphics.RIGHT);
+                g.drawString(mFont, sb.ToString(), getW() - 8, yy[l * 2 + 1], xGraphics.VCENTER | xGraphics.RIGHT);
             }
 
             //==============================
@@ -902,7 +902,7 @@ namespace stock123.app.chart
                 sb.Length = 0;
                 sb.AppendFormat("{0:F1}", tmp[l]);
 
-                g.drawString(mFont, sb.ToString(), getW() - 2, yy[l * 2 + 1], xGraphics.VCENTER | xGraphics.RIGHT);
+                g.drawString(mFont, sb.ToString(), getW() - 8, yy[l * 2 + 1], xGraphics.VCENTER | xGraphics.RIGHT);
             }
 
             //==============================
@@ -1046,7 +1046,7 @@ namespace stock123.app.chart
 
             g.setColor(C.COLOR_FADE_YELLOW);
             g.drawLine(0, mPricelines[1], getW() - 34, mPricelines[1]);
-            g.drawString(mFont, "0%", getW() - 2, mPricelines[1], xGraphics.VCENTER | xGraphics.RIGHT);
+            g.drawString(mFont, "0%", getW() - 8, mPricelines[1], xGraphics.VCENTER | xGraphics.RIGHT);
             
             //  TRIX
             g.setColor(C.COLOR_GREEN);
@@ -1526,7 +1526,7 @@ namespace stock123.app.chart
                 sb.Length = 0;
                 sb.AppendFormat("{0:F1}", tmp[l]);
 
-                g.drawString(mFont, sb.ToString(), getW() - 2, yy[l * 2 + 1], xGraphics.VCENTER | xGraphics.RIGHT);
+                g.drawString(mFont, sb.ToString(), getW() - 8, yy[l * 2 + 1], xGraphics.VCENTER | xGraphics.RIGHT);
             }
 
             //==============================
@@ -1605,7 +1605,7 @@ namespace stock123.app.chart
                 sb.Length = 0;
                 sb.AppendFormat("{0:F1}", tmp[l]);
 
-                g.drawString(mFont, sb.ToString(), getW() - 2, yy[l * 2 + 1], xGraphics.VCENTER | xGraphics.RIGHT);
+                g.drawString(mFont, sb.ToString(), getW() - 8, yy[l * 2 + 1], xGraphics.VCENTER | xGraphics.RIGHT);
             }
 
             //==============================
@@ -1673,7 +1673,7 @@ namespace stock123.app.chart
                 sb.Length = 0;
                 sb.AppendFormat("{0:F1}", tmp[l]);
 
-                g.drawString(mFont, sb.ToString(), getW() - 2, yy[l * 2 + 1], xGraphics.VCENTER | xGraphics.RIGHT);
+                g.drawString(mFont, sb.ToString(), getW() - 8, yy[l * 2 + 1], xGraphics.VCENTER | xGraphics.RIGHT);
             }
 
             //==============================

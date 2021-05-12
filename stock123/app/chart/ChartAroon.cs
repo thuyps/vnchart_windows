@@ -81,7 +81,7 @@ namespace stock123.app.chart
                 g.setColor(C.COLOR_FADE_YELLOW);
                 g.drawLine(0, mPricelines[2 * i + 1], getW() - 34, mPricelines[2 * i + 1]);
                 g.setColor(C.COLOR_FADE_YELLOW0);
-                g.drawString(mFont, ss[i], getW() - 2, mPricelines[2 * i + 1], xGraphics.RIGHT | xGraphics.VCENTER);
+                g.drawString(mFont, ss[i], getW() - 8, mPricelines[2 * i + 1], xGraphics.RIGHT | xGraphics.VCENTER);
             }
 
             g.setColor(C.COLOR_GREEN_DARK);
@@ -121,7 +121,7 @@ namespace stock123.app.chart
                 g.setColor(C.COLOR_FADE_YELLOW);
                 g.drawLine(0, mPricelines[2 * i + 1], getW() - 34, mPricelines[2 * i + 1]);
                 g.setColor(C.COLOR_FADE_YELLOW0);
-                g.drawString(mFont, ss[i], getW() - 2, mPricelines[2 * i + 1], xGraphics.RIGHT | xGraphics.VCENTER);
+                g.drawString(mFont, ss[i], getW() - 8, mPricelines[2 * i + 1], xGraphics.RIGHT | xGraphics.VCENTER);
             }
 
             fillColorGreen(g, mAroonOscillatorXY, mChartLineLength, mPricelines[3]);

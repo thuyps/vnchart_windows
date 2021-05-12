@@ -292,7 +292,7 @@ namespace stock123.app.chart
                 g.setColor(C.COLOR_FADE_YELLOW);
                 g.drawLine(0, mPricelines[2 * i + 1], getW() - 34, mPricelines[2 * i + 1]);
                 g.setColor(C.COLOR_FADE_YELLOW0);
-                g.drawString(mFont, priceS, getW() - 2, mPricelines[2 * i + 1], xGraphics.VCENTER|xGraphics.RIGHT);
+                g.drawString(mFont, priceS, getW() - 8, mPricelines[2 * i + 1], xGraphics.VCENTER|xGraphics.RIGHT);
             }
             //  CRS
             g.setColor(0xffffffff);

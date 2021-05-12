@@ -802,11 +802,11 @@ namespace stock123.app
             y = l.getBottom() + 4;
             //  period
             mValue1.Value = mContext.mOptStochRSIPeriod;
-            addSlider(y, "RSI Period", 5, 50, 1, mValue1, 1);
+            addSlider(y, "RSI Period", 3, 50, 1, mValue1, 1);
             y += 44;
             //  period
             mValue2.Value = mContext.mOptStochRSISMAPeriod;
-            addSlider(y, "SMA Period", 5, 50, 1, mValue2, 1);
+            addSlider(y, "SMA Period", 2, 50, 1, mValue2, 1);
             y += 44;
 
             //========================
