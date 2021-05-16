@@ -259,6 +259,48 @@ namespace stock123.app.chart
 
                     v.addElement(new stTitle(sb.ToString(), C.COLOR_WHITE));
                 }
+                else if (mChartType == CHART_COMPARING_SECOND_SHARE)
+                {
+                    sb.Length = 0;
+                    int index = share.getCursor();
+
+                    float changed = 0;
+                    float changedInPercent = 0;
+
+                    if (index > 0)
+                    {
+                        if (share.pComparingPrice[index - 1] > 0)
+                        {
+                            changed = share.pComparingPrice[index] - share.pComparingPrice[index - 1];
+                            changedInPercent = 100 * (changed / share.pComparingPrice[index - 1]);
+                        }
+                    }
+                    sb.AppendFormat(" {0}: {1:F1} ({2:F1};{3:F2}%)",
+                        mComparingCode,
+                        share.pComparingPrice[share.getCursor()],
+                        changed,
+                        changedInPercent
+                        );
+                    //sb.AppendFormat(" {0}: {1:F2}", mComparingCode, share.pComparingPrice[share.getCursor()]);
+
+                    uint colorUp = 0xff00ff00;
+                    uint colorDown = 0xffff0000;
+                    uint colorRef = 0xffffff00;
+                    uint color = C.COLOR_WHITE;
+                    if (index > 0){
+                        if (changed == 0){
+                            color = colorRef;
+                        }
+                        else if (changed > 0){
+                            color = colorUp;
+                        }
+                        else{
+                            color = colorDown;
+                        }
+                    }
+
+                    v.addElement(new stTitle(sb.ToString(), color));
+                }
             }
 
             return v;
@@ -1193,7 +1235,11 @@ namespace stock123.app.chart
 
             if (detectShareCursorChanged())		//	share's cursor has been changed
             {
-                share.calcComparingShare();
+                if (mComparingCode == null)
+                {
+                    mComparingCode = "^VNINDEX";
+                }
+                share.calcComparingShare(mComparingCode);
 
                 lo = 100000;
                 hi = -10000;
@@ -1233,10 +1279,12 @@ namespace stock123.app.chart
                 //g.setColor(mContext.mOptSMAColor[mSMAIdx, 0]);
                 StringBuilder sb = Utils.sb;
                 sb.Length = 0;
-                sb.AppendFormat(" {0}: {1:F2}", share.mCompare2ShareCode, share.pComparingPrice[share.getCursor()]);
-                String sz = sb.ToString();
-                g.setColor((int)((0xff << 24) | color));
-                g.drawString(mFont, sz, x, y, 0);
+                
+                //String sz = sb.ToString();
+                //g.setColor((int)((0xff << 24) | color));
+                //g.drawString(mFont, sz, 2, 0, 0);
+                mMouseTitle = sb.ToString();
+                renderCursor(g);
             }
         }
 
@@ -1736,6 +1784,12 @@ namespace stock123.app.chart
             */
             mMouseTitle = null;
             renderCursor(g);
+        }
+
+        String mComparingCode;
+        public void compareToShare(String comparingCode)
+        {
+            mComparingCode = comparingCode;
         }
     }
 }

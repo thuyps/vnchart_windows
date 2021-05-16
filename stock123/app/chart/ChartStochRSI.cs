@@ -40,16 +40,19 @@ namespace stock123.app.chart
             if (detectShareCursorChanged())
             {
                 int period = 14;
+                int smooth = 3;
                 if (mChartType == ChartBase.CHART_STOCHRSI)
                 {
                     period = (int)Context.getInstance().mOptStochRSIPeriod; 
+                    smooth = (int)Context.getInstance().mOptStochRSISMAPeriod;
                     //GlobalData.getData().getValueInt(GlobalData.kStockRSIPeriod1, 14);
                 }
                 else
                 {
                     period = GlobalData.getData().getValueInt(GlobalData.kStockRSIPeriod2, 25);
+                    smooth = 3;
                 }
-                share.calcStochRSI(period, pStochRSI, pStochRSISMA);
+                share.calcStochRSI(period, period, smooth, pStochRSI, pStochRSISMA);
 
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
 
@@ -114,7 +117,9 @@ namespace stock123.app.chart
                 int period = 14;
                 if (mChartType == ChartBase.CHART_STOCHRSI)
                 {
-                    period = GlobalData.getData().getValueInt(GlobalData.kStockRSIPeriod1, 14);
+                    period = (int)Context.getInstance().mOptStochRSIPeriod;
+                    //smooth = (int)Context.getInstance().mOptStochRSISMAPeriod;
+                    //period = GlobalData.getData().getValueInt(GlobalData.kStockRSIPeriod1, 14);
                 }
                 else
                 {
@@ -124,7 +129,7 @@ namespace stock123.app.chart
                 v.addElement(new stTitle(sb.ToString(), C.COLOR_ORANGE));
 
                 sb.Length = 0;
-                sb.AppendFormat("SMA({0})", mContext.mOptStochRSISMAPeriod);
+                sb.AppendFormat("Smooth({0})", mContext.mOptStochRSISMAPeriod);
                 v.addElement(new stTitle(sb.ToString(), C.COLOR_MAGENTA));
             }
             return v;

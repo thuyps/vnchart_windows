@@ -116,6 +116,7 @@ namespace stock123.app.chart
                 ChartBase.CHART_PVT,
                 ChartBase.CHART_RSI,
                 ChartBase.CHART_CRS_RATIO,
+                ChartBase.CHART_COMPARING_SECOND_SHARE,
                 //ChartBase.CHART_CRS_PERCENT,
                 ChartBase.CHART_STOCHASTIC_FAST,
                 ChartBase.CHART_STOCHASTIC_SLOW,
@@ -146,6 +147,7 @@ namespace stock123.app.chart
                             "Relative Strength Index (RSI)",
                             "Relative Strength Comparative (RS=A/B)",
                             //"Relative Price performance (RS=[A/A(period)]/[B/B(period)])",
+                            "So sánh VNINDEX",
                             "Stochastic Fast",
                             "Stochastic Full",
                             "StochRSI",
@@ -543,6 +545,13 @@ namespace stock123.app.chart
                 c = new ChartComparativeRS(chartID, f);
                 ((ChartComparativeRS)c).setBaseSymbol("^VNINDEX", 5, 20);
                 c.mShouldDrawCursor = true;
+            }
+            else if (chartID == ChartBase.CHART_COMPARING_SECOND_SHARE)
+            {
+                c = new ChartLine(f);
+                c.setChartType(chartID);
+                c.mShouldDrawCursor = true;
+                ((ChartLine)c).compareToShare("^VNINDEX");
             }
             else if (chartID == ChartBase.CHART_CRS_PERCENT)
             {

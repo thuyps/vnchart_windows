@@ -236,6 +236,7 @@ namespace stock123.app.data
 
         public int mID = -1;
         public bool mIsRealtime = false;
+        public bool mIsGroupIndex = false;
 
         public bool mIs1YearChartOn = false;
         public bool mIs2YearChartOn = false;
@@ -248,7 +249,7 @@ namespace stock123.app.data
         public bool mIsComparingChart = false;
         public float mCompare2ShareChartHigh = 0;
         public float mCompare2ShareChartLo = 0;
-        public String mCompare2ShareCode;
+        //public String mCompare2ShareCode;
 
         public int mVolumeDivided = 1;
         //=====================================================================
@@ -1295,13 +1296,14 @@ namespace stock123.app.data
 
         String getShareName()
         {
+            String md5 = Utils.MD5String(mCode);
             if (isRealtime())
             {
-                return "rt";
+                return String.Format("{0}.rt", md5);
             }
             else
             {
-                return mCode;
+                return md5;
             }
         }
 
@@ -2437,8 +2439,12 @@ namespace stock123.app.data
             }
         }
 
-        public void calcStochRSI(int period, float[] pStochRSI, float[] pStochRSISMA)
+        public void calcStochRSI(int periodRSI, int periodStoch, int smooth, float[] pStochRSI, float[] pStochRSISMA)
         {
+            if (periodRSI <= 0) periodRSI = 14;
+            if (periodStoch <= 0) periodStoch = 14;
+            if (smooth <= 0) smooth = 3;
+
             int cnt = getCandleCount();
             if (cnt < 4)
             {
@@ -2446,7 +2452,7 @@ namespace stock123.app.data
             }
 
             float[] rsi = pStaticTMP;
-            calcRSIWithPeriod(period, rsi);
+            calcRSIWithPeriod(periodRSI, rsi);
 
             //  StochRSI = (RSI - Lowest Low RSI) / (Highest High RSI - Lowest Low RSI)
             //int period = (int)Context.getInstance().mOptStochRSIPeriod;
@@ -2457,7 +2463,7 @@ namespace stock123.app.data
 
             for (int i = 0; i < cnt; i++)
             {
-                int b = i - period + 1;
+                int b = i - periodStoch + 1;
                 if (b < 0) b = 0;
                 max = -2000;
                 min = 2000;
@@ -2489,6 +2495,12 @@ namespace stock123.app.data
             for (int i = 0; i < cnt; i++)
             {
                 pStochRSI[i] *= 100;
+            }
+
+            SMA(pStochRSI, cnt, smooth, pStaticTMP2);
+            for (int i = 0; i < cnt; i++)
+            {
+                pStochRSI[i] = pStaticTMP2[i];
             }
             //==========now SMA===============
             if (pStochRSISMA != null)
@@ -3665,7 +3677,9 @@ namespace stock123.app.data
             if (mCode != null && mCode.Length > 0 && (mCode[0] == '^' 
                 || mCode.IndexOf("HNX30") == 0 
                 || mCode.IndexOf("HNX30") == 0
-                || mCode.IndexOf("VN30") == 0)
+                || mCode.IndexOf("VN30") == 0
+                || mIsGroupIndex
+                )
                 )
             {
                 mIsIndex = 1;
@@ -4436,8 +4450,8 @@ namespace stock123.app.data
         {
             initIndicatorMemory(ChartBase.CHART_STOCHASTIC_FAST);
 
-            if (mIsCalcStochastic)
-                return;
+            //if (mIsCalcStochastic)
+                //return;
             mIsCalcStochastic = true;
 
             //	K = 100*(recentClose-lowestClose)/(highestHi-lowestLow);
@@ -6652,7 +6666,7 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
             SMA(pCRS_Percent, cnt, ma2, pCRS_MA2_Percent);
         }
 
-        public void calcComparingShare()
+        public void calcComparingShare(String comparingCode)
         {
             initIndicatorMemory(ChartBase.CHART_COMPARING_SECOND_SHARE);
 
@@ -6665,7 +6679,7 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
             }
             //-------------------------------
 
-            Share second = Context.getInstance().mShareManager.getShare(mCompare2ShareCode);// new Share();
+            Share second = Context.getInstance().mShareManager.getShare(comparingCode);// new Share();
             second.loadShare();
 
             int j = second.getCandleCount()-1;

@@ -1498,11 +1498,11 @@ namespace stock123.app
                 else
                 {
                     //mContext.mComparingShareCode = code.ToUpper();
-                    mShare.mCompare2ShareCode = code.ToUpper();
+                    String mCompare2ShareCode = code.ToUpper();
                     mShare.clearCalculations();
 
                     //mChartMaster.showAttachChart(ChartBase.CHART_COMPARING_SECOND_SHARE);
-                    mChartMaster.compareToChart(mShare.mCompare2ShareCode);
+                    mChartMaster.compareToChart(mCompare2ShareCode);
 
                     mChartMaster.clearModifyKey();
                     mChartMaster.invalidate();

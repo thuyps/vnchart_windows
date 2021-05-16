@@ -2479,6 +2479,7 @@ namespace stock123.app.data
             Share _share = new Share(Share.MAX_CANDLE_CHART_COUNT);
 
             _index.setCode(g.getName(), 1);
+            _index.mIsGroupIndex = true;
             String rootCode = null;
             int startDate = 0;
             int candleCnt = 0;
