@@ -29,7 +29,7 @@ namespace stock123.app.chart
             Share share = getShare();
             if (detectShareCursorChanged())
             {
-                share.calcVSTOP();
+                share.calcVSTOP(0, 0);
 
                 int newSize = mChartLineLength * 2;
                 mChartLineXY = allocMem(mChartLineXY, newSize);

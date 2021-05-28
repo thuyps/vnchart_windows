@@ -139,6 +139,7 @@ namespace stock123.app
                 share.setCode(oriShare.getCode(), 0);
                 share.setID(oriShare.getShareID());
                 share.mIsRealtime = oriShare.mIsRealtime;
+                share.mIsGroupIndex = oriShare.mIsGroupIndex;
             }
 
             his = new ViewHistoryChart(share);

@@ -66,6 +66,8 @@ namespace stock123.app.chart
         public const int CHART_NVI = 128;
         public const int CHART_PVI = 129;
         public const int CHART_WILLIAMR = 130;
+
+        public const int CHART_STOCHRSI_2 = 131;
         //  new
         public const int CHART_PVT = 32;
         public const int CHART_CCI = 33;
@@ -144,6 +146,8 @@ namespace stock123.app.chart
         protected String mClose;
         protected String mHigh;
         protected String mLow;
+        protected String mChanged;
+        uint mChangedColor;
         protected bool mSupportDrawingTrend;
 
         protected Drawer mDrawer;
@@ -204,7 +208,7 @@ namespace stock123.app.chart
 
                 String sz = (mPrices[i]).ToString("0.0");
                 g.setColor(C.COLOR_GRAY_LIGHT);
-                g.drawString(mFont, sz, getW() - 2, mPricesY[i], xGraphics.RIGHT | xGraphics.VCENTER);
+                g.drawString(mFont, sz, getW() - 8, mPricesY[i], xGraphics.RIGHT | xGraphics.VCENTER);
             }
 
             int y = getH() - 4;
@@ -250,7 +254,7 @@ namespace stock123.app.chart
 
                 String sz = (mPrices[i]).ToString("0.0");
                 g.setColor(C.COLOR_GRAY_LIGHT);
-                g.drawString(mFont, sz, getW() - 2, mPricesY[i], xGraphics.RIGHT | xGraphics.VCENTER);
+                g.drawString(mFont, sz, getW() - 8, mPricesY[i], xGraphics.RIGHT | xGraphics.VCENTER);
             }
 
             int y = getH() - 4;
@@ -767,7 +771,12 @@ namespace stock123.app.chart
                 g.drawString(f, mOpen, x, y); y += mFont.Height - 2;
                 //g.drawString(f, mClose, x, y); y += mFont.Height - 2;
                 g.drawString(f, mHigh, x, y); y += mFont.Height - 2;
+
+                g.setColor(mChangedColor);
+                g.drawString(f, mChanged, x, y); y += mFont.Height - 2;
                 //g.drawString(f, mLow, x, y); y += mFont.Height - 2;
+
+                g.setColor(C.COLOR_ORANGE);
                 g.drawString(f, mVolume, x, y); y += mFont.Height - 2;
                 g.drawString(f, mDate, x, y); y += mFont.Height - 2;
             }
@@ -806,6 +815,29 @@ namespace stock123.app.chart
                 mLow = sb.ToString();
                 sb.Length = 0;
                 */
+
+                //  change:
+
+                int previous = candleIdx - 1;
+                if (previous < 0) previous = candleIdx;
+                float changed = share.getClose(candleIdx) - share.getClose(previous);
+                float changedInPercent = 0;
+                if (share.getClose(previous) > 0){
+                    changedInPercent = 100*(share.getClose(candleIdx) - share.getClose(previous))/share.getClose(previous);
+                }
+                sb.AppendFormat("Chg: {0:F1} ({1:F1}%)", changed, changedInPercent);
+                mChanged = sb.ToString();
+                if (changed > 0){
+                   mChangedColor = 0xff00ff00;
+                }
+                else if (changed < 0){
+                    mChangedColor = 0xffff0000;
+                }
+                else{
+                    mChangedColor = 0xffffff00;
+                }
+                sb.Clear();
+
                 if (share.isRealtime())
                 {
                     int date = share.getDate(candleIdx);

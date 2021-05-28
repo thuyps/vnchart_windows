@@ -135,8 +135,8 @@ namespace stock123.app.chart
             g.drawLines(mSMAVolumeXY, mChartLineLength);
 
             g.setColor(C.COLOR_GRAY_LIGHT);
-            g.drawString(mFont, mHighestVolume, getW() - 2, 0, xGraphics.RIGHT | xGraphics.TOP);
-            g.drawString(mFont, "0", getW() - 2, getH(), xGraphics.RIGHT | xGraphics.BOTTOM);
+            g.drawString(mFont, mHighestVolume, getW() - 8, 0, xGraphics.RIGHT | xGraphics.TOP);
+            g.drawString(mFont, "0", getW() - 8, getH(), xGraphics.RIGHT | xGraphics.BOTTOM);
 
             //  calc mMouseTitle
             mMouseTitle = Utils.formatNumber((int)yToPrice(mLastY, lowest, biggest));

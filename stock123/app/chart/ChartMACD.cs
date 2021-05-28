@@ -51,7 +51,7 @@ namespace stock123.app.chart
             g.setColor(C.COLOR_FADE_YELLOW);
             g.drawLine(0, mOY, getW() - 34, mOY);
             g.setColor(C.COLOR_FADE_YELLOW0);
-            g.drawString(mFont, "0", getW() - 2, mOY, xGraphics.VCENTER | xGraphics.RIGHT);
+            g.drawString(mFont, "0", getW() - 8, mOY, xGraphics.VCENTER | xGraphics.RIGHT);
 
             int hisW = (int)(((float)mDrawingW / mChartLineLength) * 2.0f / 3);
             

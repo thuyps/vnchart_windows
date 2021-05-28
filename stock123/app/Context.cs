@@ -770,7 +770,7 @@ namespace stock123.app
             String lastComparingShare = null;
             if (mCurrentShare != null && mCurrentShare != share)
             {
-                lastComparingShare = mCurrentShare.mCompare2ShareCode;
+                //lastComparingShare = mCurrentShare.mCompare2ShareCode;
             }
             //-----------------------------------
             mCurrentShare = share;
@@ -783,7 +783,7 @@ namespace stock123.app
 
             if (mCurrentShare != null)
             {
-                mCurrentShare.mCompare2ShareCode = lastComparingShare;
+                //mCurrentShare.mCompare2ShareCode = lastComparingShare;
             }
 
             return mCurrentShare != null;

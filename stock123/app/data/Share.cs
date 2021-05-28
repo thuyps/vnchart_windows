@@ -57,8 +57,6 @@ namespace stock123.app.data
         public float[] pRSI;
         public float[] pWilliamR;
         public float[] pRSISecond;
-        public float[] pStochRSI;
-        public float[] pStochRSISMA;
         //=====for macd=====
         public float[] pMACD;
         public float[] pMACDSignal9;
@@ -163,6 +161,7 @@ namespace stock123.app.data
 
         static public float[] pStaticTMP;
         static public float[] pStaticTMP1;
+        static public float[] pStaticTMP2;
 
         //================================================
 
@@ -237,6 +236,7 @@ namespace stock123.app.data
 
         public int mID = -1;
         public bool mIsRealtime = false;
+        public bool mIsGroupIndex = false;
 
         public bool mIs1YearChartOn = false;
         public bool mIs2YearChartOn = false;
@@ -249,7 +249,7 @@ namespace stock123.app.data
         public bool mIsComparingChart = false;
         public float mCompare2ShareChartHigh = 0;
         public float mCompare2ShareChartLo = 0;
-        public String mCompare2ShareCode;
+        //public String mCompare2ShareCode;
 
         public int mVolumeDivided = 1;
         //=====================================================================
@@ -883,15 +883,16 @@ namespace stock123.app.data
                     break;
                 case ChartBase.CHART_STOCHASTIC_FAST:
                 case ChartBase.CHART_STOCHASTIC_SLOW:
-                case ChartBase.CHART_STOCHRSI:
-                    if (realloc || pStochRSI == null)
                     {
-                        pStochRSI = new float[maxCandle];
-                        pStochRSISMA = new float[maxCandle];
                         pStochasticFastK = new float[maxCandle];
                         pStochasticFastD = new float[maxCandle];
                         pStochasticSlowK = new float[maxCandle];
                         pStochasticSlowD = new float[maxCandle];
+                    }
+                    if (realloc || pRSI == null)
+                    {
+                        pRSI = new float[maxCandle];
+                        pRSISecond = new float[maxCandle];
                     }
                     break;
                 case ChartBase.CHART_TRIX:
@@ -964,6 +965,7 @@ namespace stock123.app.data
 
                     pStaticTMP = new float[MAX_CANDLE_CHART_COUNT];
                     pStaticTMP1 = new float[MAX_CANDLE_CHART_COUNT];
+                    pStaticTMP2 = new float[MAX_CANDLE_CHART_COUNT];
                 }
                 mCVolume = mSharedCVolume;
                 mCDate = mSharedCDate;
@@ -1294,13 +1296,14 @@ namespace stock123.app.data
 
         String getShareName()
         {
+            String md5 = Utils.MD5String(mCode);
             if (isRealtime())
             {
-                return "rt";
+                return String.Format("{0}.rt", md5);
             }
             else
             {
-                return mCode;
+                return md5;
             }
         }
 
@@ -2271,15 +2274,29 @@ namespace stock123.app.data
 
         public void calcRSI(int rsiIDX)
         {
-            initIndicatorMemory(ChartBase.CHART_RSI);
+            int period = 14;
+            if (rsiIDX == 0 || rsiIDX == 1)
+            {
+                period = (int)Context.getInstance().mOptRSIPeriod[rsiIDX];
+            }
+            else if (rsiIDX == 2)
+            {
+                period = (int)Context.getInstance().mOptStochRSIPeriod;
+            }
+            calcRSI(rsiIDX, period);
+        }
 
+        public void calcRSIWithPeriod(int period, float[] outRSI)
+        {
             int cnt = getCandleCount();
             if (cnt < 4)
+            {
                 return;
+            }
 
-            if (mIsCalcRSI)
-                return;
-            mIsCalcRSI = true;
+            //if (mIsCalcRSI)
+            //return;
+            //mIsCalcRSI = true;
 
             float[] av_up = { 0, 0 };
             float[] av_do = { 0, 0 };
@@ -2291,11 +2308,11 @@ namespace stock123.app.data
             av_up[0] = 0;
             av_do[0] = 0;
 
-            int period = 0;
-            if (rsiIDX == 0 || rsiIDX == 1)
-                period = (int)Context.getInstance().mOptRSIPeriod[rsiIDX];
-            else if (rsiIDX == 2)
-                period = (int)Context.getInstance().mOptStochRSIPeriod;
+            //int period = 0;
+            //if (rsiIDX == 0 || rsiIDX == 1)
+            //period = (int)Context.getInstance().mOptRSIPeriod[rsiIDX];
+            //else if (rsiIDX == 2)
+            //period = (int)Context.getInstance().mOptStochRSIPeriod;
 
             for (int i = 0; i < cnt; i++)
             {
@@ -2334,27 +2351,31 @@ namespace stock123.app.data
                 j++;
             }
 
+            for (int i = 0; i < cnt; i++)
+            {
+                outRSI[i] = 100 - (100 / (1 + rs[i]));
+            }
+        }
+
+        public void calcRSI(int rsiIDX, int period)
+        {
+            initIndicatorMemory(ChartBase.CHART_RSI);
+
+            float[] outRSI = pRSI;
             if (rsiIDX == 0)
             {
-                for (int i = 0; i < cnt; i++)
-                {
-                    pRSI[i] = 100 - (100 / (1 + rs[i]));
-                }
+                outRSI = pRSI;
             }
             else if (rsiIDX == 1)
             {
-                for (int i = 0; i < cnt; i++)
-                {
-                    pRSISecond[i] = 100 - (100 / (1 + rs[i]));
-                }
+                outRSI = pRSISecond;
             }
             else if (rsiIDX == 2)
             {
-                for (int i = 0; i < cnt; i++)
-                {
-                    pTMP[i] = 100 - (100 / (1 + rs[i]));
-                }
+                outRSI = pTMP;
             }
+
+            calcRSIWithPeriod(period, outRSI);
         }
 
         public void calcRSICustom(float[] price, int period, float[] outRSI)
@@ -2418,51 +2439,74 @@ namespace stock123.app.data
             }
         }
 
-        public void calcStochRSI()
+        public void calcStochRSI(int periodRSI, int periodStoch, int smooth, float[] pStochRSI, float[] pStochRSISMA)
         {
-            initIndicatorMemory(ChartBase.CHART_STOCHRSI);
-
-            if (mIsCalcStochRSI)
-                return;
-
-            mIsCalcStochRSI = false;
+            if (periodRSI <= 0) periodRSI = 14;
+            if (periodStoch <= 0) periodStoch = 14;
+            if (smooth <= 0) smooth = 3;
 
             int cnt = getCandleCount();
-            if (cnt < 3)
+            if (cnt < 4)
+            {
                 return;
+            }
 
-            mIsCalcRSI = false; //  have to set this
-            calcRSI(2);
-            mIsCalcRSI = false; //  have to set this
+            float[] rsi = pStaticTMP;
+            calcRSIWithPeriod(periodRSI, rsi);
 
             //  StochRSI = (RSI - Lowest Low RSI) / (Highest High RSI - Lowest Low RSI)
-            int period = (int)Context.getInstance().mOptStochRSIPeriod;
+            //int period = (int)Context.getInstance().mOptStochRSIPeriod;
             float max;
             float min;
+
+            int testDate = (2021<<16)|(4 << 8)|6;
+
             for (int i = 0; i < cnt; i++)
             {
-                int b = i - period + 1;
+                int b = i - periodStoch + 1;
                 if (b < 0) b = 0;
-                max = -200;
-                min = 200;
+                max = -2000;
+                min = 2000;
+
+                //if (getDate(i) == testDate){
+                    //testDate++;
+                //}
+                if (i == 248)
+                {
+                    testDate = 0;
+                }
+                //  find min/max
                 for (int j = i; j >= b; j--)
                 {
-                    if (pTMP[j] > max) max = pTMP[j];
-                    if (pTMP[j] < min) min = pTMP[j];
+                    if (rsi[j] > max) max = rsi[j];
+                    if (rsi[j] < min) min = rsi[j];
                 }
 
-                if (pTMP[i] == max) pStochRSI[i] = 1;
-                else if (max != min)
+                if (max != min)
                 {
-                    pStochRSI[i] = (pTMP[i] - min) / (max - min);
+                    pStochRSI[i] = (rsi[i] - min) / (max - min);
                 }
                 else
                 {
                     pStochRSI[i] = 0.5f;
                 }
             }
+            //  scale 0 - 100
+            for (int i = 0; i < cnt; i++)
+            {
+                pStochRSI[i] *= 100;
+            }
+
+            SMA(pStochRSI, cnt, smooth, pStaticTMP2);
+            for (int i = 0; i < cnt; i++)
+            {
+                pStochRSI[i] = pStaticTMP2[i];
+            }
             //==========now SMA===============
-            EMA(pStochRSI, cnt, (int)Context.getInstance().mOptStochRSISMAPeriod, pStochRSISMA);
+            if (pStochRSISMA != null)
+            {
+                EMA(pStochRSI, cnt, (int)Context.getInstance().mOptStochRSISMAPeriod, pStochRSISMA);
+            }
         }
 
         public void calcOBV()
@@ -2725,9 +2769,9 @@ namespace stock123.app.data
             if (cnt < 10)
                 return false;
 
-            SMA(trend, cnt - 10, 10, 4, pTMP);
+            SMA(trend, cnt - 10, 10, 4, pStaticTMP2);
 
-            return trend[cnt - 1] > pTMP[9];
+            return trend[cnt - 1] > pStaticTMP2[9];
         }
 
         public bool isUpTrend(float[] trend, int cnt)
@@ -2735,9 +2779,9 @@ namespace stock123.app.data
             if (cnt < 10)
                 return false;
 
-            SMA(trend, cnt - 10, 10, 4, pTMP);
+            SMA(trend, cnt - 10, 10, 3, pStaticTMP2);
 
-            return trend[cnt - 1] > pTMP[9];
+            return pStaticTMP2[9] > pStaticTMP2[8];
             /*
             for (int i = 9; i > 6; i--)
             {
@@ -2745,8 +2789,6 @@ namespace stock123.app.data
                     return false;
             }
             */
-
-            return true;
         }
 
         public bool isUpTrend(int[] trend, int cnt)
@@ -2760,10 +2802,10 @@ namespace stock123.app.data
             if (begin < 0) begin = 0;
             for (int i = begin; i < cnt; i++)
             {
-                pTMP3[j++] = trend[i] / 1000.0f;
+                pStaticTMP2[j++] = trend[i] / 1000.0f;
             }
 
-            return isUpTrend(pTMP3, j);
+            return isUpTrend(pStaticTMP2, j);
         }
 
         public bool isDownTrend(int[] trend, int cnt)
@@ -2777,10 +2819,10 @@ namespace stock123.app.data
             if (begin < 0) begin = 0;
             for (int i = cnt - 10; i < cnt; i++)
             {
-                pTMP3[j++] = trend[i] / 1000.0f;
+                pStaticTMP2[j++] = trend[i] / 1000.0f;
             }
 
-            return isDowntrend(pTMP3, j);
+            return isDowntrend(pStaticTMP2, j);
         }
 
         public bool isUpTrend1(int[] trend, int daysback)
@@ -3208,7 +3250,7 @@ namespace stock123.app.data
         - alpha is increased by 0.02 each time a new EP is recorded.
         - maximum value for the acceleration factor is normally set at 0.20,
          */
-        public void calcPSAR()
+        public void calcPSAR(float a, float aMax)
         {
             initIndicatorMemory(ChartBase.CHART_PSAR);
 
@@ -3221,9 +3263,9 @@ namespace stock123.app.data
             mIsCalcPSAR = true;
 
             float alpha0 = Context.getInstance().mOptPSAR_alpha;// 0.02f;
-            float alpha = alpha0;
+            float alpha = a > 0?a:alpha0;
             float lastAlpha = alpha;
-            float alpha_max = Context.getInstance().mOptPSAR_alpha_max;//0.2f;
+            float alpha_max = aMax > 0?aMax:Context.getInstance().mOptPSAR_alpha_max;//0.2f;
 
             float psar_next;
             float psar_last;
@@ -3352,12 +3394,12 @@ namespace stock123.app.data
     	    }
         }
 
-        public void calcVSTOP()
+        public void calcVSTOP(int period, float mult)
         {
             initIndicatorMemory(ChartBase.CHART_VSTOP);
 
-            int periodTR = (int)Context.getInstance().mOptVSTOP_ATR_Loopback;  //  20
-            float MULT = Context.getInstance().mOptVSTOP_MULT;// 2.0f;
+            int periodTR = period > 0?period: (int)Context.getInstance().mOptVSTOP_ATR_Loopback;  //  20
+            float MULT = mult > 0?mult: Context.getInstance().mOptVSTOP_MULT;// 2.0f;
             
             if (periodTR == 0){
                 periodTR = 20;
@@ -3635,7 +3677,9 @@ namespace stock123.app.data
             if (mCode != null && mCode.Length > 0 && (mCode[0] == '^' 
                 || mCode.IndexOf("HNX30") == 0 
                 || mCode.IndexOf("HNX30") == 0
-                || mCode.IndexOf("VN30") == 0)
+                || mCode.IndexOf("VN30") == 0
+                || mIsGroupIndex
+                )
                 )
             {
                 mIsIndex = 1;
@@ -4406,8 +4450,8 @@ namespace stock123.app.data
         {
             initIndicatorMemory(ChartBase.CHART_STOCHASTIC_FAST);
 
-            if (mIsCalcStochastic)
-                return;
+            //if (mIsCalcStochastic)
+                //return;
             mIsCalcStochastic = true;
 
             //	K = 100*(recentClose-lowestClose)/(highestHi-lowestLow);
@@ -6630,7 +6674,7 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
             SMA(pCRS_Percent, cnt, ma2, pCRS_MA2_Percent);
         }
 
-        public void calcComparingShare()
+        public void calcComparingShare(String comparingCode)
         {
             initIndicatorMemory(ChartBase.CHART_COMPARING_SECOND_SHARE);
 
@@ -6643,7 +6687,7 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
             }
             //-------------------------------
 
-            Share second = Context.getInstance().mShareManager.getShare(mCompare2ShareCode);// new Share();
+            Share second = Context.getInstance().mShareManager.getShare(comparingCode);// new Share();
             second.loadShare();
 
             int j = second.getCandleCount()-1;

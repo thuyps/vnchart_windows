@@ -2089,6 +2089,7 @@ namespace stock123.app
             share.setID(100000);
             share.setCode(code, 1);
             share.loadShareFromFile(false);
+            share.mIsGroupIndex = true;
 
             goChartScreen(share);
         }
