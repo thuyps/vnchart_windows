@@ -24,7 +24,8 @@ namespace stock123.app
     public class Context
     {
         public const String URL_INTERNATIONAL_CHART = "https://www.tradingview.com/chart/?symbol=NASDAQ%3AGOOG";
-        public const String URL_DATA_CONFIG = "https://s3.amazonaws.com/vnchartpc/vnchart.txt";
+        //public const String URL_DATA_CONFIG = "https://s3.amazonaws.com/vnchartpc/vnchart.txt";
+        public const String URL_DATA_CONFIG = "http://soft123.com.vn/web/vnchart.txt";
 
         public const int VERSION = ((7<<8)|15);
         public static string getVersionStr()
