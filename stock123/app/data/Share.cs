@@ -5466,9 +5466,13 @@ namespace stock123.app.data
                 //}
                 //===================================
                 if (i > 0)
+                {
                     length = price[i - 1] - price[dedicateVertex];
+                }
                 else
+                {
                     length = 0;
+                }
                 //========================
                 if (direction == 1 && curDir == -1)  //  reverse point
                 {
@@ -5485,7 +5489,9 @@ namespace stock123.app.data
                         //dedicateVertex = -1;
                         //direction = -1;
                         if (price[i] < price[dedicateVertex])
+                        {
                             dedicateVertex = i;
+                        }
                     }
                 }
                 else if (direction == -1 && curDir == 1) //  reverse point
@@ -5502,7 +5508,9 @@ namespace stock123.app.data
                         //dedicateVertex = -1;
                         //direction = 1;
                         if (price[i] > price[dedicateVertex])
+                        {
                             dedicateVertex = i;
+                        }
                     }
                 }
             }
