@@ -892,7 +892,7 @@ namespace stock123.app
 
             int y = 0;
             StringBuilder sb = Utils.getSB();
-            sb.AppendFormat("(Giá trị hiện tại: Period={0}", mContext.mOptROC);
+            sb.AppendFormat("Đường trung bình ROC");
             xLabel l = new xLabel(sb.ToString());
             l.setPosition(0, y);
             l.setSize(mContainer.getW(), -1);
@@ -902,24 +902,27 @@ namespace stock123.app
             y = l.getBottom() + 4;
             //  period
             mValue1.Value = mContext.mOptROC[IDX];
-            addSlider(y, "Period", 1, 250, 1, mValue1, 1);
+            addSlider(y, "Period", 1, 100, 1, mValue1, 1);
             y += 44;
             //===============option EMA
             if (IDX == 0)
             {
-                xCheckbox cb = xCheckbox.createCheckbox("EMA (bỏ chọn để vẽ SMA)", mContext.mOptROC_EMA_ON, this, 250);
-                cb.setPosition(50, y);
+                //xCheckbox cb = xCheckbox.createCheckbox("EMA (bỏ chọn để vẽ SMA)", mContext.mOptROC_EMA_ON, this, 250);
+                //cb.setPosition(0, y);
 
-                mContainer.addControl(cb);
-                y = cb.getBottom();
+                //mContainer.addControl(cb);
+                //y = cb.getBottom();
+                
                 mValue2.Value = mContext.mOptROC_EMA;
-                if (true)//cb.isCheck())
-                {
-                    addSlider(y, "EMA Period", 0, 50, 1, mValue2, 1);
-                    y += 44;
-                }
-                else
-                    y += 10;
+                y += 10;
+                //  MA 1
+                addSlider(y, "MA Period 1", 0, 20, 1, mValue2, 1);
+                y += 44;
+
+                mValue3.Value = mContext.mOptROC_EMA2;
+                //  MA 2
+                addSlider(y, "MA Period 2", 0, 50, 1, mValue3, 1);
+                y += 44;
             }
 
             //========================
@@ -1329,7 +1332,10 @@ namespace stock123.app
                     case ChartBase.CHART_ROC:
                         mContext.mOptROC[IDX] = mValue1.Value;
                         if (IDX == 0)
+                        {
                             mContext.mOptROC_EMA = mValue2.Value;
+                            mContext.mOptROC_EMA2 = mValue3.Value;
+                        }
                         break;
                     case ChartBase.CHART_NVI:
                         mContext.mOptNVI_EMA[0] = mValue1.Value;   

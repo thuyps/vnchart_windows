@@ -22,6 +22,8 @@ namespace stock123.app.chart
         //==================
         short[] mChartEMA;
         short[] mChartEMA2;
+        float[] mEmaValue1;
+        float[] mEmaValue2;
         //=========================================
 
         public ChartLine(Font f):base(f)
@@ -169,7 +171,7 @@ namespace stock123.app.chart
 
                     if (mContext.mOptROC_EMA > 0)
                     {
-                        sb.AppendFormat("    SMA({0}): {1:F2}%", mContext.mOptROC_EMA, share.pEMAIndicator[idx]);
+                        sb.AppendFormat("    SMA({0}): {1:F2}%", mContext.mOptROC_EMA, mEmaValue1[idx]);
                     }
 
                     v.addElement(new stTitle(sb.ToString(), C.COLOR_WHITE));
@@ -686,16 +688,31 @@ namespace stock123.app.chart
                 if (mContext.mOptROC_EMA > 0)
                 {
                     mChartEMA = allocMem(mChartEMA, mChartLineLength * 2);
-
-                    if (mContext.mOptROC_EMA_ON[0])
+                    mEmaValue1 = allocMem(mEmaValue1, share.pROC.Length);
+                    if (false)//mContext.mOptROC_EMA_ON[0])
                     {
-                        Share.EMA(share.pROC, s.getCandleCount(), (int)mContext.mOptROC_EMA, s.pEMAIndicator);
+                        Share.EMA(share.pROC, s.getCandleCount(), (int)mContext.mOptROC_EMA, mEmaValue1);
                     }
                     else
                     {
-                        Share.SMA(share.pROC, 0, s.getCandleCount(), (int)mContext.mOptROC_EMA, s.pEMAIndicator);
+                        Share.SMA(share.pROC, 0, s.getCandleCount(), (int)mContext.mOptROC_EMA, mEmaValue1);
                     }
-                    pricesToYs(s.pEMAIndicator, s.mBeginIdx, mChartEMA, mChartLineLength, lo, hi);
+                    pricesToYs(mEmaValue1, s.mBeginIdx, mChartEMA, mChartLineLength, lo, hi);
+                }
+                if (mContext.mOptROC_EMA2 > 0)
+                {
+                    mChartEMA2 = allocMem(mChartEMA2, mChartLineLength * 2);
+                    mEmaValue2 = allocMem(mEmaValue2, share.pROC.Length);
+
+                    if (false)//mContext.mOptROC_EMA_ON[0])
+                    {
+                        Share.EMA(share.pROC, s.getCandleCount(), (int)mContext.mOptROC_EMA2, mEmaValue2);
+                    }
+                    else
+                    {
+                        Share.SMA(share.pROC, 0, s.getCandleCount(), (int)mContext.mOptROC_EMA2, mEmaValue2);
+                    }
+                    pricesToYs(mEmaValue2, s.mBeginIdx, mChartEMA2, mChartLineLength, lo, hi);
                 }
             }
             /*
@@ -740,11 +757,19 @@ namespace stock123.app.chart
                 g.drawLines(mChartLineXY2, mChartLineLength, 1.5f);
             }
 
+
+            //  MA
             if (mContext.mOptROC_EMA > 0)
             {
-                g.setColor(C.COLOR_MAGENTA);
+                g.setColor(C.COLOR_GREEN);
                 g.drawLines(mChartEMA, mChartLineLength, 1.0f);
             }
+            if (mContext.mOptROC_EMA2 > 0)
+            {
+                g.setColor(C.COLOR_RED);
+                g.drawLines(mChartEMA2, mChartLineLength, 1.0f);
+            }
+
 
             sb.Length = 0;
             sb.AppendFormat("{0:F2} %", (float)yToPrice(mLastY, lo, hi));

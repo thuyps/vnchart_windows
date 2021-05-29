@@ -154,7 +154,8 @@ namespace stock123.app
         public bool[] mOptMFI_EMA_ON = { true};
 
         public float mOptROC_EMA = 5;
-        public bool[] mOptROC_EMA_ON = { true};
+        public float mOptROC_EMA2 = 14 ;
+        public bool[] mOptROC_EMA_ON = { true, false};
 
         public float[] mOptNVI_EMA = { 5, 100};
         public bool[] mOptNVI_EMA_ON1 = { true};
@@ -1202,6 +1203,9 @@ namespace stock123.app
             o.writeInt(mMasterChartType);
             o.writeInt(mOptFilterGTGD);
 
+            o.writeBoolean(mOptROC_EMA_ON[1]);
+            o.writeFloat(mOptROC_EMA2);
+
             xFileManager.saveFile(o, FILE_OPTIONS);
         }
 
@@ -1485,6 +1489,9 @@ namespace stock123.app
                 {
                     mOptFilterGTGD = 100;
                 }
+
+                mOptROC_EMA_ON[1] = di.readBoolean();
+                mOptROC_EMA2 = di.readFloat();
             }
         }
 

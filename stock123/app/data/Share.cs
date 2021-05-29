@@ -2648,7 +2648,7 @@ namespace stock123.app.data
             float exp = (float)2 / (period + 1);
             for (int i = 1; i < cnt; i++)
             {
-                ema[i] = (float)val[val_off + i] * exp + ema[i - 1] * (1 - exp);
+                ema[i] = val[val_off + i] * exp + ema[i - 1] * (1 - exp);
             }
 
             return ema;
