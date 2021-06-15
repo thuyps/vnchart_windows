@@ -107,6 +107,8 @@
     <Compile Include="app\chart\C.cs" />
     <Compile Include="app\Context.cs" />
     <Compile Include="app\AlarmItem.cs" />
+    <Compile Include="app\data\userdata\UserDataBlock.cs" />
+    <Compile Include="app\data\userdata\UserDataManager.cs" />
     <Compile Include="app\ScreenRoot.cs">
       <SubType>Component</SubType>
     </Compile>

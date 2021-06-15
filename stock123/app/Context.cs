@@ -14,9 +14,9 @@ using stock123.app.chart;
 using System.Windows.Forms;
 using System.Net;
 using Newtonsoft.Json;
-using xlib.utils;
 
 using stock123.app.net;
+using stock123.app.data.userdata;
 //using c;
 
 namespace stock123.app
@@ -112,7 +112,8 @@ namespace stock123.app
 
         //public NetProtocol mNetProtocol;
         public bool mIsFavorGroupChanged = false;
-        public xVector mFavorGroups = new xVector(10);  //  stShareGroup
+        UserDataManager _userDataManager = new UserDataManager();
+        //public xVector mFavorGroups = new xVector(10);  //  stShareGroup
         public xVector mShareGroups = new xVector(10);  //  stShareGroup
         public xVector mShareGroupsSpecial = new xVector(10);  //  stShareGroup
         public stShareGroup vnIndicesGroup = null;
@@ -307,7 +308,7 @@ namespace stock123.app
 
         public bool mIsFirstTime = false;
         //==================================================
-        public GainLossManager mGainLossManager;
+        //public GainLossManager mGainLossManager;
         public string mDeviceID = "";
         //========================================
         public AlarmManager mAlarmManager;
@@ -490,9 +491,9 @@ namespace stock123.app
         public stShareGroup getFavoriteGroup(String group)
         {
             stShareGroup g;
-            for (int i = 0; i < mFavorGroups.size(); i++)
+            for (int i = 0; i < favoriteGroups().size(); i++)
             {
-                g = (stShareGroup)mFavorGroups.elementAt(i);
+                g = (stShareGroup)favoriteGroups().elementAt(i);
                 if (g.getName().CompareTo(group) == 0)
                     return g;
             }
@@ -501,7 +502,7 @@ namespace stock123.app
             g.setType(stShareGroup.ID_GROUP_FAVOR);
             g.setName(group);
 
-            mFavorGroups.addElement(g);
+            favoriteGroups().addElement(g);
 
             return g;
         }
@@ -1517,9 +1518,9 @@ namespace stock123.app
             xFileManager.removeFile("data\\^HASTC");
             xFileManager.removeFile("data\\^UPCOM");
 
-            for (int i = 0; i < mFavorGroups.size(); i++)
+            for (int i = 0; i < favoriteGroups().size(); i++)
             {
-                stShareGroup g = (stShareGroup)mFavorGroups.elementAt(i);
+                stShareGroup g = (stShareGroup)favoriteGroups().elementAt(i);
                 for (int j = 0; j < g.getTotal(); j++)
                 {
                     xFileManager.removeFile("data\\" + g.getCodeAt(j));
@@ -1540,6 +1541,7 @@ namespace stock123.app
         }
 
         //  default in offline mode
+        /*
         public void loadFavorGroup()
         {
             xDataInput di = xFileManager.readFile(FILE_FAVORITE, false);
@@ -1567,8 +1569,10 @@ namespace stock123.app
                 mFavorGroups.addElement(gainloss);
             }
         }
+         */
 
         //  replace offline favor by online favor
+        /*
         public void loadOnlineUserData(xDataInput di)
         {
             clearFavoriteGroups();
@@ -1650,7 +1654,8 @@ namespace stock123.app
                 }
             }
         }
-
+         */
+        /*
         public void saveFavorGroup()
         {
             xDataOutput o = new xDataOutput(5 * 1024);
@@ -1676,7 +1681,8 @@ namespace stock123.app
             mGainLossManager.clearAll();
             mAlarmManager.clearAll();
         }
-
+         */
+        /*
         NetProtocol netUserData;
         public void uploadUserData()
         {
@@ -1747,6 +1753,7 @@ namespace stock123.app
 
             return o;
         }
+         */
 
         public TradeHistory getTradeHistory(Share share)
         {
@@ -1777,7 +1784,7 @@ namespace stock123.app
             loadOptions();
             loadOptions2();
 
-            loadFavorGroup();
+            //loadFavorGroup();
             loadDefinedShareGroup();
             loadGlobalGroup();
 
@@ -1797,8 +1804,8 @@ namespace stock123.app
             if (!loadTechnicalSort())
                 loadTechnicalSortDefault();
 
-            mGainLossManager = new GainLossManager();
-            mGainLossManager.load();
+            //mGainLossManager = new GainLossManager();
+            //mGainLossManager.load();
 
             //  get the best URL
             string[] urls = {"http://soft123.com.vn:8080/SmaSrv/SSTK", 
@@ -2018,9 +2025,9 @@ namespace stock123.app
 
         public void selectDefaultShareGroup()
         {
-            if (mFavorGroups.size() > 0)
+            if (favoriteGroups().size() > 0)
             {
-                stShareGroup g = (stShareGroup)mFavorGroups.elementAt(0);   //  blue chip
+                stShareGroup g = (stShareGroup)favoriteGroups().elementAt(0);   //  blue chip
                 mCurrentShareGroup = g;
             }
             else if (mShareGroups.size() > 4)
@@ -2037,13 +2044,13 @@ namespace stock123.app
 
         public void removeShare(stShareGroup g)
         {
-            for (int i = 0; i < mFavorGroups.size(); i++)
+            for (int i = 0; i < favoriteGroups().size(); i++)
             {
-                stShareGroup gg = (stShareGroup)mFavorGroups.elementAt(i);
+                stShareGroup gg = (stShareGroup)favoriteGroups().elementAt(i);
                 if (gg == g)
                 {
-                    mFavorGroups.removeElementAt(i);
-                    saveFavorGroup();
+                    favoriteGroups().removeElementAt(i);
+                    //saveFavorGroup();
 
                     break;
                 }
@@ -2176,17 +2183,17 @@ namespace stock123.app
         public bool isQuoteFavorite(Share share)
         {
             stShareGroup g;
-            for (int i = 0; i < mFavorGroups.size(); i++)
+            for (int i = 0; i < favoriteGroups().size(); i++)
             {
-                g = (stShareGroup)mFavorGroups.elementAt(i);
+                g = (stShareGroup)favoriteGroups().elementAt(i);
                 if (g.containShare(share.mID))
                     return true;
             }
 
             String s1 = share.mCode.ToLower();
-            for (int i = 0; i < mGainLossManager.getTotal(); i++)
+            for (int i = 0; i < userDataManager().gainLossManager().getTotal(); i++)
             {
-                stGainloss gl = mGainLossManager.getGainLossAt(i);
+                stGainloss gl = userDataManager().gainLossManager().getGainLossAt(i);
 
                 String s0 = gl.code.ToLower();
                 if (s0.CompareTo(s1) == 0)
@@ -2385,9 +2392,9 @@ namespace stock123.app
             double tong = 0;
             double giatri = 0;
             double loinhuan;
-            for (int i = 0; i < mGainLossManager.getTotal(); i++)
+            for (int i = 0; i < userDataManager().gainLossManager().getTotal(); i++)
             {
-                stGainloss g = mGainLossManager.getGainLossAt(i);
+                stGainloss g = userDataManager().gainLossManager().getGainLossAt(i);
 
                 tong += g.price * g.volume;
 
@@ -2649,6 +2656,15 @@ namespace stock123.app
             return net;
         }
 
+        public xVector favoriteGroups()
+        {
+            return _userDataManager.shareGroups();
+        }
+
+        static public UserDataManager userDataManager()
+        {
+            return Context.getInstance()._userDataManager;
+        }
     }
 
 }

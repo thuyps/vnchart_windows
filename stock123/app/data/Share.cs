@@ -619,6 +619,7 @@ namespace stock123.app.data
                 }
             }catch(Exception e)
             {
+                Utils.trace(e.Message);
             }
             return false;
         }

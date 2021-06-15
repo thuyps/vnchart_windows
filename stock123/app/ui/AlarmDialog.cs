@@ -30,7 +30,7 @@ namespace stock123.app.ui
         {
             mControl.dispose();
 
-            mScreen.onCloseAlarmDialog();
+//            mScreen.onCloseAlarmDialog();
         }
 
         public void setSizeH(int h)

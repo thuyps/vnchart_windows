@@ -24,6 +24,11 @@ namespace stock123.app.data
 
         static VTDictionary data = new VTDictionary();
         static VTDictionary dataPriceboard = new VTDictionary();
+        static VTDictionary _vars = new VTDictionary();
+
+        public static VTDictionary vars(){
+            return _vars;
+        }
 
         public static stPriceboardState getPriceboardStateOfIndexWithSymbol(String symbol)
         {

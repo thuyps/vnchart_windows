@@ -470,6 +470,7 @@ namespace stock123.app
         }
 
         //==========================================
+        /*
         public xContainer mAlarmContainer = null;
         bool mIsAlarmShowing = false;
         public void showAlarmManager()
@@ -572,5 +573,6 @@ namespace stock123.app
         {
             mAlarmContainer = null;
         }
+         */
     }
 }

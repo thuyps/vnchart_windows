@@ -301,7 +301,7 @@ namespace stock123.app
             //======share group=====
             int y = mPriceboardContainer.getY();
             //-----------------------------
-            xBaseControl favors = createShareGroupList(false, C.ID_DROPDOWN_FAVOR_GROUP, "Nhóm yêu thích", mContext.mFavorGroups, W_SHARE_GROUP, H_SHAREGROUP_FAVOR);
+            xBaseControl favors = createShareGroupList(false, C.ID_DROPDOWN_FAVOR_GROUP, "Nhóm yêu thích", mContext.favoriteGroups(), W_SHARE_GROUP, H_SHAREGROUP_FAVOR);
             favors.setPosition(0, y);
             y += H_SHAREGROUP_FAVOR;
 
@@ -830,6 +830,7 @@ namespace stock123.app
                     }
                          */
                 }
+                /*
                 if (aIntParameter == C.ID_ALARM_MANAGER)
                 {
                     showAlarmManager();
@@ -841,6 +842,7 @@ namespace stock123.app
                     mAlarmContainer.invalidate();
                     updateAlarmListUI(mAlarmContainer);
                 }
+                 */
                 //===========================================
                 if (aIntParameter == C.ID_ADD_GROUP ||
                     aIntParameter == C.ID_REMOVE_GROUP)
@@ -1267,7 +1269,7 @@ namespace stock123.app
             }
             else if (buttonID == C.ID_ALARM_MANAGER)
             {
-                showAlarmManager();
+                //showAlarmManager();
             }
             else if (buttonID == C.ID_GOTO_SETTING)
             {
@@ -1328,8 +1330,8 @@ namespace stock123.app
         {
             int rowH = 34;
             stShareGroup g = mContext.getCurrentShareGroup();
-            TablePriceboard priceboard = new TablePriceboard(this, mContext.mGainLossManager, w, rowH);
-            int boardH = rowH * mContext.mGainLossManager.getTotal() + 160;
+            TablePriceboard priceboard = new TablePriceboard(this, Context.userDataManager().gainLossManager(), w, rowH);
+            int boardH = rowH * Context.userDataManager().gainLossManager().getTotal() + 160;
             if (boardH < h)
                 boardH = h;
             priceboard.setSize(w, boardH);
@@ -1763,7 +1765,8 @@ namespace stock123.app
                             g.price = (int)(m / (g.volume + vol));
                             g.volume += vol;
 
-                            mContext.uploadUserData();
+                            //mContext.uploadUserData();
+                            Context.userDataManager().flushUserData();
                             showGainlossTable();
                         }
                         else
@@ -1792,7 +1795,8 @@ namespace stock123.app
                         if (vol > 0 && vol < g.volume)
                         {
                             g.volume -= vol;
-                            mContext.uploadUserData();
+                            Context.userDataManager().flushUserData();
+                            //mContext.uploadUserData();
 
                             showGainlossTable();
                         }
@@ -1823,9 +1827,10 @@ namespace stock123.app
                     int shareID = mContext.mShareManager.getShareID(code);
                     if (shareID > 0)
                     {
-                        mContext.mGainLossManager.addGainLoss(code, date, price, vol);
+                        Context.userDataManager().gainLossManager().addGainLoss(code, date, price, vol);
 
-                        mContext.uploadUserData();
+                        Context.userDataManager().flushUserData();
+                        //mContext.uploadUserData();
 
                         showGainlossTable();
                     }
@@ -1842,7 +1847,7 @@ namespace stock123.app
                 if (item != null)
                 {
                     stGainloss g = (stGainloss)item.getData();
-                    mContext.mGainLossManager.removeGainLoss(g);
+                    Context.userDataManager().gainLossManager().removeGainLoss(g);
                     showGainlossTable();
                     mContext.mIsFavorGroupChanged = true;
                 }
@@ -1871,8 +1876,7 @@ namespace stock123.app
                             g.addCode(code);
                             if (g.isFavorGroup())
                             {
-                                mContext.saveFavorGroup();
-                                mContext.uploadUserData();
+                                Context.userDataManager().flushUserData();
                             }
                             else
                                 mContext.saveDefinedShareGroup();
@@ -1910,12 +1914,14 @@ namespace stock123.app
                             {
 
                                 g.removeCode(share.getCode());
-                                if (g.isFavorGroup())
-                                    mContext.saveFavorGroup();
-                                else
+                                if (g.isFavorGroup()){
+                                    //mContext.saveFavorGroup();
+                                }
+                                else{
                                     mContext.saveDefinedShareGroup();
+                                }
 
-                                mContext.uploadUserData();
+                                Context.userDataManager().flushUserData();
 
                                 recreatePriceboard();
                             }
@@ -1929,9 +1935,9 @@ namespace stock123.app
             }
             if (idx == C.ID_ADD_GROUP)
             {
-                if (mContext.mFavorGroups.size() > 20)
+                if (mContext.favoriteGroups().size() > stShareGroup.MAX_FAVORITE_GROUPS)
                 {
-                    showDialogOK("Số nhóm tự tạo không quá 20.");
+                    showDialogOK(String.Format("Số nhóm tự tạo không quá: {0}", stShareGroup.MAX_FAVORITE_GROUPS));
                     return;
                 }
                 DlgAddShareGroup dlg = new DlgAddShareGroup();
@@ -1947,9 +1953,10 @@ namespace stock123.app
 
                         stShareGroup g = mContext.getFavoriteGroup(group);
                         mContext.setCurrentShareGroup(g);
-                        mContext.saveFavorGroup();
+                        //mContext.saveFavorGroup();
 
-                        mContext.uploadUserData();
+                        //mContext.uploadUserData();
+                        Context.userDataManager().flushUserData();
 
                         updateUI();
                     }
@@ -1971,7 +1978,8 @@ namespace stock123.app
                         mContext.selectDefaultShareGroup();
                         updateUI();
 
-                        mContext.uploadUserData();
+                        //mContext.uploadUserData();
+                        Context.userDataManager().flushUserData();
                     }
                 }
                 else
@@ -1979,6 +1987,7 @@ namespace stock123.app
                     showDialogOK("Bạn chỉ xóa được nhóm do bạn tự tạo");
                 }
             }
+            /*
             if (idx == C.ID_SET_ALARM)
             { 
                 Share share = mContext.getSelectedShare();
@@ -1999,6 +2008,7 @@ namespace stock123.app
                     showDialogOK("Bạn chưa chọn cổ phiếu nào.");
                 }
             }
+             */
             else if (idx == C.ID_EXPORT_TO_EXCEL)
             {
                 stShareGroup g = mContext.getCurrentShareGroup();
@@ -2032,9 +2042,9 @@ namespace stock123.app
             ChartNhomnganhTangtruong list = new ChartNhomnganhTangtruong();
             list.setSize(w, h);
             xVector v = mContext.getMainMarketGroups(true);
-            for (int i = 0; i < mContext.mFavorGroups.size(); i++)
+            for (int i = 0; i < mContext.favoriteGroups().size(); i++)
             {
-                stShareGroup g = (stShareGroup)mContext.mFavorGroups.elementAt(i);
+                stShareGroup g = (stShareGroup)mContext.favoriteGroups().elementAt(i);
                 if (g.getName().IndexOf('#') == 0)
                 {
                     v.addElement(g);

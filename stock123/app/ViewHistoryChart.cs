@@ -587,7 +587,7 @@ namespace stock123.app
         {
             if (buttonID == C.ID_ALARM_MANAGER)
             {
-                showAlarmManager();
+                //showAlarmManager();
             }
             /*
             if (buttonID == C.ID_GOTO_MINI_SCREEN)
@@ -792,7 +792,6 @@ namespace stock123.app
 
             cnt = 9;
             FilterManager fm = FilterManager.getInstance();
-            fm.loadFilterSets();
 
             int createdFilters = fm.getFilterSetCnt();
             cnt = createdFilters < 9?createdFilters:9;
@@ -999,6 +998,7 @@ namespace stock123.app
                         }
                     }
                 }
+                /*
                 if (aIntParameter == C.ID_ALARM_MANAGER)
                 {
                     showAlarmManager();
@@ -1010,6 +1010,7 @@ namespace stock123.app
                     mAlarmContainer.invalidate();
                     updateAlarmListUI(mAlarmContainer);
                 }
+                 */
                 //==========================
                 if (aIntParameter == C.ID_SORT_TECHNICAL || aIntParameter == C.ID_SORT_TECHNICAL2)
                 {
@@ -1761,7 +1762,8 @@ namespace stock123.app
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 FilterManager.getInstance().addFilterSet(filterSet);
-                FilterManager.getInstance().saveFilterSets();
+                //FilterManager.getInstance().saveFilterSets();
+                Context.userDataManager().flushUserData();
                 recreateSearchControl();
             }
         }
@@ -1882,7 +1884,7 @@ namespace stock123.app
             dlg.setFilterSet(filterSet);
             if (dlg.ShowDialog() == DialogResult.OK)
             {
-                FilterManager.getInstance().saveFilterSets();
+                Context.userDataManager().flushUserData();
                 recreateSearchControl();
             }
         }
