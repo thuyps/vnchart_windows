@@ -884,6 +884,7 @@ namespace stock123.app.data
                     break;
                 case ChartBase.CHART_STOCHASTIC_FAST:
                 case ChartBase.CHART_STOCHASTIC_SLOW:
+                    if (realloc || pStochasticFastK == null)
                     {
                         pStochasticFastK = new float[maxCandle];
                         pStochasticFastD = new float[maxCandle];
