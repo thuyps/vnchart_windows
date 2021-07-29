@@ -507,6 +507,7 @@ namespace stock123.app
 
         override public void onTick()
         {
+            Context.userDataManager().onTick();
             /*
             if (mNetProtocol == null)
             {
@@ -543,7 +544,7 @@ namespace stock123.app
             if (mNetState == STATE_DOWNLOAD_ALL_SHARE_PREPARING)
             {
                 xHttp http = new xHttp(this);
-                http.get(mContext.configJson.url_all_share2, null);
+                http.get(mContext.configJson.url_all_share3, null);
                 mNetState = STATE_DOWNLOAD_ALL_SHARE;
             }
 
@@ -979,6 +980,7 @@ namespace stock123.app
             }
 
             net.requestGetUserData();
+            net.requestGetUserData2();
 
             updateLatestData(net);
             //================================================
@@ -2753,7 +2755,7 @@ namespace stock123.app
             long delta2 = Utils.dateToNumber(today) - Utils.dateToNumber(mContext.mLastDayOfShareUpdate);
             if (deltaAllshare > 2 || delta2 > 7)
             {
-                String url = Context.getInstance().configJson.url_all_share2;
+                String url = Context.getInstance().configJson.url_all_share3;
                 if (url != null && url.Length > 0)
                 {
                     return true;

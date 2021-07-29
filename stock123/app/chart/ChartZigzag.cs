@@ -60,9 +60,15 @@ namespace stock123.app.chart
                 calcZigzag();
                 //=======================
                 int items = (mChartLineLength + 10)* 2;
+
+                if (items < 2*mZigzag.size() + 100){
+                    items = mZigzag.size()*2 + 100;
+                }
+
                 mZigzagPointCnt = 0;
 
                 mChartLineXY = allocMem(mChartLineXY, items);
+
                 mChartLineLength = 0;
 
                 if (mZigzag != null && mZigzag.size() > 0)

@@ -336,9 +336,40 @@ namespace stock123.app.data.userdata
             return o;
         }
 
+        public void onTick()
+        {
+            if (_flushRequestCount == 0){
+                return;
+            }
+            long now = Utils.currentTimeMillis();
+
+            if (_flushRequestCount > 5 || now - _timeFlushUserData > 10000)
+            {
+                forceFlushUserData();
+            }
+        }
+
+        long _timeFlushUserData = 0;
+        int _flushRequestCount = 0;
         public void flushUserData()
         {
-            //  save to server
+            _flushRequestCount++;
+        }
+
+        public void forceFlushUserData()
+        {
+            if (_flushRequestCount == 0)
+            {
+                return;
+            }
+
+            app.net.NetProtocol net = Context.getInstance().createNetProtocol();
+            xDataOutput o = getUserDataAsStreamNew();
+            net.requestSaveUserData2(o);
+            net.flushRequest();
+
+            _flushRequestCount = 0;
+            _timeFlushUserData = Utils.currentTimeMillis();
         }
         //================================================================
     }

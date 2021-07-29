@@ -138,7 +138,8 @@ namespace xlib.framework
 
                 int cnt = 0;
                 long remain = res.ContentLength;
-                byte[] buffer = new byte[1024];
+                int blockSize = 128 * 1024;
+                byte[] buffer = new byte[blockSize];
                 int total = 0;
                 if (res.ContentLength > 0)
                     mResponseData = new xDataOutput((int)res.ContentLength + 1024);
@@ -147,7 +148,7 @@ namespace xlib.framework
                 {
                     if (!xMainApplication.getxMainApplication().isRunning())
                         break;
-                    int read = reader.Read(buffer, 0, 1024);
+                    int read = reader.Read(buffer, 0, blockSize);
                     //c = reader.ReadByte();
                     cnt += read;
                     total += read;

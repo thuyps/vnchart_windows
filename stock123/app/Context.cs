@@ -2421,7 +2421,7 @@ namespace stock123.app
         public class ConfigJson
         {
             public int version;
-            public string url_all_share2;
+            public string url_all_share3;
         };
 
         public ConfigJson configJson = new ConfigJson();
@@ -2488,7 +2488,7 @@ namespace stock123.app
                     }, null);
                 }
 
-                Utils.trace("config: version=" + configJson.version + " url=" + configJson.url_all_share2);
+                Utils.trace("config: version=" + configJson.version + " url=" + configJson.url_all_share3);
             }
             catch (Exception e)
             {
