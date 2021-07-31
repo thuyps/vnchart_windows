@@ -138,11 +138,13 @@ namespace xlib.framework
 
                 int cnt = 0;
                 long remain = res.ContentLength;
-                int blockSize = 128 * 1024;
+                int blockSize = 16 * 1024;
                 byte[] buffer = new byte[blockSize];
                 int total = 0;
                 if (res.ContentLength > 0)
+                {
                     mResponseData = new xDataOutput((int)res.ContentLength + 1024);
+                }
                 //mResponseData = new xDataOutput(10 * 1024 * 1024);
                 while (remain > 0 || res.ContentLength == -1)
                 {
