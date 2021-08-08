@@ -39,6 +39,8 @@ namespace stock123.app
         float[] mFilterLowPrice = { 1000 };
         float[] mFilterHiPrice = { 30000 };
 
+        xContainer mSymbolContainer;
+
         String sortedColumn = null;
 
         xContainer mLeftPanel;  //  quote list & search control
@@ -280,7 +282,7 @@ namespace stock123.app
             mAlarmButton = addToolbarButton(C.ID_ALARM_MANAGER, 10, "Cảnh báo");
             //addToolbarSeparator();
             addToolbarSeparator();
-            addToolbarButton(C.ID_GOTO_HELP, 1, "Help");
+            //addToolbarButton(C.ID_GOTO_HELP, 1, "Help");
             //addToolbarButton(C.ID_ADD_SUB_CHART, 2, "+Sub chart");
             //addToolbarButton(C.ID_ADD_MASTER_CHART, 2, "+Master chart");
             //=================================================
@@ -296,61 +298,48 @@ namespace stock123.app
             tb.Controls.Add(dropdown.getControl());
             */
             //  quick look
-            xLabel l = xLabel.createSingleLabel("Mã cổ phiếu");
-            xTextField tf = xTextField.createTextField(100);
+            xLabel l = xLabel.createSingleLabel("Mã:");
+            xTextField tf = xTextField.createTextField(54);
             mQuickCode = tf;
-            int x = getW() - tf.getW() - 20;
+            int x = getW() - tf.getW() - 54;
 
-            l.setSize(tf.getW(), l.getH());
-            l.setPosition(x, 2);
+            l.setSize(28, l.getH());
+            l.setPosition(x, 12);
             tb.Controls.Add(l.getControl());
 
-            tf.setPosition(x, l.getBottom());//, dropdown.getY() + l.getH() + 4);
+            tf.setPosition(x+28, 8);//, dropdown.getY() + l.getH() + 4);
             tb.Controls.Add(tf.getControl());
             tf.setButtonEvent(C.ID_BUTTON_QUOTE, this);
+
+            //  chọn nhóm
+            xButton btChonNhom = xButton.createStandardButton(C.ID_BUTTON_CHON_NHOM_CP, this, "Chọn nhóm", 74);
+            //l.setSize(100, l.getH());
+            //l.setTextColor(0xffff0000);
+            btChonNhom.setPosition(x - 98, 8);
+            tb.Controls.Add(btChonNhom.getControl());
 
             //  scroll
             stShareGroup g = mContext.getCurrentShareGroup();
             if (g != null && g.getTotal() > 1)
             {
-                int itemW = 40;
-                int itemH = 13;
+                int itemW = 35;
+                int itemH = 15;
                 xContainer symbolContainer = new xContainer();
-                int cw = itemW*(g.getTotal()/2 + 1);
-                int ch = 2 * itemH + 1;
+                mSymbolContainer = symbolContainer;
+                mSymbolContainer.setBackgroundColor(0xffd0d0d0);
+
+                int cw = btChonNhom.getX() - 600-10;// itemW * (g.getTotal() / 2 + 1);
+                int ch = 2 * itemH;// 2 * itemH + 1;
                 symbolContainer.setSize(cw, ch);
 
                 //symbolContainer.setBackgroundColor(0x80808000);
-                for (int i = 0; i < g.getTotal(); i+=2)
-                {
-                    //  row 1
-                    l = xLabel.createSingleLabel(g.getCodeAt(i));
-                    l.setSize(itemW, itemH);
-                    l.setPosition((i/2) * itemW, 0);
-                    //l.setListener(this);
-                    l.setTextColor(0xffff0000);
-                    l.enableClick(C.ID_SYMBOL_CLICK_START + i, this);
+                createSymbolList(itemW, itemH);
+                //xScrollView scroll = new xScrollView(null, 16 * itemW, ch+ 17);
+                //scroll.addControl(symbolContainer);
+                //scroll.setPosition(getW() - 166 - scroll.getW(), 0);
+                symbolContainer.setPosition(600, 3);
 
-                    symbolContainer.addControl(l);
-
-                    //  row 2
-                    if (i + 1 >= g.getTotal())
-                    {
-                        break;
-                    }
-                    l = xLabel.createSingleLabel(g.getCodeAt(i+1));
-                    l.setSize(itemW, itemH);
-                    l.setPosition((i / 2) * itemW, itemH);
-                    //l.setListener(this);
-                    l.setTextColor(0xffff0000);
-                    l.enableClick(C.ID_SYMBOL_CLICK_START + i+1, this);
-
-                    symbolContainer.addControl(l);
-                }
-                xScrollView scroll = new xScrollView(null, 16 * itemW, ch+ 17);
-                scroll.addControl(symbolContainer);
-                scroll.setPosition(getW() - 166 - scroll.getW(), 0);
-                tb.Controls.Add(scroll.getControl());
+                tb.Controls.Add(symbolContainer.getControl());
             }
             
             //==============================================================
@@ -981,8 +970,13 @@ namespace stock123.app
             {
                 showHelp(aIntParameter);
             }
+
             if (evt == xBaseControl.EVT_BUTTON_CLICKED)
             {
+                if (aIntParameter == C.ID_BUTTON_CHON_NHOM_CP)
+                {
+                    showShareGroupListMenu(((xButton)sender).getControl());
+                }
                 if (aIntParameter >= C.ID_SYMBOL_CLICK_START && aIntParameter < C.ID_SYMBOL_CLICK_END)
                 {
                     int idx = aIntParameter - C.ID_SYMBOL_CLICK_START;
@@ -1396,7 +1390,7 @@ namespace stock123.app
                         share = mContext.mShareManager.getShare(shareID);
                     }
 
-                    if (share != null && !share.isIndex())
+                    if (share != null && !share.isIndex() && share.mCode.Length == 3)
                     {
                         v0.addElement(share);
                     }
@@ -1456,11 +1450,7 @@ namespace stock123.app
                         continue;
                     }
 
-                    int vol10 = share.getTotalVolume(5);
-                    if (vol10 < 0)
-                    {
-                        vol10 = share.calcTotalVolume(5);
-                    }
+                    int vol10 = share.calcAvgVolume(5);
 
                     int giatri = (int)((vol10 * share.getClose())/1000);//  convert to trieu
                     if (giatri >= mContext.mOptFilterGTGD)
@@ -2078,5 +2068,92 @@ namespace stock123.app
             cm.Show(lv.PointToScreen(new Point(50, 15)));
         }
 
+        void showShareGroupListMenu(Control c)
+        {
+            //  show popup menu
+            ContextMenuStrip cm = new ContextMenuStrip();
+
+            xVector v = Context.userDataManager().shareGroups();
+            for (int i = 0; i < v.size(); i++)
+            {
+                stShareGroup g = (stShareGroup)v.elementAt(i);
+                cm.Items.Add(g.getName());
+            }
+
+            for (int i = 0; i < mContext.getShareGroupCount(); i++)
+            {
+                stShareGroup g = mContext.getShareGroup(i);
+                cm.Items.Add(g.getName());
+            }
+
+            cm.ItemClicked += new ToolStripItemClickedEventHandler(
+                (sender, item) =>
+                {
+                    String name = item.ClickedItem.Text;
+
+                    stShareGroup selectedGroup = null;
+                    v = Context.userDataManager().shareGroups();
+                    for (int i = 0; i < v.size(); i++)
+                    {
+                        stShareGroup g = (stShareGroup)v.elementAt(i);
+                        if (g.getName().CompareTo(name) == 0)
+                        {
+                            selectedGroup = g;
+                            break;
+                        }
+                    }
+                    if (selectedGroup == null)
+                    {
+                        for (int i = 0; i < mContext.getShareGroupCount(); i++)
+                        {
+                            stShareGroup g = mContext.getShareGroup(i);
+                            if (g.getName().CompareTo(name) == 0)
+                            {
+                                selectedGroup = g;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (selectedGroup != null)
+                    {
+                        mContext.setCurrentShareGroup(selectedGroup);
+                        createSymbolList(35, 14);
+                    }
+                    
+                });
+
+            cm.Show(c.PointToScreen(new Point(50, 15)));
+        }
+
+        void createSymbolList(int itemW, int itemH)
+        {
+            itemW = 35;
+            itemH = 14;
+            stShareGroup g = mContext.getCurrentShareGroup();
+
+            int itemPerRow = mSymbolContainer.getW() / itemW;
+            int itemMax = itemPerRow*2;
+            mSymbolContainer.removeAllControls();
+            for (int i = 0; i < g.getTotal(); i++)
+            {
+                if (i >= itemMax)
+                {
+                    break;
+                }
+                int row = i / itemPerRow;
+                int col = i % itemPerRow;
+                //  row 1
+                xLabel l = xLabel.createSingleLabel(g.getCodeAt(i));
+                l.setSize(itemW, itemH);
+                l.setFont(mContext.getFontSmall());
+                l.setPosition(col* itemW, row*itemH);
+                //l.setListener(this);
+                l.setTextColor(0xff000000);
+                l.enableClick(C.ID_SYMBOL_CLICK_START + i, this);
+
+                mSymbolContainer.addControl(l);
+            }
+        }
     }
 }

@@ -111,7 +111,7 @@ namespace stock123.app
         public bool mLastestClientVersionAsk = false;
 
         //public NetProtocol mNetProtocol;
-        public bool mIsFavorGroupChanged = false;
+        //public bool mIsFavorGroupChanged = false;
         UserDataManager _userDataManager = new UserDataManager();
         //public xVector mFavorGroups = new xVector(10);  //  stShareGroup
         public xVector mShareGroups = new xVector(10);  //  stShareGroup
@@ -438,6 +438,18 @@ namespace stock123.app
             }
 
             return mFontSmallest;
+        }
+
+        public Font getFontSmallestB()
+        {
+            if (mFontSmallB == null)
+            {
+                //Font f = new Font(new FontFamily("Arial"), 9.0f + getAjustFont(), FontStyle.Bold);
+                Font f = new Font(new FontFamily("Arial"), 8.0f + getAjustFont(), FontStyle.Bold);
+                mFontSmallB = f;
+            }
+
+            return mFontSmallB;
         }
 
         public Font getFontSmaller()
@@ -2017,6 +2029,8 @@ namespace stock123.app
 
         public void exit()
         {
+            userDataManager().flushUserData();
+
             saveOptions();
             //saveProfile();
             saveTradeHistory();
@@ -2658,7 +2672,30 @@ namespace stock123.app
 
         public xVector favoriteGroups()
         {
-            return _userDataManager.shareGroups();
+            xVector v = _userDataManager.shareGroups();
+
+            if (!mOptDontUseGainloss)
+            {
+                bool addedGainloss = false;
+                if (v.size() > 0)
+                {
+                    addedGainloss = true;
+                    stShareGroup first = (stShareGroup)v.firstElement();
+                    if (first.getType() != stShareGroup.ID_GROUP_GAINLOSS)
+                    {
+                        addedGainloss = false;
+                    }
+                }
+                if (!addedGainloss)
+                {
+                    stShareGroup gainloss = new stShareGroup();
+                    gainloss.setGroupType(stShareGroup.ID_GROUP_GAINLOSS);
+                    gainloss.setName("_ Lãi / Lỗ _");
+
+                    v.insertElementAt(gainloss, 0);
+                }
+            }
+            return v;// _userDataManager.shareGroups();
         }
 
         static public UserDataManager userDataManager()

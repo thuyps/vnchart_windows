@@ -673,7 +673,7 @@ namespace stock123.app.data
                 setCursorScope(Context.getInstance().mOptHistoryChartTimeFrame);
             }
             //============some calculations for sorting==============
-            calcTotalVolume(10);
+            calcAvgVolume(10, 0);
             //==========================================
 
             return mCandleCnt > 0;
@@ -2827,6 +2827,112 @@ namespace stock123.app.data
             return isDowntrend(pStaticTMP2, j);
         }
 
+        public float volumeRate()
+        {
+            if (getCandleCount() < 5)
+            {
+                return 1;
+            }
+            int last = getCandleCount() - 1;
+
+            double avg3 = calcAvgVolume(3);
+            double avg10_1 = calcAvgVolume(15, 4);
+
+            if (avg3 == 0)
+            {
+                return 0;
+            }
+
+            avg3 = Math.Max(avg3, avg10_1);
+
+            float vol = mCVolume[last];
+
+            double r1 = vol / avg3;
+            double r2 = mCVolume[last - 1] / avg3;
+
+            return (float)Math.Min(r1, r2);
+        }
+
+        //  1: increase
+        //  -1: decrease
+        //  0: both
+        //  return in percent
+        public float getChangedInPercent(int increase, int days)
+        {
+            int cnt = getCandleCount();
+            cnt = cnt < days ? cnt : days;
+
+            float maxValue = 0;
+            float minValue = 0;
+            int maxPos = 0;
+            int minPos = 0;
+
+            for (int i = 0; i < cnt; i++)
+            {
+                int last = getCandleCount() - 1 - i;
+                float c = getClose(last);
+
+                if (maxValue == 0)
+                {
+                    maxValue = c;
+                    maxPos = 0;
+                }
+                if (minValue == 0)
+                {
+                    minValue = c;
+                    minPos = 0;
+                }
+
+                if (c > maxValue)
+                {
+                    maxValue = c;
+                    maxPos = i;
+                }
+                if (c < minValue)
+                {
+                    minValue = c;
+                    minPos = i;
+                }
+            }
+
+            float c1 = getClose(getCandleCount() - 1);
+
+            float percent = 0;
+
+            if (increase == 1)
+            {
+                if (minValue > 0/* && minPos < maxPos*/)
+                {
+                    percent = (c1 - minValue) * 100 / minValue;
+                }
+            }
+            else if (increase == -1)
+            {
+                if (maxValue > 0/* && minPos > maxPos*/)
+                {
+                    percent = (maxValue - c1) * 100 / maxValue;
+                }
+            }
+            else
+            {
+                //  bien dong
+                float percent1 = 0;
+                float percent2 = 0;
+                if (minValue > 0)
+                {
+                    percent1 = (c1 - minValue) * 100 / minValue;
+                }
+                if (maxValue > 0)
+                {
+                    percent2 = (maxValue - c1) * 100 / maxValue;
+                }
+
+                return Math.Max(percent1, percent2);
+            }
+
+            return percent;
+        }
+
         public bool isUpTrend1(int[] trend, int daysback)
         {
             int cnt = getCandleCount();
@@ -4619,26 +4725,36 @@ namespace stock123.app.data
             return percent;
         }
 
-        int mTotalVolume10 = -1;
-        public int getTotalVolume(int days)
+        public int calcAvgVolume(int days)
         {
-            return mTotalVolume10;
+            return calcAvgVolume(days, 0);
         }
-        public int calcTotalVolume(int days)
+
+        public int calcAvgVolume(int days, int stepbacks)
         {
             int cnt = getCandleCount();
+            if (stepbacks > 0){
+                cnt -= stepbacks;
+                if (cnt < 0)
+                {
+                    return 0;
+                }
+            }
+
             if (days > cnt) days = cnt;
             int begin = cnt - days;
             if (days == 0)
+            {
                 return 0;
+            }
             double total = 0;
             for (int i = begin; i < cnt; i++)
             {
                 total += getVolume(i);
             }
-            mTotalVolume10 = (int)(total / days);
+            int avg = (int)(total / days);
 
-            return mTotalVolume10;
+            return avg;
         }
 
         public bool isCandleBullishEngulfing()
@@ -6123,7 +6239,12 @@ namespace stock123.app.data
 
         public int getAveVolumeInDays(int days)
         {
-            return calcTotalVolume(days);
+            return calcAvgVolume(days);
+        }
+
+        public int getAveVolumeInDays(int days, int stepbacks)
+        {
+            return calcAvgVolume(days, stepbacks);
         }
 
         /*

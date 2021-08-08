@@ -301,6 +301,8 @@ namespace stock123.app
             //======share group=====
             int y = mPriceboardContainer.getY();
             //-----------------------------
+
+
             xBaseControl favors = createShareGroupList(false, C.ID_DROPDOWN_FAVOR_GROUP, "Nhóm yêu thích", mContext.favoriteGroups(), W_SHARE_GROUP, H_SHAREGROUP_FAVOR);
             favors.setPosition(0, y);
             y += H_SHAREGROUP_FAVOR;
@@ -592,10 +594,7 @@ namespace stock123.app
                 xMainApplication.getxMainApplication().postMessageInUIThread(this, this, xBaseControl.EVT_BUTTON_CLICKED, C.ID_ALARM_MANAGER, null);
             }
             //================
-            if (mContext.mIsFavorGroupChanged)
-            {
-                mTimer.expireTimer();
-            }
+            
 
             if (mNetState == STATE_NORMAL)
             {
@@ -1851,7 +1850,9 @@ namespace stock123.app
                     stGainloss g = (stGainloss)item.getData();
                     Context.userDataManager().gainLossManager().removeGainLoss(g);
                     showGainlossTable();
-                    mContext.mIsFavorGroupChanged = true;
+
+                    Context.userDataManager().flushUserData();
+                    Context.userDataManager().forceFlushUserData();
                 }
                 else
                 {
@@ -2334,7 +2335,7 @@ namespace stock123.app
                         if (share != null && total > 10000)
                         {
                             mContext.mShareManager.loadShareFromCommon(share, 12, true);
-                            int vol10days = share.calcTotalVolume(10);
+                            int vol10days = share.calcAvgVolume(10);
                             if (vol10days > 0)
                             {
                                 inc = (int)(total/vol10days);

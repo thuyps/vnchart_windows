@@ -544,7 +544,7 @@ namespace stock123.app.data
 
             Context.getInstance().mShareManager.loadShareFromCommon(s, maxLastCandle, true);
             //  for sorting====quick
-            s.calcTotalVolume(10);
+            s.calcAvgVolume(10);
             //======================
 
             return s;

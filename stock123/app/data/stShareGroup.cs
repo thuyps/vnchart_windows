@@ -114,8 +114,11 @@ namespace stock123.app.data
                 {
                     mShares.removeElementAt(i);
                     Share.deleteSavedFile(code);
-                    Context.getInstance().mIsFavorGroupChanged = true;
 
+                    Context.userDataManager().flushUserData();
+                    Context.userDataManager().forceFlushUserData();
+
+                    
                     break;
                 }
             }
