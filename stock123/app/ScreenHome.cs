@@ -65,7 +65,11 @@ namespace stock123.app
 
         //---------------------------------------------------------------/
 
+        bool mIsEverythingOK = false;
         int mNetState;
+        long mLastRecordedStateTime = Utils.currentTimeMillis();
+        int mLastRecordedState;
+
         bool mIsLaunchingActivate = true;
         xTimer mTimer;
         xTimer mTimerRequestOpen;
@@ -510,6 +514,27 @@ namespace stock123.app
         override public void onTick()
         {
             Context.userDataManager().onTick();
+
+            if (mIsEverythingOK)
+            {
+                if (mNetState == mLastRecordedState)
+                {
+                    long now = Utils.currentTimeMillis();
+                    if (now - mLastRecordedStateTime > 20000)
+                    {
+                        //  definitely timeout
+                        mNetState = STATE_NORMAL;
+                        mLastRecordedStateTime = now;
+                        mTimer.expireTimer();
+                    }
+                }
+            }
+
+            if (mNetState != mLastRecordedState)
+            {
+                mLastRecordedState = mNetState;
+                mLastRecordedStateTime = Utils.currentTimeMillis();
+            }
             /*
             if (mNetProtocol == null)
             {
@@ -618,7 +643,7 @@ namespace stock123.app
                             }
                             else
                             {
-                                mTimer.setExpiration(20 * 1000);
+                                mTimer.setExpiration(15 * 1000);
                             }
 
                             doUpdateRealtime();
@@ -2866,6 +2891,7 @@ namespace stock123.app
                 if (mNetState == STATE_UPDATING_REALTIME)
                 {
                     mNetState = STATE_NORMAL;
+                    mIsEverythingOK = true;
                     mTimer.reset();
                     //  refresh: priceboard, 2 indices, realtime charts
                     mPriceboard.invalidate();
