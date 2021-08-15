@@ -117,6 +117,10 @@ namespace stock123.app.data.userdata
                 stShareGroup g = new stShareGroup();
                 g.load(di);
 
+                if (g.getType() == stShareGroup.ID_GROUP_GAINLOSS || g.getName() == null || g.getName().Length == 0)
+                {
+                    continue;
+                }
                 v.addElement(g);
             }
         }
@@ -130,6 +134,11 @@ namespace stock123.app.data.userdata
             for (int i = 0; i < groupCnt; i++)
             {
                 stShareGroup p = (stShareGroup) _shareGroups.elementAt(i);
+
+                if (p.getType() == stShareGroup.ID_GROUP_GAINLOSS || p.getName() == null || p.getName().Length == 0)
+                {
+                    continue;
+                }
 
                 p.save(o);
             }
@@ -147,7 +156,7 @@ namespace stock123.app.data.userdata
 
                 o.writeUTF(g.code);
                 o.writeInt(g.date);
-                o.writeInt((int)g.price);
+                o.writeInt((int)(g.price*1000));
                 o.writeInt(g.volume);
             }
 
@@ -165,7 +174,7 @@ namespace stock123.app.data.userdata
             for (int i = 0; i < cnt; i++){
                 String code = di.readUTF();
                 int date = di.readInt();
-                int price = di.readInt();
+                float price = di.readInt()/1000.0f;
                 int vol = di.readInt();
 
                 if (date == 0){

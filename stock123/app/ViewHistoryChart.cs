@@ -2135,6 +2135,9 @@ namespace stock123.app
             int itemPerRow = mSymbolContainer.getW() / itemW;
             int itemMax = itemPerRow*2;
             mSymbolContainer.removeAllControls();
+
+            Font f = new Font(new FontFamily("Arial"), 9.0f);
+
             for (int i = 0; i < g.getTotal(); i++)
             {
                 if (i >= itemMax)
@@ -2146,7 +2149,7 @@ namespace stock123.app
                 //  row 1
                 xLabel l = xLabel.createSingleLabel(g.getCodeAt(i));
                 l.setSize(itemW, itemH);
-                l.setFont(mContext.getFontSmall());
+                l.setFont(f);
                 l.setPosition(col* itemW, row*itemH);
                 //l.setListener(this);
                 l.setTextColor(0xff000000);

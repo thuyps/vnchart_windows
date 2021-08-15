@@ -17,6 +17,9 @@ namespace stock123.app.chart
 
         float mCurrentZigzagPercent;
         int mZigzagPointCnt;
+
+        Share currentShare;
+
         public ChartZigzag(Font f)
             : base(f)
         {
@@ -28,14 +31,14 @@ namespace stock123.app.chart
             Share share = getShare(3);
             if (share == null)
                 return;
-            if (mZigzag != null && mCurrentShare == share && mCurrentZigzagPercent == mContext.mOptZigzagPercent)
+            if (mZigzag != null && currentShare == share && mCurrentZigzagPercent == mContext.mOptZigzagPercent)
             {
             }
             else
             {
                 mZigzag = null;
 
-                mCurrentShare = share;
+                currentShare = share;
                 mCurrentZigzagPercent = mContext.mOptZigzagPercent;
 
                 mZigzag = share.calcZigzag();
