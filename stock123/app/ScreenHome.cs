@@ -570,8 +570,11 @@ namespace stock123.app
              */
             if (mNetState == STATE_DOWNLOAD_ALL_SHARE_PREPARING)
             {
+                /*
                 xHttp http = new xHttp(this);
                 http.get(mContext.configJson.url_all_share3, null);
+                 */
+                downloadFile(mContext.configJson.url_all_share3);
                 mNetState = STATE_DOWNLOAD_ALL_SHARE;
             }
 
@@ -2807,6 +2810,42 @@ namespace stock123.app
             }
 
             Utils.trace("Downloaded all share: " + len);
+        }
+
+        // Event to track the progress
+        void wc_DownloadProgressChanged(object sender, System.Net.DownloadProgressChangedEventArgs e)
+        {
+            if (mStartupDialog != null)
+            {
+                mStartupDialog.setMsg2(e.ProgressPercentage + "%");
+            }
+        }
+
+        void wc_DownloadCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        {
+            String outfile = "all.dat";
+            xDataInput di = xFileManager.readFile(outfile, true);
+
+            downloadEvent(this, xBaseControl.EVT_NET_DONE, di.available(), di.getBytes());
+        }
+
+        void downloadFile(String url)
+        {
+            using (System.Net.WebClient wc = new System.Net.WebClient())
+            {
+                wc.DownloadProgressChanged += wc_DownloadProgressChanged;
+                wc.DownloadFileCompleted += wc_DownloadCompleted;
+
+                String outfile = "all.dat";
+                xFileManager.removeFile(outfile);
+
+                wc.DownloadFileAsync(
+                    // Param1 = Link of file
+                    new System.Uri(url),
+                    // Param2 = Path to save
+                    outfile
+                );
+            }
         }
 
         override public int getWorkingH()

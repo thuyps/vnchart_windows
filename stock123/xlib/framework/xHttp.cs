@@ -79,7 +79,7 @@ namespace xlib.framework
             return false;
         }
 
-        void run()
+        void run2()
         {
             try
             {
@@ -167,6 +167,115 @@ namespace xlib.framework
                     }
 
                     if (cnt >= 1024)
+                    {
+                        xMainApplication.getxMainApplication().postMessageInUIThread(this, mListener, xBaseControl.EVT_NET_DATA_AVAILABLE, mResponseData.size(), mResponseData.getBytes());
+                        cnt = 0;
+                    }
+
+                    Thread.Sleep(2);
+                }
+                res.Close();
+
+                xMainApplication.getxMainApplication().postMessageInUIThread(this, mListener, xBaseControl.EVT_NET_DONE, mResponseData.size(), mResponseData.getBytes());
+            }
+            catch (IOException e)
+            {
+                xMainApplication.getxMainApplication().postMessageInUIThread(this, mListener, xBaseControl.EVT_NET_ERROR, 0, e.Message);
+            }
+            catch (Exception e2)
+            {
+                xMainApplication.getxMainApplication().postMessageInUIThread(this, mListener, xBaseControl.EVT_NET_ERROR, 0, e2.Message);
+            }
+        }
+
+        void run()
+        {
+            try
+            {
+                xMainApplication.getxMainApplication().postMessageInUIThread(this, mListener, xBaseControl.EVT_NET_CONNECTING, 0, null);
+                //mURL = "http://soft123.com.vn:8888/SmaSrv/SSTK";// "http://soft123.com.vn/web/home";
+                Uri uri = new Uri(mURL);
+
+                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(uri);
+                req.Method = mHttpMethod;
+                req.ContentType = "application/x-www-form-urlencoded";
+
+                if (mRequestParams.size() > 0)
+                {
+                    for (int i = 0; i < mRequestParams.size(); i++)
+                    {
+                        string param = (string)mRequestParams.elementAt(i);
+                        string value = (string)mRequestValues.elementAt(i);
+                        req.Headers.Add(param, value);
+                    }
+                }
+
+                if (mOutData != null)
+                {
+                    //==========================
+                    xDataInput di = new xDataInput(mOutData.getBytes(), 0, mOutData.size(), true);
+                    int a = di.readInt();   //  signal
+                    a = di.readInt();   //  device-id
+                    a = di.readInt();   //  gz
+                    String session = di.readUTF();
+                    String serial = di.readUTF();
+                    String os = di.readUTF();
+                    int pro = di.readInt();
+
+                    //==========================
+                    req.ContentLength = mOutData.size();
+
+                    Stream o = req.GetRequestStream();
+                    o.Write(mOutData.getBytes(), 0, mOutData.size());
+                    //o.Flush();
+                    o.Close();
+                }
+
+                //-----------------------------------------------------
+                HttpWebResponse res = (HttpWebResponse)req.GetResponse();
+
+                Console.WriteLine(res.StatusDescription);
+                Console.WriteLine("====Net: received content length: " + res.ContentLength);
+
+                Stream dataStream = res.GetResponseStream();
+                BinaryReader reader = new BinaryReader(dataStream);
+
+                xMainApplication.getxMainApplication().postMessageInUIThread(this, mListener, xBaseControl.EVT_NET_CONNECTED, 0, null);
+
+                int c = 0;
+                mResponseData.reset();
+
+                int cnt = 0;
+                long remain = res.ContentLength;
+                int blockSize = 1 * 1024;
+                byte[] buffer = new byte[blockSize];
+                int total = 0;
+                if (res.ContentLength > 0)
+                {
+                    mResponseData = new xDataOutput((int)res.ContentLength + 1024);
+                }
+                //mResponseData = new xDataOutput(10 * 1024 * 1024);
+                while (remain > 0 || res.ContentLength == -1)
+                {
+                    if (!xMainApplication.getxMainApplication().isRunning())
+                        break;
+                    int read = reader.Read(buffer, 0, blockSize);
+                    //c = reader.ReadByte();
+                    cnt += read;
+                    total += read;
+                    if (read > 0)
+                    {
+                        remain -= read;
+                        mResponseData.write(buffer, 0, read);
+                        //utils.Utils.trace("======write: " + read + "/" + total);
+                        //mResponseData.writeByte((byte)c);
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                    if (cnt >= 10*1024)
                     {
                         xMainApplication.getxMainApplication().postMessageInUIThread(this, mListener, xBaseControl.EVT_NET_DATA_AVAILABLE, mResponseData.size(), mResponseData.getBytes());
                         cnt = 0;
