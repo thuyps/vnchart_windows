@@ -25,10 +25,10 @@ namespace stock123.app.utils
         public const int SORT_TRADE_VALUE = 8;
         public const int SORT_SYMBOL = 9;
         public const int SORT_PRICE = 10;
-
         public const int SORT_DUMUA_DUBAN = 11;
+        public const int SORT_RS_RANKING = 12;
 
-        static public void doSort(xVector v, int type)
+        static public void doSort(xVector v, int type, int param)
         {
             if (type == SORT_IGNORE)
             {
@@ -86,6 +86,11 @@ namespace stock123.app.utils
             {
                 evalueSortValuePrice(v);
             }
+            else if (type == SORT_RS_RANKING)
+            {
+                evalueSortRSRanking(v, param);
+                revert = true;
+            }
 
             sort(v);
 
@@ -138,6 +143,10 @@ namespace stock123.app.utils
             {
                 title = "Giá";
             }
+            else if (type == SORT_RS_RANKING)
+            {
+                title = "RS score";
+            }
 
             return title;
         }
@@ -162,6 +171,30 @@ namespace stock123.app.utils
                 if (smallestIdx != i)
                 {
                     v.swap(i, smallestIdx);
+                }
+            }
+        }
+
+        static void sortRevert(xVector v)
+        {
+            int cnt = v.size();
+            for (int i = 0; i < cnt - 1; i++)
+            {
+                Share biggest = (Share)v.elementAt(i);
+                int biggestIdx = i;
+                for (int j = i + 1; j < cnt; j++)
+                {
+                    Share item = (Share)v.elementAt(j);
+                    if (biggest.mSortParam < item.mSortParam)
+                    {
+                        biggest = item;
+                        biggestIdx = j;
+                    }
+                }
+
+                if (biggestIdx != i)
+                {
+                    v.swap(i, biggestIdx);
                 }
             }
         }
@@ -408,6 +441,63 @@ namespace stock123.app.utils
                 else
                 {
                     share.mSortParam = 10000;
+                }
+            }
+        }
+
+        static void evalueSortRSRanking(xVector v, int days)
+        {
+            if (days > 200)
+            {
+                days = 200;
+            }
+            Share vnindex = Context.getInstance().mShareManager.getShare("^VNINDEX");
+            int vnb = vnindex.getCandleCnt()-days;
+            if (vnb < 0){
+                vnb = 0;
+            }
+            float vnCloseBegin = vnindex.getClose(vnb);
+            float vnCloseEnd = vnindex.getClose(vnindex.getCandleCnt() - 1);
+
+            if (vnCloseBegin == 0 || vnCloseEnd == 0)
+            {
+                return;
+            }
+
+            for (int i = 0; i < v.size(); i++)
+            {
+                Share share = (Share)v.elementAt(i);
+
+                if (!share.isIndex())
+                {
+                    share.mSortParam = 0;
+
+                    share.loadShareFromCommonData(true);
+                    if (share.getCandleCnt() > days)
+                    {
+                        int e1 = share.getCandleCount() - 1;
+                        
+                        int b1 = e1 - days;
+                        if (b1 < 0)
+                        {
+                            b1 = 0;
+                        }
+
+                        if (share.getCode().CompareTo("VNP") == 0){
+                            int k = 0;
+                        }
+
+                        float r0 = share.getClose(b1) / vnCloseBegin;
+                        float r1 = share.getClose(e1) / vnCloseEnd;
+
+                        float score = r1 / r0;
+                        share.mSortParam = (int)(1000 * score);
+                    }
+                }
+                else
+                {
+                    share.mSortParam = -100;
+                    share.mCompareText = "-";
                 }
             }
         }

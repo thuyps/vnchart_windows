@@ -479,7 +479,7 @@ namespace stock123.app
             {
                 sortType = ShareSortUtils.SORT_TRADE_VALUE;
             }
-            ShareSortUtils.doSort(shares, sortType);
+            ShareSortUtils.doSort(shares, sortType, 0);
 
             float[] columnPercents = { 30, 28, 34, 8 }; //  code, price, value
             String[] columnTexts = { "Mã CP", "Giá", "▼ GTGD tỉ", "" };
@@ -519,7 +519,7 @@ namespace stock123.app
                      */
 
                     int sort = e.Column == 0?ShareSortUtils.SORT_SYMBOL:ShareSortUtils.SORT_PRICE;
-                    ShareSortUtils.doSort(mFilteredShares, sort);
+                    ShareSortUtils.doSort(mFilteredShares, sort, 0);
 
                     mFilteredSharesOrderAccend[e.Column] = !mFilteredSharesOrderAccend[e.Column];
                     if (mFilteredSharesOrderAccend[e.Column])
@@ -1159,7 +1159,9 @@ namespace stock123.app
                             sb.Append("Giảm nhiều nhất trong số ngày:");
                             mSortTopToBottom = false;
                         }
-                        DlgEnterDay dlg = DlgEnterDay.createDialog(this, sb.ToString());
+                        int defDays = GlobalData.getData().getValueInt("most_change_days");
+                        if (defDays <= 0) defDays = 5;
+                        DlgEnterDay dlg = DlgEnterDay.createDialog(sb.ToString(), defDays);
                         dlg.ShowDialog();
                         if (dlg.getResultID() == C.ID_DLG_BUTTON_OK)
                         {
@@ -1167,6 +1169,11 @@ namespace stock123.app
                             try
                             {
                                 int days = Int32.Parse(sd);
+                                if (days > 0)
+                                {
+                                    GlobalData.getData().setValueInt("most_change_days", days);
+                                    GlobalData.saveData();
+                                }
                                 mContext.mShareManager.sortMostIncreased(mFilteredShares, days);
                             }catch(Exception e)
                             {
@@ -2021,9 +2028,17 @@ namespace stock123.app
                         sortType = ShareSortUtils.SORT_THAYDOI_VOL;
                         columnTexts[2] = "+/-Vol(%)";
                     }
+                    else if (item.ClickedItem.Text.CompareTo("") == 0)
+                    {
+                        sortType = ShareSortUtils.SORT_RS_RANKING;
+                        columnTexts[2] = "Điểm RS/VNIndex";
+
+                        showGetDaysForRSRankingDialog((xListView)lv.Tag);
+                        return;
+                    }
                     sortedColumn = columnTexts[2];
 
-                    ShareSortUtils.doSort(mFilteredShares, sortType);
+                    ShareSortUtils.doSort(mFilteredShares, sortType, 0);
 
                     if (mFilteredSharesOrderLastSortType != -1)
                     {
@@ -2068,6 +2083,76 @@ namespace stock123.app
             cm.Show(lv.PointToScreen(new Point(50, 15)));
         }
 
+        void showGetDaysForRSRankingDialog(xListView list)
+        {
+            int defValue = GlobalData.getData().getValueInt("rs_ranking_days");
+            if (defValue == 0)
+            {
+                defValue = 30;
+            }
+            DlgEnterDay dlg = DlgEnterDay.createDialog("Điểm RS so với VNIndex trong số ngày", defValue);
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                int days = dlg.getDays();
+
+                if (days <= 1)
+                {
+                    days = 30;
+                }
+                else
+                {
+                    GlobalData.getData().setValueInt("rs_ranking_days", days);
+                    GlobalData.saveData();
+                }
+
+                float[] columnPercents = { 30, 28, 34, 8}; //  code, price, value
+
+                String[] columnTexts = { "Mã CP", "Giá", "Điểm RS/VNIndex", "" };
+                int sortType = ShareSortUtils.SORT_RS_RANKING;
+                sortedColumn = columnTexts[2];
+
+                ShareSortUtils.doSort(mFilteredShares, sortType, days);
+
+                if (mFilteredSharesOrderLastSortType != -1)
+                {
+                    if (mFilteredSharesOrderLastSortType != sortType)
+                    {
+                        mFilteredSharesOrderLastSortType = sortType;
+                        mFilteredSharesOrderAccend[2] = true;
+                    }
+                    else
+                    {
+                        mFilteredSharesOrderAccend[2] = false;
+                    }
+                }
+                else
+                {
+                    mFilteredSharesOrderAccend[2] = true;
+                }
+                mFilteredSharesOrderLastSortType = sortType;
+                if (!mFilteredSharesOrderAccend[2])
+                {
+                    mFilteredShares.makeReverse();
+                    mFilteredSharesOrderLastSortType = -1;
+                }
+                    
+                columnTexts[2] = "▼ " + columnTexts[2];
+
+                //==================
+
+                list.clear();
+                list.setColumnHeaders(columnTexts, columnPercents);
+
+                for (int i = 0; i < mFilteredShares.size(); i++)
+                {
+                    Share share = (Share)mFilteredShares.elementAt(i);
+                    RowFilterResult r = RowFilterResult.createRowQuoteList(share, this);
+                    list.addRow(r);
+                    r.update();
+                }
+            }
+        }
+
         void showShareGroupListMenu(Control c)
         {
             //  show popup menu
@@ -2080,11 +2165,20 @@ namespace stock123.app
                 cm.Items.Add(g.getName());
             }
 
-            for (int i = 0; i < mContext.getShareGroupCount(); i++)
+            //--------------------
+            //  cat 1
+            for (int i = 0; i < mContext.getShareGroupCount(1); i++)
             {
-                stShareGroup g = mContext.getShareGroup(i);
+                stShareGroup g = mContext.getShareGroup(1, i);
                 cm.Items.Add(g.getName());
             }
+            //  cat 2
+            for (int i = 0; i < mContext.getShareGroupCount(2); i++)
+            {
+                stShareGroup g = mContext.getShareGroup(2, i);
+                cm.Items.Add(g.getName());
+            }
+            //--------------------
 
             cm.ItemClicked += new ToolStripItemClickedEventHandler(
                 (sender, item) =>
@@ -2102,11 +2196,21 @@ namespace stock123.app
                             break;
                         }
                     }
+
                     if (selectedGroup == null)
                     {
-                        for (int i = 0; i < mContext.getShareGroupCount(); i++)
+                        for (int i = 0; i < mContext.getShareGroupCount(1); i++)
                         {
-                            stShareGroup g = mContext.getShareGroup(i);
+                            stShareGroup g = mContext.getShareGroup(1, i);
+                            if (g.getName().CompareTo(name) == 0)
+                            {
+                                selectedGroup = g;
+                                break;
+                            }
+                        }
+                        for (int i = 0; i < mContext.getShareGroupCount(2); i++)
+                        {
+                            stShareGroup g = mContext.getShareGroup(2, i);
                             if (g.getName().CompareTo(name) == 0)
                             {
                                 selectedGroup = g;

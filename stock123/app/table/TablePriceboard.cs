@@ -8,6 +8,7 @@ using xlib.utils;
 using stock123.app.data;
 using System.Windows.Forms;
 using stock123.app.utils;
+using stock123.app.ui;
 
 namespace stock123.app.table
 {
@@ -335,6 +336,7 @@ namespace stock123.app.table
             cm.Items.Add("PE");
             cm.Items.Add("Khối lượng");
             cm.Items.Add("Khối lượng thay đổi (TB3/TB15)");
+            cm.Items.Add("Điểm RS/VNIndex");
             cm.Items.Add("-");
             cm.Items.Add("Xuất danh sách ra file excel(csv)");
 
@@ -393,11 +395,19 @@ namespace stock123.app.table
                         sortType = ShareSortUtils.SORT_THAYDOI_VOL;
                         columnTexts[2] = "+/-Vol(%)";
                     }
+                    else if (item.ClickedItem.Text.CompareTo("Điểm RS/VNIndex") == 0)
+                    {
+                        sortType = ShareSortUtils.SORT_RS_RANKING;
+                        columnTexts[2] = "Điểm RS/VNIndex";
+
+                        showGetDaysForRSRankingDialog();
+                        return;
+                    }
                     sortedColumn = columnTexts[2];
                     _sortType = sortType;
 
                     xVector sorted = shareGroupToVector();
-                    ShareSortUtils.doSort(sorted, sortType);
+                    ShareSortUtils.doSort(sorted, sortType, 0);
 
                     _shareGroup.clear();
                     for (int i = 0; i < sorted.size(); i++)
@@ -421,6 +431,53 @@ namespace stock123.app.table
         {
             _shareGroup.sort();
             setShareGroup(_shareGroup, _sortType);
+        }
+
+        void showGetDaysForRSRankingDialog()
+        {
+            int defValue = GlobalData.getData().getValueInt("rs_ranking_days");
+            if (defValue == 0)
+            {
+                defValue = 30;
+            }
+            DlgEnterDay dlg = DlgEnterDay.createDialog("Điểm RS so với VNIndex trong số ngày", defValue);
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                int days = dlg.getDays();
+
+                if (days <= 1)
+                {
+                    days = 30;
+                }
+                else
+                {
+                    GlobalData.getData().setValueInt("rs_ranking_days", days);
+                    GlobalData.saveData();
+                }
+
+                float[] columnPercents = { 30, 28, 34, 8 }; //  code, price, value
+
+                String[] columnTexts = { "Mã CP", "Giá", "Điểm RS/VNIndex", "" };
+                int sortType = ShareSortUtils.SORT_RS_RANKING;
+                sortedColumn = columnTexts[2];
+
+                _sortType = sortType;
+
+                xVector sorted = shareGroupToVector();
+                ShareSortUtils.doSort(sorted, sortType, days);
+
+                _shareGroup.clear();
+                for (int i = 0; i < sorted.size(); i++)
+                {
+                    Share share = (Share)sorted.elementAt(i);
+                    _shareGroup.addCode(share.mCode);
+                }
+
+                columnTexts[2] = "▼ " + columnTexts[2];
+
+                //==================
+                setShareGroup(_shareGroup, sortType);
+            }
         }
     }
 }

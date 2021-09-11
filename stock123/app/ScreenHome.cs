@@ -316,7 +316,11 @@ namespace stock123.app
 
             y += H_SHAREGROUP_STATISTIC;
             int tmp = c.getH() - y;
-            xBaseControl defaults = createShareGroupList(false, C.ID_DROPDOWN_COMMON_GROUP, "Nhóm mặc định", mContext.mShareGroups, W_SHARE_GROUP, tmp);
+            xVector groupAll = new xVector();
+            groupAll.addAll(mContext.mShareGroups);
+            groupAll.addAll(mContext.mShareGroups2);
+
+            xBaseControl defaults = createShareGroupList(false, C.ID_DROPDOWN_COMMON_GROUP, "Nhóm mặc định", groupAll, W_SHARE_GROUP, tmp);
             defaults.setPosition(0, y);
 
             c.addControl(favors);
@@ -574,7 +578,8 @@ namespace stock123.app
                 xHttp http = new xHttp(this);
                 http.get(mContext.configJson.url_all_share3, null);
                  */
-                downloadFile(mContext.configJson.url_all_share3);
+                downloadGroupsFile("http://soft123.com.vn/web/groups2.txt");
+                downloadDatabaseFile(mContext.configJson.url_all_share3);
                 mNetState = STATE_DOWNLOAD_ALL_SHARE;
             }
 
@@ -998,7 +1003,7 @@ namespace stock123.app
             net.requestGetShareIDs();
             net.requestIndicesIDs();
 
-            net.requestShareGroup();
+            //net.requestShareGroup();
 
             if (Utils.getDateAsInt() - mContext.mCompanyUpdateTime >= 2
                 || mContext.mShareManager.getCompanyInfoCount() == 0)	//	2days
@@ -1018,6 +1023,8 @@ namespace stock123.app
             {
                 if (mContext.isOnline())
                 {
+                    mContext.loadNhomnganh();
+
                     mContext.saveProfile();
 
                     updateUI();
@@ -1372,7 +1379,7 @@ namespace stock123.app
 
             //==================context menu=============
             int baseIDX = C.ID_SHARE_GROUP_BASE;
-            int groups = mContext.getShareGroupCount();
+            int groups = mContext.getShareGroupCount(1);
             if (groups > 0)
             {
                 int cnt = 50;   //  Them, xoa
@@ -1472,7 +1479,7 @@ namespace stock123.app
 
             //==================context menu=============
             int baseIDX = C.ID_SHARE_GROUP_BASE;
-            int groups = mContext.getShareGroupCount();
+            int groups = mContext.getShareGroupCount(1);
             if (groups > 0)
             {
                 int cnt = 50;   //  Them, xoa
@@ -1533,7 +1540,7 @@ namespace stock123.app
 
             //==================context menu=============
             int baseIDX = C.ID_SHARE_GROUP_BASE;
-            int groups = mContext.getShareGroupCount();
+            int groups = mContext.getShareGroupCount(1);
             if (groups > 0)
             {
                 int cnt = 50;   //  Them, xoa
@@ -2815,10 +2822,14 @@ namespace stock123.app
         // Event to track the progress
         void wc_DownloadProgressChanged(object sender, System.Net.DownloadProgressChangedEventArgs e)
         {
-            if (mStartupDialog != null)
-            {
+            //Utils.trace("Downloading: " + e.ProgressPercentage + "%");
+            mStartupDialog.Invoke((MethodInvoker)delegate {
                 mStartupDialog.setMsg2(e.ProgressPercentage + "%");
-            }
+            });
+            //if (mStartupDialog != null)
+            //{
+                //mStartupDialog.setMsg2(e.ProgressPercentage + "%");
+            //}
         }
 
         void wc_DownloadCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
@@ -2829,7 +2840,7 @@ namespace stock123.app
             downloadEvent(this, xBaseControl.EVT_NET_DONE, di.available(), di.getBytes());
         }
 
-        void downloadFile(String url)
+        void downloadDatabaseFile(String url)
         {
             using (System.Net.WebClient wc = new System.Net.WebClient())
             {
@@ -2837,6 +2848,25 @@ namespace stock123.app
                 wc.DownloadFileCompleted += wc_DownloadCompleted;
 
                 String outfile = "all.dat";
+                xFileManager.removeFile(outfile);
+
+                wc.DownloadFileAsync(
+                    // Param1 = Link of file
+                    new System.Uri(url),
+                    // Param2 = Path to save
+                    outfile
+                );
+            }
+        }
+
+        void downloadGroupsFile(String url)
+        {
+            using (System.Net.WebClient wc = new System.Net.WebClient())
+            {
+                //wc.DownloadProgressChanged += wc_DownloadProgressChanged;
+                //wc.DownloadFileCompleted += wc_DownloadGroupsCompleted;
+
+                String outfile = "gs.dat";
                 xFileManager.removeFile(outfile);
 
                 wc.DownloadFileAsync(

@@ -17,6 +17,8 @@ using Newtonsoft.Json;
 
 using stock123.app.net;
 using stock123.app.data.userdata;
+using stock123.app.data;
+using xlib.framework;
 //using c;
 
 namespace stock123.app
@@ -114,7 +116,8 @@ namespace stock123.app
         //public bool mIsFavorGroupChanged = false;
         UserDataManager _userDataManager = new UserDataManager();
         //public xVector mFavorGroups = new xVector(10);  //  stShareGroup
-        public xVector mShareGroups = new xVector(10);  //  stShareGroup
+        public xVector mShareGroups = new xVector(40);  //  stShareGroup
+        public xVector mShareGroups2 = new xVector(30);  //  stShareGroup
         public xVector mShareGroupsSpecial = new xVector(10);  //  stShareGroup
         public stShareGroup vnIndicesGroup = null;
         stShareGroup mCurrentShareGroup;
@@ -532,23 +535,52 @@ namespace stock123.app
             return mCurrentShareGroup;
         }
 
-        public int getShareGroupCount(){
-            return mShareGroups.size();
+        public int getShareGroupCount(int cat){
+            if (cat == 1)
+            {
+                return mShareGroups.size();
+            }
+            return mShareGroups2.size();
         }
 
-        public stShareGroup getShareGroup(int at) {
-            if (at >= 0 && at < mShareGroups.size())
-                return (stShareGroup)mShareGroups.elementAt(at);
+        public stShareGroup getShareGroup(int category, int at) {
+            if (category == 1)
+            {
+                if (at >= 0 && at < mShareGroups.size())
+                {
+                    return (stShareGroup)mShareGroups.elementAt(at);
+                }
+            }
+            else if (category == 2)
+            {
+                if (at >= 0 && at < mShareGroups2.size())
+                {
+                    return (stShareGroup)mShareGroups2.elementAt(at);
+                }
+            }
 
             return null;
         }
 
-        public stShareGroup getShareGroup(String name) {
+        public stShareGroup getShareGroup(int cat, String name) {
             if (name == null)
+            {
                 return null;
+            }
             stShareGroup g;
-            for (int i = 0; i < mShareGroups.size(); i++) {
-                g = (stShareGroup) mShareGroups.elementAt(i);
+
+
+            if (cat == 1)
+            {
+            }
+
+            xVector groups = mShareGroups;
+            if (cat == 2)
+            {
+                groups = mShareGroups2;
+            }
+            for (int i = 0; i < groups.size(); i++) {
+                g = (stShareGroup)groups.elementAt(i);
                 if (name == null && g.getTotal() > 0)
                     return g;
                 if (g.isName(name)) {
@@ -556,25 +588,18 @@ namespace stock123.app
                 }
             }
 
-            if (name == null && mShareGroups.size() > 0)
-                return (stShareGroup)mShareGroups.elementAt(0);
-
-            /*
-            //	find di filter groups
-            for (int i = 0; i < mFilterGroup.size(); i++) {
-                stShareGroup g = (stShareGroup) mFilterGroup.elementAt(i);
-                if (g.isName(name)) {
-                    return g;
-                }
+            if (name == null && groups.size() > 0)
+            {
+                return (stShareGroup)groups.elementAt(0);
             }
-            */
+
 
             //	create a new if cannot find
             g = new stShareGroup();
             //g.setGroupId(getShareGroupCount());
             g.setName(name);
 
-            mShareGroups.addElement(g);
+            groups.addElement(g);
 
             return g;
         }
@@ -2701,6 +2726,55 @@ namespace stock123.app
         static public UserDataManager userDataManager()
         {
             return Context.getInstance()._userDataManager;
+        }
+
+        public void loadNhomnganh()
+        {
+            try
+            {
+                String s = System.IO.File.ReadAllText("gs.dat", Encoding.UTF8);
+                mShareGroups.removeAllElements();
+                mShareGroups2.removeAllElements();
+
+                VTDictionary dictionary = new VTDictionary(s);
+
+                VTDictionary main = (VTDictionary)dictionary.getValue("main");
+                VTDictionary extra = (VTDictionary)dictionary.getValue("extra");
+
+                VTDictionary[] dicts = { main, extra };
+                int[] categories = { 1, 2 };
+                for (int i = 0; i < 2; i++)
+                {
+                    VTDictionary dict = dicts[i];
+
+                    foreach (KeyValuePair<string, object> entry in dict.getDictionary())
+                    {
+                        String key = entry.Key;
+                        String value = (String)entry.Value;
+
+
+                        stShareGroup g = getShareGroup(categories[i], key);
+                        g.setGroupType(stShareGroup.ID_GROUP_DEFAULT);
+                        string[] ss = value.Split(',');
+                        for (int j = 0; j < ss.Length; j++)
+                        {
+                            string symb = ss[j];
+                            symb = symb.Trim();
+                            int id = mShareManager.getShareID(symb);
+                            if (id > 0)
+                            {
+                                g.addCode(symb);
+                            }
+                        }
+                        g.sort();
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.trace(e.Message);
+            }
         }
     }
 

@@ -188,7 +188,7 @@ namespace stock123.app
 
             dlg.ShowDialog();
         }
-
+        /*
         protected xBaseControl createShareGroupDroplist(int id, String title, xVector groups)
         {
             xContainer c = new xContainer();
@@ -227,6 +227,7 @@ namespace stock123.app
 
             return c;
         }
+         */
 
         protected xBaseControl createShareGroupList(bool editable, int id, String title, xVector groups, int w, int h)
         {
@@ -296,7 +297,7 @@ namespace stock123.app
 
             return c;
         }
-
+        /*
         void cb_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -319,7 +320,7 @@ namespace stock123.app
             {
             }
         }
-
+        */
         virtual public void onShareGroupSelected(stShareGroup g)
         {
         }

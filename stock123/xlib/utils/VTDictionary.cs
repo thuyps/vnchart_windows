@@ -21,6 +21,11 @@ namespace xlib.utils
         {
         }
 
+        public Dictionary<string, object> getDictionary()
+        {
+            return dict;
+        }
+
         static public void test()
         {
             String json = "{"

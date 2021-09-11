@@ -126,6 +126,22 @@ namespace xlib.framework
             // Return the string.
             return s;
         }
+
+        public String toUTF8String()
+        {
+            try
+            {
+                return Encoding.UTF8.GetString(getBytes(), 0, size());
+                //return BitConverter.ToString(getBytes(), 0, size());
+            }
+            catch (Exception e)
+            {
+                utils.Utils.trace(e.Message);
+            }
+
+            return null;
+        }
+
         public short readShort()
         {
             if (available() < 2)

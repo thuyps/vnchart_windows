@@ -21,6 +21,14 @@ namespace xlib.framework
             mArray.Add(o);
         }
 
+        public void addAll(xVector v)
+        {
+            for (int i = 0; i < v.size(); i++)
+            {
+                addElement(v.elementAt(i));
+            }
+        }
+
         public object elementAt(int idx)
         {
             if (idx < mArray.Count && idx >= 0)

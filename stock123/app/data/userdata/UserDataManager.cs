@@ -127,13 +127,27 @@ namespace stock123.app.data.userdata
         xDataOutput shareGroupsBlock(){
             xDataOutput o = new xDataOutput(5 * 1024);
 
-            int groupCnt = _shareGroups.size() < 30? _shareGroups.size():30;
+            xVector v = new xVector();
+            for (int i = 0; i < _shareGroups.size(); i++)
+            {
+                stShareGroup p = (stShareGroup)_shareGroups.elementAt(i);
+
+                if (p.getType() == stShareGroup.ID_GROUP_GAINLOSS || p.getName() == null || p.getName().Length == 0)
+                {
+                    continue;
+                }
+
+                v.addElement(p);
+            }
+            //
+
+            int groupCnt = v.size() < 30? v.size():30;
 
             o.writeInt(groupCnt);
 
             for (int i = 0; i < groupCnt; i++)
             {
-                stShareGroup p = (stShareGroup) _shareGroups.elementAt(i);
+                stShareGroup p = (stShareGroup) v.elementAt(i);
 
                 if (p.getType() == stShareGroup.ID_GROUP_GAINLOSS || p.getName() == null || p.getName().Length == 0)
                 {

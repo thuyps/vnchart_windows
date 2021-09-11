@@ -21,7 +21,7 @@ namespace stock123.app.data
         public static String FILE_COMPANY_INFO = "data\\company_info.dat";
         public static int MAX_SHAVED_SHARE_COUNT = 25;
         static String SAVED_LIST_FILE = "data\\share_list.dat";         //  to manage invididual shares
-        public static String SAVED_COMMON_SHARE_FILE = "data\\database5.dat";
+        public static String SAVED_COMMON_SHARE_FILE = "data\\database6.dat";
         public static int SAVED_COMMON_SHARE_FILE_VERSION = 13;
         static String SHARE_IDS_FILE = "data\\share_ids.dat";
 
