@@ -2919,5 +2919,62 @@ namespace stock123.app.data
             //return _index;
 
         }
+
+        public void getVNShares(int minTradingValueInM, xVector v)
+        {
+            v.removeAllElements();
+
+            int i = 0;
+            Share share;
+            xVector v0 = new xVector(2000);
+            //  fill the list
+            int shareCnt = getTotalShareIDCount();
+
+            int[] market = { 0 };
+            for (i = 0; i < shareCnt; i++)
+            {
+                int shareID = getShareIDAt(i, market);
+                share = getShare(shareID);
+
+                if (share == null)
+                {
+                    shareID = getShareIDAt(i, market);
+                    share = getShare(shareID);
+                }
+
+                if (share != null && !share.isIndex() && share.mCode.Length == 3)
+                {
+                    v0.addElement(share);
+                }
+            }
+
+            int cnt = v0.size();
+
+            if (minTradingValueInM > 0)
+            {
+                for (i = 0; i < v0.size(); i++)
+                {
+                    share = (Share)v0.elementAt(i);
+
+                    loadShareFromCommon(share, 10, true);
+                    if (share.getCandleCnt() == 0)
+                    {
+                        continue;
+                    }
+
+                    int vol10 = share.calcAvgVolume(5);
+
+                    int giatri = (int)((vol10 * share.getClose()) / 1000);//  convert to trieu
+                    if (giatri >= minTradingValueInM)
+                    {
+                        v.addElement(share);
+                    }
+                }
+            }
+            else
+            {
+                v.addAll(v0);
+            }
+        }
     }
 }

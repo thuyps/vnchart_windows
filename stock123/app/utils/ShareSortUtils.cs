@@ -445,12 +445,14 @@ namespace stock123.app.utils
             }
         }
 
-        static void evalueSortRSRanking(xVector v, int days)
+        static void evalueSortRSRanking(xVector group, int days)
         {
             if (days > 200)
             {
                 days = 200;
             }
+            xVector allShares = new xVector();
+            Context.getInstance().mShareManager.getVNShares(0, allShares);
             Share vnindex = Context.getInstance().mShareManager.getShare("^VNINDEX");
             int vnb = vnindex.getCandleCnt()-days;
             if (vnb < 0){
@@ -464,9 +466,9 @@ namespace stock123.app.utils
                 return;
             }
 
-            for (int i = 0; i < v.size(); i++)
+            for (int i = 0; i < allShares.size(); i++)
             {
-                Share share = (Share)v.elementAt(i);
+                Share share = (Share)allShares.elementAt(i);
 
                 if (!share.isIndex())
                 {
@@ -500,6 +502,24 @@ namespace stock123.app.utils
                     share.mCompareText = "-";
                 }
             }
+
+            //  sort allShare
+            sort(allShares);
+            for (int j = 0; j < group.size(); j++)
+            {
+                Share share = (Share)group.elementAt(j);
+                for (int i = 0; i < allShares.size(); i++)
+                {
+                    Share sh = (Share)allShares.elementAt(i);
+                    if (sh.getShareID() == share.getShareID()){
+                        share.mSortParam = (i * 1000) / allShares.size();
+                        share.mCompareText = "" + (share.mSortParam/10); 
+                        break;
+                    }
+                }
+            }
+
+            sortRevert(group);
         }
 
         static void evalueSortValueVolChanged(xVector v)
