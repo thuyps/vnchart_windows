@@ -106,7 +106,7 @@ namespace stock123.app
                 if (page.userData != null && page.userData == share)
                 {
                     ViewHistoryChart his = (ViewHistoryChart)page.userData2;
-                    if (his.mScreenType == ViewHistoryChart.TYPE_CHART)
+                    //if (his.mScreenType == ViewHistoryChart.TYPE_CHART)
                     {
                         return page;
                     }

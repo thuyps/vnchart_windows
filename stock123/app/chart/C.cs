@@ -311,6 +311,7 @@ namespace stock123.app
         public const int ID_TS_VSTOP = 1480;
 
         public const int ID_BUTTON_CHON_NHOM_CP = 1481;
+        public const int ID_BUTTON_CHON_NHOM_CP_NGANH = 1482;
         //-------------------------------------------
         public const int ID_SORT_TA_BASE = 1500;
         public const int SORT_TA_MACD_CUT_SIGNAL = 0;

@@ -17,8 +17,8 @@ namespace stock123.app
     public class ViewHistoryChart: ScreenBase
     {
         public const int TYPE_SEARCH = 0;
-        public const int TYPE_CHART = 1;
-        public int mScreenType = TYPE_CHART;
+        public const int TYPE_CHART_DEPRECATED = 1;
+        public int mScreenType = TYPE_SEARCH;//TYPE_CHART;
 
         const int SUB_CHART_H_DEFAULT = 150;
         const int SUB_CHART_H_MIN = 100;
@@ -40,6 +40,7 @@ namespace stock123.app
         float[] mFilterHiPrice = { 30000 };
 
         xContainer mSymbolContainer;
+        xButton btChonNhom;
 
         String sortedColumn = null;
 
@@ -61,6 +62,7 @@ namespace stock123.app
 
         DlgContactingServer mNetworkContacting;
         HistoryChartControl mMainHistoryChartControl;
+        HistoryChartControl mSecondHistoryChartControl;
 
         ToolBarButton mAlarmButton;
         int mAlarmAnimationIDX = 0;
@@ -72,7 +74,7 @@ namespace stock123.app
         public ViewHistoryChart(Share share)
             : base()
         {
-            mScreenType = share != null?TYPE_CHART:TYPE_SEARCH;
+            mScreenType = TYPE_SEARCH;// share != null ? TYPE_CHART : TYPE_SEARCH;
             mShare = share;
 //            List<Share> list;
 //            IComparer<Share>
@@ -242,6 +244,8 @@ namespace stock123.app
             createToolbar();
             createLeftPanel();
             createRightPanel(); //  main chart & sub charts
+
+            createSymbolList(0, 0);
         }
 
         void createToolbar()
@@ -253,7 +257,7 @@ namespace stock123.app
             tb.TextAlign = ToolBarTextAlign.Right;
 
             //addToolbarButton(C.ID_GOTO_HOME_SCREEN, 0, "Bảng giá");
-            addToolbarButton(C.ID_SEARCH_ON, 3, "Lọc");
+            //addToolbarButton(C.ID_SEARCH_ON, 3, "Lọc");
             //addToolbarSeparator();
             //addToolbarSeparator();
             //addToolbarSeparator();
@@ -301,7 +305,7 @@ namespace stock123.app
             xLabel l = xLabel.createSingleLabel("Mã:");
             xTextField tf = xTextField.createTextField(54);
             mQuickCode = tf;
-            int x = getW() - tf.getW() - 54;
+            int x = getW() - tf.getW() - 275;
 
             l.setSize(28, l.getH());
             l.setPosition(x, 12);
@@ -311,14 +315,23 @@ namespace stock123.app
             tb.Controls.Add(tf.getControl());
             tf.setButtonEvent(C.ID_BUTTON_QUOTE, this);
 
+            x += tf.getW() + 28 + 10;
             //  chọn nhóm
-            xButton btChonNhom = xButton.createStandardButton(C.ID_BUTTON_CHON_NHOM_CP, this, "Chọn nhóm", 74);
+            btChonNhom = xButton.createStandardButton(C.ID_BUTTON_CHON_NHOM_CP, this, "Chọn nhóm", 115);
             //l.setSize(100, l.getH());
             //l.setTextColor(0xffff0000);
-            btChonNhom.setPosition(x - 98, 8);
+            btChonNhom.setPosition(x, 8);
             tb.Controls.Add(btChonNhom.getControl());
 
+            x += btChonNhom.getW() + 16;
+            //  chonj nhom nganh
+            xButton nganh = xButton.createStandardButton(C.ID_BUTTON_CHON_NHOM_CP_NGANH, this, "Ngành", 55);
+            //l.setSize(100, l.getH());
+            //l.setTextColor(0xffff0000);
+            nganh.setPosition(x, 8);
+            tb.Controls.Add(nganh.getControl());
             //  scroll
+/*
             stShareGroup g = mContext.getCurrentShareGroup();
             if (g != null && g.getTotal() > 1)
             {
@@ -341,7 +354,7 @@ namespace stock123.app
 
                 tb.Controls.Add(symbolContainer.getControl());
             }
-            
+*/            
             //==============================================================
             addStatusBar();
             setStatusMsg("{Chọn vùng: shift+bấm&rê chuột}, {Vẽ đường: ctrl+bấm&rê chuột}, {Clone trend: ctrl+center point}");
@@ -358,6 +371,7 @@ namespace stock123.app
                 mLeftPanel.setPosition(getW()-leftW, getToolbarH());
 
                 xBaseControl search = recreateSearchControl();
+
                 search.setPosition(0, mLeftPanel.getH() - search.getH());
                 mLeftPanel.addControl(search);
 
@@ -369,8 +383,8 @@ namespace stock123.app
 
                 //===================
             }
-            if (mScreenType == TYPE_CHART)
-                leftW = 0;  //  hide it
+//            if (mScreenType == TYPE_CHART)
+//                leftW = 0;  //  hide it
             mLeftPanel.setPosition(getW() - leftW, getToolbarH());
             mLeftPanel.setSize(leftW, getWorkingH());
             addControl(mLeftPanel);
@@ -446,6 +460,7 @@ namespace stock123.app
                 }
 
                 mMainHistoryChartControl = (HistoryChartControl)panels[0];
+                mSecondHistoryChartControl = (HistoryChartControl)panels[1];
 
                 splitter.setPanels(panels[0], panels[1]);
                 mPanels.addElement(panels[0]);
@@ -460,6 +475,7 @@ namespace stock123.app
                 his.setPosition(0, 0);
 
                 mMainHistoryChartControl = his;
+                mSecondHistoryChartControl = null;
 
                 mPanels.addElement(his);
                 mRightPanel.addControl(his);
@@ -973,9 +989,9 @@ namespace stock123.app
 
             if (evt == xBaseControl.EVT_BUTTON_CLICKED)
             {
-                if (aIntParameter == C.ID_BUTTON_CHON_NHOM_CP)
+                if (aIntParameter == C.ID_BUTTON_CHON_NHOM_CP || aIntParameter == C.ID_BUTTON_CHON_NHOM_CP_NGANH)
                 {
-                    showShareGroupListMenu(((xButton)sender).getControl());
+                    showShareGroupListMenu(aIntParameter == C.ID_BUTTON_CHON_NHOM_CP, ((xButton)sender).getControl());
                 }
                 if (aIntParameter >= C.ID_SYMBOL_CLICK_START && aIntParameter < C.ID_SYMBOL_CLICK_END)
                 {
@@ -1540,6 +1556,8 @@ namespace stock123.app
             }
             //============now recreate the list
             recreateTableList(ShareSortUtils.SORT_IGNORE);
+
+            btChonNhom.setText(g.getName());
         }
 
         xTabControl mSearchControl = null;
@@ -1954,7 +1972,10 @@ namespace stock123.app
                 reloadShare(mShare, true);
 
                 mMainHistoryChartControl.setShare(mShare);
-
+                if (mSecondHistoryChartControl != null)
+                {
+                    mSecondHistoryChartControl.setShare(mShare);
+                }
                 mNetState = NETSTATE_GET_QUOTE_DATA_PREPARING;
 
                 refreshCharts();
@@ -1973,6 +1994,7 @@ namespace stock123.app
             cm.Items.Add("PE");
             cm.Items.Add("Khối lượng");
             cm.Items.Add("Khối lượng thay đổi (TB3/TB15)");
+            cm.Items.Add("Điểm RS/VNIndex");
             cm.Items.Add("-");
             cm.Items.Add("Xuất danh sách ra file excel(csv)");
 
@@ -2028,7 +2050,7 @@ namespace stock123.app
                         sortType = ShareSortUtils.SORT_THAYDOI_VOL;
                         columnTexts[2] = "+/-Vol(%)";
                     }
-                    else if (item.ClickedItem.Text.CompareTo("") == 0)
+                    else if (item.ClickedItem.Text.CompareTo("Điểm RS/VNIndex") == 0)
                     {
                         sortType = ShareSortUtils.SORT_RS_RANKING;
                         columnTexts[2] = "Điểm RS/VNIndex";
@@ -2153,32 +2175,38 @@ namespace stock123.app
             }
         }
 
-        void showShareGroupListMenu(Control c)
+        void showShareGroupListMenu(bool isMine, Control c)
         {
             //  show popup menu
             ContextMenuStrip cm = new ContextMenuStrip();
 
-            xVector v = Context.userDataManager().shareGroups();
-            for (int i = 0; i < v.size(); i++)
+            if (isMine)
             {
-                stShareGroup g = (stShareGroup)v.elementAt(i);
-                cm.Items.Add(g.getName());
+                xVector v = Context.userDataManager().shareGroups();
+                for (int i = 0; i < v.size(); i++)
+                {
+                    stShareGroup g = (stShareGroup)v.elementAt(i);
+                    cm.Items.Add(g.getName());
+                }
             }
+            else
+            {
 
-            //--------------------
-            //  cat 1
-            for (int i = 0; i < mContext.getShareGroupCount(1); i++)
-            {
-                stShareGroup g = mContext.getShareGroup(1, i);
-                cm.Items.Add(g.getName());
+                //--------------------
+                //  cat 1
+                for (int i = 0; i < mContext.getShareGroupCount(1); i++)
+                {
+                    stShareGroup g = mContext.getShareGroup(1, i);
+                    cm.Items.Add(g.getName());
+                }
+                //  cat 2
+                for (int i = 0; i < mContext.getShareGroupCount(2); i++)
+                {
+                    stShareGroup g = mContext.getShareGroup(2, i);
+                    cm.Items.Add(g.getName());
+                }
+                //--------------------
             }
-            //  cat 2
-            for (int i = 0; i < mContext.getShareGroupCount(2); i++)
-            {
-                stShareGroup g = mContext.getShareGroup(2, i);
-                cm.Items.Add(g.getName());
-            }
-            //--------------------
 
             cm.ItemClicked += new ToolStripItemClickedEventHandler(
                 (sender, item) =>
@@ -2186,7 +2214,7 @@ namespace stock123.app
                     String name = item.ClickedItem.Text;
 
                     stShareGroup selectedGroup = null;
-                    v = Context.userDataManager().shareGroups();
+                    xVector v = Context.userDataManager().shareGroups();
                     for (int i = 0; i < v.size(); i++)
                     {
                         stShareGroup g = (stShareGroup)v.elementAt(i);
@@ -2222,7 +2250,10 @@ namespace stock123.app
                     if (selectedGroup != null)
                     {
                         mContext.setCurrentShareGroup(selectedGroup);
-                        createSymbolList(35, 14);
+
+                        onShareGroupSelected(selectedGroup);
+
+                        //createSymbolList(35, 14);
                     }
                     
                 });
@@ -2232,9 +2263,24 @@ namespace stock123.app
 
         void createSymbolList(int itemW, int itemH)
         {
+            stShareGroup g = mContext.getCurrentShareGroup();
+            mFilteredShares.removeAllElements();
+
+            for (int i = 0; i < g.getTotal(); i++)
+            {
+                String code = g.getCodeAt(i);
+                Share share = mContext.mShareManager.getShare(code);
+                if (share != null)
+                {
+                    mFilteredShares.addElement(share);
+                }
+            }
+            recreateTableList(ShareSortUtils.SORT_SYMBOL);
+            /*
+            //=================
+
             itemW = 35;
             itemH = 14;
-            stShareGroup g = mContext.getCurrentShareGroup();
 
             int itemPerRow = mSymbolContainer.getW() / itemW;
             int itemMax = itemPerRow*2;
@@ -2261,6 +2307,7 @@ namespace stock123.app
 
                 mSymbolContainer.addControl(l);
             }
+             */
         }
     }
 }
