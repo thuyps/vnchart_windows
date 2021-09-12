@@ -26,7 +26,7 @@ namespace stock123.app.chart
         {
             mShouldDrawCursor = true;
             mChartType = CHART_CFM;
-            CHART_BORDER_SPACING_Y = 1;
+            //CHART_BORDER_SPACING_Y = 1;
         }
 
         public override void render(xGraphics g)

@@ -90,8 +90,8 @@ namespace stock123.app.chart
 
         //--------------------------------------------
 
-        public int CHART_BORDER_SPACING_Y = 5;
-        public int CHART_BORDER_SPACING_Y_MASTER = 20;
+        //public int CHART_BORDER_SPACING_Y = 5;
+        //public int CHART_BORDER_SPACING_Y_MASTER = 20;
         public const int CHART_BORDER_SPACING_X = 2;
         public const int MAX_DRAW_POINT = 10000;
 
@@ -112,7 +112,7 @@ namespace stock123.app.chart
         //xImage* mImgCursor;
 
         protected int mInternalW;
-        protected int mDrawingH;
+        //protected int mDrawingH;
         protected int mDrawingW;
 
         protected int mCurrentKey;	//	for detecting share's cursor change
@@ -156,6 +156,7 @@ namespace stock123.app.chart
         protected Share mShare;
         protected int mStartX;
         ChartBase mRefChart;
+        ChartBase mRefChartForSize;
         //=================================================================
         public ChartBase(Font f)
             : base(null)
@@ -233,7 +234,7 @@ namespace stock123.app.chart
             float distance = hi - lo;
             if (distance <= 0)
                 return;
-            float rY = (float)mDrawingH / distance;
+            float rY = (float)getDrawingH() / distance;
             int mH = getH();
             int mY = 0;
             //		float rX = (float)mDrawingW/mChartLineLength;
@@ -244,7 +245,7 @@ namespace stock123.app.chart
             for (int i = 0; i < 5; i++)
             {
                 mPrices[i] = lo + i * priceStep + priceStep / 2;
-                mPricesY[i] = mY + (mH - CHART_BORDER_SPACING_Y) - (int)((mPrices[i] - lo) * rY);
+                mPricesY[i] = mY + (mH - getMarginY()) - (int)((mPrices[i] - lo) * rY);
             }
             //===================================
             for (int i = 0; i < 5; i++)
@@ -393,8 +394,19 @@ namespace stock123.app.chart
         public void clearModifyKey() { 
             mCurrentKey = 0x0fffffff;
             mInternalW = getW() - 40;
-            mDrawingH = getH() - 2 * CHART_BORDER_SPACING_Y;
+            //mDrawingH = getH() - 2 * CHART_BORDER_SPACING_Y;
             mDrawingW = mInternalW - 2 * CHART_BORDER_SPACING_X;
+        }
+
+        public int getDrawingH()
+        {
+            if (mRefChartForSize != null)
+            {
+                return mRefChartForSize.getDrawingH();
+            }
+            int h = getH() - 6;// 2 * getMarginY();
+
+            return (int)(h * getScaleY());
         }
         //=============================================
         protected int screenToCandleIndex(int x, int y)
@@ -583,15 +595,15 @@ namespace stock123.app.chart
 
                 if (mInternalW == 0)
                     mInternalW = getW() - 40;
-                mDrawingH = mH - 2 * CHART_BORDER_SPACING_Y;
+                //mDrawingH = mH - 2 * CHART_BORDER_SPACING_Y;
                 mDrawingW = mInternalW - 2 * CHART_BORDER_SPACING_X;
-
+                /*
                 mPriceDistance = share.getHighestPrice() - share.getLowestPrice();
                 //	price lines
                 float low = share.getLowestPrice();
                 //	priceDistance will fit drawingH
                 //	ex: 100k == 120 pixels . 1k = 1.2 pixels
-                float rY = (float)mDrawingH / mPriceDistance;
+                float rY = (float)getDrawingH() / mPriceDistance;
                 //		float rX = (float)mDrawingW/mChartLineLength;
                 //price
                 //rY = (float)priceDistance/drawingH;
@@ -600,10 +612,13 @@ namespace stock123.app.chart
                 for (int i = 0; i < 5; i++)
                 {
                     mPrices[i] = low + i * priceStep + priceStep / 2;
-                    mPricesY[i] = mY + (mH - CHART_BORDER_SPACING_Y) - (int)((mPrices[i] - low) * rY);
+                    mPricesY[i] = mY + (getDrawingH() - getMarginY()) - (int)((mPrices[i] - low) * rY);
                 }
+                 */
 
                 mCurrentShare = share;
+
+                calcPriceLines();
 
                 if (hasDrawer())
                     mDrawer.recalcPosition();
@@ -614,6 +629,95 @@ namespace stock123.app.chart
             mCurrentShare = share;
 
             return false;
+        }
+
+        protected void calcPriceLines()
+        {
+            Share share = getShare();
+
+            mPriceDistance = share.getHighestPrice() - share.getLowestPrice();
+            //    price lines
+            float low = share.getLowestPrice();
+            float rY = (float)getDrawingH() / mPriceDistance;
+
+            double priceStep = mPriceDistance / 5;
+
+            double startValue = share.getLowestPrice() - priceStep / 10;
+
+            if (startValue > 100)
+            {
+                startValue = (int)startValue;
+            }
+            else if (startValue > 10)
+            {
+                startValue *= 10;
+                startValue = ((int)startValue) / 10.0f;
+            }
+            else
+            {
+                startValue *= 100;
+                startValue = ((int)startValue) / 100.0f;
+            }
+            priceStep += startValue / 1000.0f;
+
+            if (priceStep > 1)
+            {
+                int t = (int)(priceStep * 100);
+                t /= 10;
+                priceStep = t / 10.0f;
+
+                priceStep *= 100;
+                priceStep = Math.Round(priceStep);
+                priceStep /= 100;
+            }
+            else if (priceStep > 0.1)
+            {
+                int t = (int)(priceStep * 1000);
+                t /= 10;
+                priceStep = t / 100.0f;
+
+                priceStep *= 100;
+                priceStep = Math.Round(priceStep);
+                priceStep /= 100;
+            }
+            else
+            {
+                int t = (int)(priceStep * 10000);
+                t /= 10;
+                priceStep = t / 1000.0f;
+
+                priceStep *= 1000;
+                priceStep = Math.Round(priceStep);
+                priceStep /= 1000;
+            }
+
+            for (int i = 0; i < 6; i++)
+            {
+                if (startValue <= low)
+                {
+                    break;
+                }
+                startValue -= priceStep;
+            }
+
+            //  55.61 => 5561 => 556 =? 55.6
+            //        t = startValue/priceStep;
+            //        startValue = priceStep*t;
+            //t = startValue*100;
+            //t = t/10;
+            //startValue = t/10.0f;
+
+            for (int i = 0; i < 5; i++)
+            {
+                mPrices[i] = (float)(startValue + i * priceStep);// + priceStep/2;
+                mPricesY[i] = priceToY(mPrices[i]);
+
+                //NSLog(@"hi=%f; lo=%f; startValue=%f; distance=%f;Y=%d", share->getHighestPrice(), share->getLowestPrice(), startValue, mPriceDistance, mPricesY[i]);
+                //if (mPricesY[i] < 0){
+                //NSLog(@"Y < 0");
+                //}
+                //NSLog(@"price=%f; y=%d; dH=%d", mPrices[i], mPricesY[i], drawingH());
+            }
         }
         //=============================================
         protected void drawChartBar(xGraphics g, int[] _x, int[] _y, int barW, int[] barH, int cnt, int color)
@@ -655,7 +759,7 @@ namespace stock123.app.chart
 
             //	priceDistance will fit drawingH
             //	ex: 100k == 120 pixels . 1k = 1.2 pixels
-            float rY = (float)mDrawingH / priceDistance;
+            float rY = (float)getDrawingH() / priceDistance;
 
             float rX = (float)mDrawingW / (share.mEndIdx - share.mBeginIdx + 1);
 
@@ -667,7 +771,7 @@ namespace stock123.app.chart
             for (int i = 0; i < len; i++)
             {
                 xy[2 * i] = (short)(mX + CHART_BORDER_SPACING_X + (int)(i * rX) + getStartX());
-                xy[2 * i + 1] = (short)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (int)((price[i + offset] - low) * rY));
+                xy[2 * i + 1] = (short)(mY + getMarginY() + getDrawingH() - (int)((price[i + offset] - low) * rY));
             }
         }
         protected void pricesToYs(float[] price, int offset, short[] xy, int len, float price_low, float price_hi)
@@ -685,7 +789,7 @@ namespace stock123.app.chart
 
             //	priceDistance will fit drawingH
             //	ex: 100k == 120 pixels . 1k = 1.2 pixels
-            float rY = (float)mDrawingH / priceDistance;
+            float rY = (float)getDrawingH() / priceDistance;
 
             float rX = (float)mDrawingW / (share.mEndIdx - share.mBeginIdx + 1);
 
@@ -693,7 +797,7 @@ namespace stock123.app.chart
             for (int i = 0; i < len; i++)
             {
                 xy[2 * i] = (short)(mX + CHART_BORDER_SPACING_X + i * rX + getStartX());
-                xy[2 * i + 1] = (short)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (price[i+offset] - low) * rY);
+                xy[2 * i + 1] = (short)(mY + getMarginY() + getDrawingH() - (price[i + offset] - low) * rY);
             }
         }
 
@@ -973,7 +1077,18 @@ namespace stock123.app.chart
         }
 
         //=======================FIBONACCIE=====================
-        //===========================================
+        public int getMarginY()
+        {
+            if (mRefChartForSize != null)
+            {
+                return mRefChartForSize.getMarginY();
+            }
+
+            return (getH() - getDrawingH()) / 2;
+
+            //return xDevice.point2Pixels(4);
+        }
+
         public float xToCandleIdx(int x)
         {
             int mX = 0;
@@ -994,7 +1109,6 @@ namespace stock123.app.chart
         {
             int mX = 0;
             int mY = 0;
-            int mH = getH();
 
             Share share = getShare();
             if (share == null)
@@ -1002,20 +1116,18 @@ namespace stock123.app.chart
 
             float priceDistance = share.getHighestPrice() - share.getLowestPrice();
 
-            int dy = mY + mDrawingH + CHART_BORDER_SPACING_Y - y;
+            int dy = mY + getDrawingH() + getMarginY() - y;
 
-            return share.getLowestPrice() + (float)((dy * priceDistance)) / mDrawingH;
+            return share.getLowestPrice() + (float)((dy * priceDistance)) / getDrawingH();
         }
 
         public double yToPrice(int y, double min, double max)
         {
-            int mH = getH();
-
             double priceDistance = max - min;
 
-            int dy = mDrawingH + CHART_BORDER_SPACING_Y - y;
+            int dy = getDrawingH() + getMarginY() - y;
 
-            return min + (float)((dy * priceDistance)) / mDrawingH;
+            return min + (float)((dy * priceDistance)) / getDrawingH();
         }
 
         public int candleToX(float candle)
@@ -1044,9 +1156,9 @@ namespace stock123.app.chart
             if (priceDistance <= 0)
                 return 0;
 
-            int dy = (int)((price - share.getLowestPrice()) * mDrawingH / priceDistance);
+            int dy = (int)((price - share.getLowestPrice()) * getDrawingH() / priceDistance);
 
-            return mY + CHART_BORDER_SPACING_Y + mDrawingH - dy;//y + mY + CHART_BORDER_SPACING_Y;
+            return mY + getMarginY() + getDrawingH() - dy;//y + mY + CHART_BORDER_SPACING_Y;
         }
         //=============================END FIBONACCIE========================
 
@@ -1421,6 +1533,11 @@ namespace stock123.app.chart
             mRefChart = refChart;
         }
 
+        public void setRefChartForSize(ChartBase refChart)
+        {
+            mRefChartForSize = refChart;
+        }
+
         public void setStartX(int x)
         {
             mStartX = x;
@@ -1438,6 +1555,24 @@ namespace stock123.app.chart
             }
 
             return mStartX;
+        }
+
+        float scaleY = 0.8f;
+        public float getScaleY()
+        {
+            if (scaleY < 0.3 || scaleY > 2.0f)
+            {
+                scaleY = 0.8f;
+            }
+            return scaleY;
+        }
+        public void setScaleY(float v)
+        {
+            if (v < 0.3 || v > 2.0f)
+            {
+                return;
+            }
+            scaleY = v;
         }
     }
 }

@@ -1135,7 +1135,7 @@ namespace stock123.app.chart
             mCurrentShare = null;
             base.setChartType(type);
     
-            this.CHART_BORDER_SPACING_Y = 5;
+            //this.CHART_BORDER_SPACING_Y = 5;
         }
 
         override public void toggleSecondChart()

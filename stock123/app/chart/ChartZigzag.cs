@@ -79,7 +79,7 @@ namespace stock123.app.chart
                     //  seek to the nearest point
                     int i;
                     float low = share.getLowestPrice();
-                    float rY = (float)mDrawingH / mPriceDistance;
+                    float rY = (float)getDrawingH() / mPriceDistance;
                     float rX = (float)mDrawingW / mChartLineLength;
                     int begin = -1;
                     for (i = 0; i < mZigzag.size(); i++)

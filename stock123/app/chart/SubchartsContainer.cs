@@ -29,6 +29,7 @@ namespace stock123.app.chart
 
         Share mShare;
         ChartBase mChartMaster;
+        ChartBase meRefChartForSize;
         //=================================
 
         public SubchartsContainer(int idx, Share share, xIEventListener listener, bool add_removable)

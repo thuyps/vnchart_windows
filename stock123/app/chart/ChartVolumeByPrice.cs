@@ -30,7 +30,7 @@ namespace stock123.app.chart
             : base(f)
         {
             mChartType = CHART_VOLUMEBYPRICE;
-            CHART_BORDER_SPACING_Y = CHART_BORDER_SPACING_Y_MASTER;
+            //CHART_BORDER_SPACING_Y = CHART_BORDER_SPACING_Y_MASTER;
         }
 
         void calcVolumeByPrice()

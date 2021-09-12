@@ -81,7 +81,7 @@ namespace stock123.app.chart
 
                 lowest /= 4;
 
-                double ry = (float)mDrawingH / (biggest - lowest);
+                double ry = (float)getDrawingH() / (biggest - lowest);
                 double rw = (float)mDrawingW / mChartLineLength;
                 mVolumeBarW = (int)(((float)mDrawingW / mChartLineLength) * 2.0f / 3);
 
@@ -93,7 +93,7 @@ namespace stock123.app.chart
                 {
                     j = (i + share.mBeginIdx);
                     mChartLineXY[i * 2] = (short)(mX + CHART_BORDER_SPACING_X + i * rw + getStartX() - volumeBarWHalf);	//	x
-                    mChartLineXY[i * 2 + 1] = (short)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (share.getVolume(j) - lowest) * ry);
+                    mChartLineXY[i * 2 + 1] = (short)(mY + getMarginY() + getDrawingH() - (share.getVolume(j) - lowest) * ry);
 
                     if (share.mCVolume[j] > vH) vH = share.mCVolume[j];
                     if (share.mCVolume[j] < vL) vL = share.mCVolume[j];
@@ -114,7 +114,7 @@ namespace stock123.app.chart
             //g.drawLine(0, 150, getW(), 150);
 
             g.setColor(0xff00ff00);
-            int tmp = mY + getH() - CHART_BORDER_SPACING_Y;
+            int tmp = mY + getH() - getMarginY();
 
             for (int i = 0; i < mChartLineLength; i++)
             {

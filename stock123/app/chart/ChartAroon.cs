@@ -29,7 +29,7 @@ namespace stock123.app.chart
         {
             mShouldDrawCursor = true;
             mChartType = aroonType;
-            CHART_BORDER_SPACING_Y = 10;
+            //CHART_BORDER_SPACING_Y = 10;
         }
 
         public override void render(xGraphics g)

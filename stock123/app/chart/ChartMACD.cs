@@ -146,7 +146,7 @@ namespace stock123.app.chart
             double_hi = 2 * Utils.ABS_FLOAT(double_hi);
 
             int minHistoH = 9;
-            int signalDrawH = mDrawingH - 2 * minHistoH;
+            int signalDrawH = getDrawingH() - 2 * minHistoH;
             int OY = getH() / 2;// 0 + CHART_BORDER_SPACING_Y + minHistoH;
             //float ry = 0;
             if (double_hi != 0)
@@ -188,7 +188,7 @@ namespace stock123.app.chart
             //	int deltaY = 0;//deltaLoHi*mDrawingH/double_hi;
             double_hi = 2 * hi;
             //	double_hi	==	100 pixels
-            int halfH = mDrawingH/2;
+            int halfH = getDrawingH() / 2;
             float hry = 0;
             if (hi != 0)
                 hry = (float)halfH / hi;//double_hi;

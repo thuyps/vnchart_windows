@@ -29,7 +29,7 @@ namespace stock123.app.chart
             mBBLowerXY = null;
             mBBLine = null;
             mPointCnt = 0;
-            CHART_BORDER_SPACING_Y = CHART_BORDER_SPACING_Y_MASTER;
+            //CHART_BORDER_SPACING_Y = CHART_BORDER_SPACING_Y_MASTER;
         }
 
         public override void render(xGraphics g)

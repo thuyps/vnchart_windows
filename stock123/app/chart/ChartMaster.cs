@@ -51,8 +51,8 @@ namespace stock123.app.chart
 
             mCursorType = CURSOR_CROSSHAIR;
 
-            CHART_BORDER_SPACING_Y_MASTER = 20;
-            CHART_BORDER_SPACING_Y = CHART_BORDER_SPACING_Y_MASTER;
+            //CHART_BORDER_SPACING_Y_MASTER = 20;
+            //CHART_BORDER_SPACING_Y = CHART_BORDER_SPACING_Y_MASTER;
         }
 
         override public void render(xGraphics g)
@@ -80,11 +80,15 @@ namespace stock123.app.chart
                 ChartBase c = (ChartBase)mAttachedCharts.elementAt(i);
                 c.setRefChart(this);
                 c.setSize(this);
+
+                c.setRefChartForSize(this);
             }
             if (mChartSMA != null)
             {
                 mChartSMA.setRefChart(this);
                 mChartSMA.setSize(this);
+
+                mChartSMA.setRefChartForSize(this);
             }
             //-----------------------------------
 
@@ -284,7 +288,7 @@ namespace stock123.app.chart
 
             int x, y;
             float low = s.getLowestPrice();
-            float ry = (float)mDrawingH / mPriceDistance;
+            float ry = (float)getDrawingH() / mPriceDistance;
             float rw = (float)mDrawingW / mChartLineLength;
 
             int shadowH = 0;
@@ -294,7 +298,7 @@ namespace stock123.app.chart
             int cursorX = 0, cursorY = 0;
             int selCandle = s.mSelectedCandle;
 
-            int maxCandleH = mDrawingH / 2;
+            int maxCandleH = getDrawingH() / 2;
 
             int j = 0;
             float o, c, h, l;
@@ -316,10 +320,10 @@ namespace stock123.app.chart
                 if (candleBodyH < 0)
                 {
                     color = colorDown; candleBodyH = -candleBodyH;
-                    y = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (o - low) * ry);
+                    y = (int)(mY + getMarginY() + getDrawingH() - (o - low) * ry);
                 }
                 else
-                    y = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (c - low) * ry);
+                    y = (int)(mY + getMarginY() + getDrawingH() - (c - low) * ry);
 
                 x = (int)(mX + CHART_BORDER_SPACING_X + j * rw - candleW / 2 + getStartX());
                 //x += 1;
@@ -327,7 +331,7 @@ namespace stock123.app.chart
                 //	candle shadow	
                 float tmp = h - l;
                 shadowH = (int)((float)tmp * ry);
-                shadowY = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (h - low) * ry);
+                shadowY = (int)(mY + getMarginY() + getDrawingH() - (h - low) * ry);
                 g.setColor(0xffffffff);
                 g.drawLine(x + candleWHalf-1, shadowY, x + candleWHalf-1, shadowY + shadowH);
 
@@ -421,7 +425,7 @@ namespace stock123.app.chart
 
             int x, y;
             float low = s.getLowestPrice();
-            float ry = (float)mDrawingH / mPriceDistance;
+            float ry = (float)getDrawingH() / mPriceDistance;
             float rw = (float)mDrawingW / mChartLineLength;
 
             int shadowH = 0;
@@ -431,7 +435,7 @@ namespace stock123.app.chart
             int cursorX = 0, cursorY = 0;
             int selCandle = s.mSelectedCandle;
 
-            int maxCandleH = mDrawingH / 2;
+            int maxCandleH = getDrawingH() / 2;
 
             int j = 0;
             float o, c, h, l;
@@ -483,10 +487,10 @@ namespace stock123.app.chart
                 if (candleBodyH < 0)
                 {
                     color = colorDown; candleBodyH = -candleBodyH;
-                    y = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (ho - low) * ry);
+                    y = (int)(mY + getMarginY() + getDrawingH() - (ho - low) * ry);
                 }
                 else
-                    y = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (hc - low) * ry);
+                    y = (int)(mY + getMarginY() + getDrawingH() - (hc - low) * ry);
 
                 x = (int)(mX + CHART_BORDER_SPACING_X + j * rw - candleW / 2 + getStartX());
                 //x += 1;
@@ -494,7 +498,7 @@ namespace stock123.app.chart
                 //	candle shadow	
                 float tmp = hh - l;
                 shadowH = (int)((float)tmp * ry);
-                shadowY = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (hh - low) * ry);
+                shadowY = (int)(mY + getMarginY() + getDrawingH() - (hh - low) * ry);
                 g.setColor(0xffffffff);
                 g.drawLine(x + candleWHalf - 1, shadowY, x + candleWHalf - 1, shadowY + shadowH);
 
@@ -585,7 +589,7 @@ namespace stock123.app.chart
 
             int x, y;
             float low = s.getLowestPrice();
-            float ry = (float)mDrawingH / mPriceDistance;
+            float ry = (float)getDrawingH() / mPriceDistance;
             float rw = (float)mDrawingW / mChartLineLength;
 
             int shadowH = 0;
@@ -595,7 +599,7 @@ namespace stock123.app.chart
             int cursorX = 0, cursorY = 0;
             int selCandle = s.mSelectedCandle;
 
-            int maxCandleH = mDrawingH / 2;
+            int maxCandleH = getDrawingH() / 2;
 
             int j = 0;
             float o, c, h, l;
@@ -623,7 +627,7 @@ namespace stock123.app.chart
                 //	H-L vertical line
                 float tmp = h - l;
                 shadowH = (int)((float)tmp * ry);
-                shadowY = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (h - low) * ry);
+                shadowY = (int)(mY + getMarginY() + getDrawingH() - (h - low) * ry);
                 g.setColor(color);
 
                 g.drawLine(x + candleWHalf, shadowY, x + candleWHalf, shadowY + shadowH);
@@ -635,10 +639,10 @@ namespace stock123.app.chart
                 }
 
                 //  open
-                y = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (o - low) * ry);
+                y = (int)(mY + getMarginY() + getDrawingH() - (o - low) * ry);
                 g.drawHorizontalLine(x, y, candleWHalf);
                 //  close
-                y = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (c - low) * ry);
+                y = (int)(mY + getMarginY() + getDrawingH() - (c - low) * ry);
                 g.drawHorizontalLine(x+candleWHalf+1, y, candleWHalf);
 
                 j++;
@@ -715,7 +719,7 @@ namespace stock123.app.chart
 
             int x, y;
             float low = s.getLowestPrice();
-            float ry = (float)mDrawingH / mPriceDistance;
+            float ry = (float)getDrawingH() / mPriceDistance;
             float rw = (float)mDrawingW / mChartLineLength;
 
             int shadowH = 0;
@@ -725,7 +729,7 @@ namespace stock123.app.chart
             int cursorX = 0, cursorY = 0;
             int selCandle = s.mSelectedCandle;
 
-            int maxCandleH = mDrawingH / 2;
+            int maxCandleH = getDrawingH() / 2;
 
             int j = 0;
             float o, c, h, l;
@@ -753,7 +757,7 @@ namespace stock123.app.chart
                 //	H-L vertical line
                 float tmp = h - l;
                 shadowH = (int)((float)tmp * ry);
-                shadowY = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (h - low) * ry);
+                shadowY = (int)(mY + getMarginY() + getDrawingH() - (h - low) * ry);
                 g.setColor(color);
 
                 g.drawLine(x + candleWHalf, shadowY, x + candleWHalf, shadowY + shadowH);
@@ -768,7 +772,7 @@ namespace stock123.app.chart
                 //==========y = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (o - low) * ry);
                 //==========g.drawHorizontalLine(x, y, candleWHalf);
                 //  close
-                y = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (c - low) * ry);
+                y = (int)(mY + getMarginY() + getDrawingH() - (c - low) * ry);
                 g.drawHorizontalLine(x+1, y, 2*candleWHalf-1);
 
                 j++;
@@ -857,6 +861,17 @@ namespace stock123.app.chart
             mMouseX = x;
             mMouseY = y;
 
+            //----zooming area------------------
+            zoomVx = getW() - 60;
+            if (x > zoomVx)
+            {
+                //  zooming???
+                isZoomingV = true;
+                zoomVX0 = x;
+                zoomVY0 = y;
+            }
+            //----------------------
+
             if (mSelecting)
             {
                 if (!isKeyPressing(System.Windows.Forms.Keys.Shift))
@@ -903,17 +918,54 @@ namespace stock123.app.chart
                 }
             }
         }
+
+        int zoomVx = 0;
+        int zoomVX0 = 0;
+        int zoomVY0 = 0;
+        bool isZoomingV = false;
         override public void onMouseMove(int x, int y)
         {
             if (!mOnMouseDown)
+            {
                 return;
+            }
 
             mMouseX = x;
             mMouseY = y;
 
             Share s = getShare();
             if (s == null)
+            {
                 return;
+            }
+
+            //  zooming???
+            if (isZoomingV)
+            {
+                if (x < getW() - 60)
+                {
+                    isZoomingV = false;
+                    return;
+                }
+                float delta = zoomVY0 - y;
+
+                float t = delta / getH();
+                float scale = getScaleY();
+                scale += t;
+
+                setScaleY(scale);
+                //xUtils.trace(String.format("scaling: change: %.2f scale=%.2f", t, scale));
+
+                zoomVY0 = y;
+                clearModifyKey();
+                if (mListener != null)
+                {
+                    mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, null);
+                }
+
+                return;
+            }
+            //------------------------------
 
             //===============detect selection===========
             if (isKeyPressing(System.Windows.Forms.Keys.Shift))

@@ -103,7 +103,10 @@ namespace stock123.app
 
             if (mScreenType == TYPE_SEARCH)
             {
-                mShare = mContext.mShareManager.getVnindexShareAt(0);
+                if (mShare == null)
+                {
+                    mShare = mContext.mShareManager.getVnindexShareAt(0);
+                }
                 try
                 {
                     mContext.mShareManager.loadAllShares();

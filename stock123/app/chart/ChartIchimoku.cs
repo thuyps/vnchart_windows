@@ -34,7 +34,7 @@ namespace stock123.app.chart
         {
             mShouldDrawValue = true;
             mChartType = CHART_ICHIMOKU;
-            CHART_BORDER_SPACING_Y = CHART_BORDER_SPACING_Y_MASTER;
+            //CHART_BORDER_SPACING_Y = CHART_BORDER_SPACING_Y_MASTER;
         }
 
         public override void render(xGraphics g)

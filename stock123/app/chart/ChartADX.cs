@@ -25,7 +25,7 @@ namespace stock123.app.chart
         {
             mShouldDrawCursor = true;
             mChartType = CHART_ADX;
-            CHART_BORDER_SPACING_Y = 1;
+            //CHART_BORDER_SPACING_Y = 1;
         }
 
         public override void render(xGraphics g)
@@ -55,9 +55,9 @@ namespace stock123.app.chart
                 pricesToYs(share.pMINUS_DI, idx, mLineMDI, mChartLineLength, 0, maxPrice);
                 pricesToYs(share.pADX, idx, mChartLineXY, mChartLineLength, 0, maxPrice);
 
-                float ry = (float)mDrawingH / maxPrice;
-                mY20 = (int)(CHART_BORDER_SPACING_Y + mDrawingH - 20 * ry);
-                mY40 = (int)(CHART_BORDER_SPACING_Y + mDrawingH - 40 * ry);
+                float ry = (float)getDrawingH() / maxPrice;
+                mY20 = (int)(getMarginY() + getDrawingH() - 20 * ry);
+                mY40 = (int)(getMarginY() + getDrawingH() - 40 * ry);
             }
 
             if (mChartLineLength == 0)
