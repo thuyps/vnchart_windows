@@ -2092,6 +2092,10 @@ namespace stock123.app
             {
                 v.addElement(mContext.mShareGroups.elementAt(i));
             }
+            for (int i = 0; i < mContext.mShareGroups2.size(); i++)
+            {
+                v.addElement(mContext.mShareGroups2.elementAt(i));
+            }
 
             list.setGroup(v);
             return list;
