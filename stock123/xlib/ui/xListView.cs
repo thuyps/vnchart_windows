@@ -187,6 +187,48 @@ namespace xlib.ui
             return lv;
         }
 
+        int _customDrawIndex = 2;
+        public delegate void DrawCellDelegate(int row, xGraphics g, Rectangle bound);
+        DrawCellDelegate _drawCellDelegate;
+        xGraphics _cellGraphic;
+        public void setColumnItemDrawer(DrawCellDelegate drawCellDelegate)
+        {
+            this._drawCellDelegate = drawCellDelegate;
+            ListView lv = (ListView)getControl();
+            lv.DrawSubItem += listView1_DrawSubItem;
+            //lv.DrawItem += lvwServers_DrawItem;
+            lv.OwnerDraw = true;
+        }
+
+        private void lvwServers_DrawItem(object sender,
+            DrawListViewItemEventArgs e)
+        {
+            e.Graphics.Clear(Color.Black);
+        }
+
+        private void listView1_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
+        {
+            if (e.ColumnIndex == _customDrawIndex)
+            {
+                e.Graphics.Clear(Color.Red);
+
+                ListViewItem.ListViewSubItem subItem = e.SubItem;
+                Rectangle rc = subItem.Bounds;
+
+                if (_cellGraphic == null)
+                {
+                    _cellGraphic = new xGraphics();
+                }
+
+                _cellGraphic.setGraphics(e.Graphics);
+                _drawCellDelegate.Invoke(e.ItemIndex, _cellGraphic, rc);
+            }
+            else
+            {
+                e.DrawText();
+            }
+        }
+
         public void addRow(xListViewItem item)
         {
             ListView lv = (ListView)getControl();

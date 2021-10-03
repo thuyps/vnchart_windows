@@ -162,6 +162,9 @@
     <Compile Include="app\ScreenHome.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="app\sharethumb\DrawAChartDelegator.cs" />
+    <Compile Include="app\sharethumb\ShareThumbView.cs" />
+    <Compile Include="app\table\RowFilterResult.cs" />
     <Compile Include="app\utils\AsyncUtils.cs" />
     <Compile Include="app\utils\ShareSortUtils.cs" />
     <Compile Include="app\ViewHistoryChart.cs">

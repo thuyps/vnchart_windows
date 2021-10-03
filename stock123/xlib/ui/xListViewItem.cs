@@ -101,5 +101,10 @@ namespace xlib.ui
         {
             getItem().SubItems[0].BackColor = Color.Red;
         }
+
+        public void setImage()
+        {
+            //getItem().SubItems[0].
+        }
     }
 }
