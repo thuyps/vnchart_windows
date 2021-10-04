@@ -51,6 +51,7 @@ namespace stock123.app
                 setTextFont(i, fs[i]);
             }
 
+
         }
 
         public Share getShare()

@@ -37,6 +37,11 @@ namespace stock123.app.table
         {
             this.removeAllControls();
 
+            if (g == null)
+            {
+                return;
+            }
+
             _shareGroup = g;
 
             int cnt = g.getTotal();
@@ -149,6 +154,61 @@ namespace stock123.app.table
             invalidate();
         }
 
+        public void setShareGroupAsFilterResult(stShareGroup g)
+        {
+            this.removeAllControls();
+
+            _shareGroup = g;
+
+            int cnt = g.getTotal();
+
+            int y = 0;
+
+            Font f = Context.getInstance().getFontText();
+            xLabel l = xLabel.createSingleLabel(g.getName(), f, 300);
+            l.setBackgroundColor(C.COLOR_ORANGE);
+            l.setSize(rowW, (int)f.GetHeight() + 4);
+            l.setPosition(0, 0);
+            l.setTextColor(C.COLOR_WHITE);
+
+            y = (int)l.getBottom() + 1;
+
+            addControl(l);
+
+            for (int i = 0; i <= cnt; i++)
+            {
+                int idx = i - 1;
+                int rH = i == 0 ? 36 : rowH;
+
+                RowNormalShare r = new RowFilterResult(mListener, i, rowW, rH);
+                if (idx >= 0)
+                {
+                    String code = g.getCodeAt(idx);
+
+                    if (code != null && code.Length > 0)
+                    {
+                        r.setData(code);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                    //r.mAllowDelete = deletable;
+                }
+
+                r.setParent(this);
+
+                r.setPosition(0, y);
+                r.invalidate();
+                addControl(r);
+                vRows.addElement(r);
+
+                y += rH + 1;
+            }
+
+            invalidate();
+        }
+
         public TablePriceboard(xIEventListener listener, GainLossManager gainlosses, int w, int rowH)
             :base(listener)
         {
@@ -199,64 +259,6 @@ namespace stock123.app.table
                 addControl(sumary);
 
                 y += sumary.getH();
-
-                /*
-			    xFillBackground bottom = xFillBackground.createFill(w, 1, C.COLOR_GRAY_LIGHT);
-			    bottom.setPosition(0, y);
-			    addControl(bottom);
-			    y += 1;
-    			
-			    int xPivot = w/2 + 10;// - xApplication.point2Pixels(120);
-    			
-			    double[] values = {0, 0, 0};
-			    Context.getInstance().getGainLossValue(values);
-    			
-			    String sTmp = Utils.formatNumberDouble(values[0]);
-			    //	total
-			    l = xLabel.createSingleLabel("Tổng vốn đầu tư: ");
-			    l.setTextColor(C.COLOR_WHITE);
-			    l.setPosition(xPivot - l.getW() - 4, y);
-			    addControl(l);
-    			
-			    l = xLabel.createSingleLabel(sTmp);
-			    l.setTextColor(C.COLOR_WHITE);
-			    l.setPosition(xPivot, y);
-			    addControl(l);
-
-			    // gia tri
-			    y += l.getH() + 4;			
-			    l = xLabel.createSingleLabel("Tổng giá trị cổ phiếu: ");
-			    l.setTextColor(C.COLOR_WHITE);
-			    l.setPosition(xPivot - l.getW() - 4, y);
-			    addControl(l);
-    			
-			    sTmp = Utils.formatNumberDouble(values[1]);
-			    l = xLabel.createSingleLabel(sTmp);
-			    l.setTextColor(C.COLOR_WHITE);
-			    l.setPosition(xPivot, y);
-			    addControl(l);
-    			
-			    //	loi nhuan
-			    y += l.getH() + 4;			
-			    l = xLabel.createSingleLabel("Tổng lợi nhuận: ");
-			    l.setTextColor(C.COLOR_WHITE);
-			    l.setPosition(xPivot - l.getW() - 4, y);
-			    addControl(l);
-    			
-			    sTmp = Utils.formatNumberDouble(values[2]);
-			    l = xLabel.createSingleLabel(sTmp);
-    			
-			    if (values[2] > 0)
-				    l.setTextColor(C.COLOR_GREEN);
-			    else if (values[2] < 0)
-				    l.setTextColor(C.COLOR_RED);
-			    else
-				    l.setTextColor(C.COLOR_WHITE);
-			    l.setPosition(xPivot, y);
-			    addControl(l);
-
-			    y += l.getH() + 10;			
-                */
 		    }
             //  Help
             {

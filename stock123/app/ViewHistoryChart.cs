@@ -239,16 +239,25 @@ namespace stock123.app
 
         void updateUI()
         {
+            logTimeElapsedStart();
             //--------------------------------------
             removeAllControls();
-            //mTableList = null;
             mRightPanel = null;
             //--------------------------------------
             createToolbar();
-            createLeftPanel();
-            createRightPanel(); //  main chart & sub charts
 
+            logTimeElapsedStop("updateUI1");
+
+            createLeftPanel();
+            logTimeElapsedStop("updateUI2");
+
+            createRightPanel(); //  main chart & sub charts
+            logTimeElapsedStop("updateUI3");
+            
             createSymbolList(0, 0);
+
+            logTimeElapsedStop("updateUI4");
+
         }
 
         void createToolbar()
@@ -364,9 +373,35 @@ namespace stock123.app
             setStatusMsg1("{Zoom chart: nhấp đúp chuột}, {Thickness: -/+}");
         }
 
+        //=========================================
+        long timeMark = 0;
+        void logTimeElapsedStart()
+        {
+            timeMark = Utils.currentTimeMillis();
+        }
+        void logTimeElapsedStop(String tag)
+        {
+            Utils.trace(String.Format("----time mark TAG: {0}={1}", tag, (Utils.currentTimeMillis() - timeMark)));
+            timeMark = Utils.currentTimeMillis();
+        }
+        long timeMark2 = 0;
+        void logTimeElapsedStart2()
+        {
+            timeMark2 = Utils.currentTimeMillis();
+        }
+        void logTimeElapsedStop2(String tag)
+        {
+            Utils.trace(String.Format("----time mark2 TAG: {0}={1}", tag, (Utils.currentTimeMillis() - timeMark)));
+            timeMark = Utils.currentTimeMillis();
+        }
+        //=========================================
+
         void createLeftPanel()
         {
             int leftW = 240;
+            long t = Utils.currentTimeMillis();
+
+            logTimeElapsedStart();
             if (mLeftPanel == null)
             {
                 mLeftPanel = new xContainer();
@@ -386,25 +421,38 @@ namespace stock123.app
 
                 //===================
             }
+            logTimeElapsedStop("createLeftPanel0");
 //            if (mScreenType == TYPE_CHART)
 //                leftW = 0;  //  hide it
             mLeftPanel.setPosition(getW() - leftW, getToolbarH());
             mLeftPanel.setSize(leftW, getWorkingH());
             addControl(mLeftPanel);
 
+            logTimeElapsedStop("createLeftPanel1");
+
             if (mScreenType == TYPE_SEARCH)
             {
+                logTimeElapsedStop("createLeftPanel2");
                 recreateTableList(-1);
+                logTimeElapsedStop("createLeftPanel3");
             }
         }
 
         void recreateTableList(int sortType)
         {
             mTableList.removeAllControls();
-            xListView list = createFilteredList(sortType, mTableList.getW(), mTableList.getH());
+            //xListView list = createFilteredList(sortType, mTableList.getW(), mTableList.getH());
+
+            logTimeElapsedStart2();
+            xBaseControl list = createFilteredList(sortType, mTableList.getW(), mTableList.getH());
+
+            logTimeElapsedStop2("recreateTableList1");
+
             list.setPosition(0, 0);
 
             mTableList.addControl(list);
+
+            logTimeElapsedStop2("recreateTableList2");
 
             if (mFilteredShares.size() > 0)
             {
@@ -414,7 +462,10 @@ namespace stock123.app
             {
                 mContext.selectDefaultShare();
             }
+            logTimeElapsedStop2("recreateTableList3");
             reloadShare(mShare, true);
+
+            logTimeElapsedStop2("recreateTableList4");
         }
 
         public void createRightPanel()
@@ -425,6 +476,7 @@ namespace stock123.app
 
             //============================
             int y0 = getToolbarH();
+            logTimeElapsedStop("createRightPanel1");
 
             if (mRightPanel == null)
             {
@@ -435,6 +487,7 @@ namespace stock123.app
             {
                 mRightPanel.removeAllControls();
             }
+            logTimeElapsedStop("createRightPanel2");
             mRightPanel.setSize(getW() - mLeftPanel.getW(), mLeftPanel.getH());
             //mRightPanel.setPosition(mLeftPanel.getRight(), y0);
             mRightPanel.setPosition(0, y0);
@@ -442,7 +495,7 @@ namespace stock123.app
 
             int w = mRightPanel.getW();
             mPanels.removeAllElements();
-
+            logTimeElapsedStop("createRightPanel3");
             bool showDrawingTool = false;
             if (mMainHistoryChartControl != null)
                 showDrawingTool = mMainHistoryChartControl.hasDrawing();
@@ -451,6 +504,7 @@ namespace stock123.app
             {
                 float tmp = (float)w/5;
                 int[] ws = { (int)tmp * 3, (int)tmp * 2 };
+                logTimeElapsedStop("createRightPanel4");
 
                 xBaseControl[] panels = { null, null };
                 xSplitter splitter = xSplitter.createSplitter(false, mRightPanel.getW(), mRightPanel.getH(), ws[0], 120, 120);
@@ -461,6 +515,7 @@ namespace stock123.app
                     his.setPosition(0, 0);
                     panels[i] = his;
                 }
+                logTimeElapsedStop("createRightPanel5");
 
                 mMainHistoryChartControl = (HistoryChartControl)panels[0];
                 mSecondHistoryChartControl = (HistoryChartControl)panels[1];
@@ -470,6 +525,7 @@ namespace stock123.app
                 mPanels.addElement(panels[1]);
 
                 mRightPanel.addControl(splitter);
+                logTimeElapsedStop("createRightPanel6");
             }
             else
             {
@@ -489,7 +545,7 @@ namespace stock123.app
                 mMainHistoryChartControl.toogleDrawingTool();
         }
 
-        xListView createFilteredList(int sortType, int w, int h)
+        xListView createFilteredList_old(int sortType, int w, int h)
         {
             xVector shares = mFilteredShares;
             int cnt = shares.size();
@@ -589,6 +645,41 @@ namespace stock123.app
                 }
             }
             return list;
+        }
+
+        xBaseControl createFilteredList(int sortType, int w, int h)
+        {
+            xVector shares = mFilteredShares;
+            int cnt = shares.size();
+
+            if (sortType == -1)
+            {
+                sortType = ShareSortUtils.SORT_TRADE_VALUE;
+            }
+            ShareSortUtils.doSort(shares, sortType, 0);
+
+            stShareGroup g = new stShareGroup();
+            g.setName("Filter");
+            for (int i = 0; i < shares.size(); i++)
+            {
+                Share share = (Share)shares.elementAt(i);
+                if (!mContext.mPriceboard.isShareIndex(share.mID))
+                {
+                    g.addCode(share.getCode());
+                }
+            }
+
+            int rowH = 44;
+            int tableH = rowH * (g.getTotal() + 1);
+            xScrollView tableContainer = new xScrollView(null, w, h);
+
+            table.TablePriceboard table = new table.TablePriceboard(this, (stShareGroup)null, w - 20, rowH);
+            table.setSize(w, tableH);
+            table.setShareGroupAsFilterResult(g);
+
+            tableContainer.addControl(table);
+
+            return tableContainer;
         }
 
         public override void onToolbarEvent(int buttonID)
@@ -1583,11 +1674,15 @@ namespace stock123.app
             xTabPage page;
 
             //==========ky thuat=========
+            logTimeElapsedStart2();
+
             page = new xTabPage("Kỹ thuật1");
             controls = createFilterTAControls(w - 20, h - 30);
             page.setSize(controls);
             page.addControl(controls);
             tab.addPage(page);
+
+            logTimeElapsedStop2("recreateSearchControl1");
             
             page = new xTabPage("Kỹ thuật2");
             controls = createFilterTA2Controls(w - 20, h - 30);
@@ -1595,11 +1690,15 @@ namespace stock123.app
             page.addControl(controls);
             tab.addPage(page);
 
+            logTimeElapsedStop2("recreateSearchControl2");
+
             page = new xTabPage("Cơ bản");
             controls = createFilterBasicControls(w - 20, h - 30);
             page.setSize(controls);
             page.addControl(controls);
             tab.addPage(page);
+
+            logTimeElapsedStop2("recreateSearchControl3");
             /*
             page = new xTabPage("Cơ bản2");
             controls = createFilterBasicControls2(w - 20, h - 30);

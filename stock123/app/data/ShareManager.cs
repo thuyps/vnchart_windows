@@ -1206,6 +1206,101 @@ namespace stock123.app.data
             }
         }
 
+        public int loadShareFromCommon(String code, bool appendTodayCandle, 
+            float[] closes, 
+            float[] opens, 
+            float[] highs, 
+            float[] lows, 
+            int[] dates, 
+            int[] volumes, 
+            int maxCandles)
+        {
+            loadCommonData();
+
+            if (mCommonData == null)
+            {
+                return 0;
+            }
+
+            //s.clearCalculations();
+            Share share = getShare(code);
+            if (share == null)
+            {
+                return 0;
+            }
+            int share_id = share.mID;// getShareID(s.getCode());
+            int pos = seekToShareOffset(share_id);
+            //float open;
+            //float close;
+            //float hi;
+            //float lo;
+            float reference;
+            //int vol;
+            //int date;
+            int j = 0;
+
+            if (pos > 0)
+            {
+                int candle_cnt = Utils.readShort(mCommonData, pos);
+                pos += 2;
+                int floor = Utils.readShort(mCommonData, pos);
+                pos += 2;
+
+                int skipCandle = 0;
+                if (maxCandles > 0 && maxCandles < candle_cnt)
+                {
+                    skipCandle = candle_cnt - maxCandles;
+                }
+
+                float devision = 1000.0f;
+                if (share.isIndex())
+                {
+                    devision = 100 / 0f;
+                }
+
+                for (int i = 0; i < candle_cnt; i++)
+                {
+                    if (i < skipCandle)
+                    {
+                        pos += CANDLE_SIZE;
+                        continue;
+                    }
+
+                    opens[j] = Utils.readInt(mCommonData, pos) / devision;
+                    pos += 4;
+                    closes[j] = Utils.readInt(mCommonData, pos) / devision; ;
+                    pos += 4;
+                    highs[j] = Utils.readInt(mCommonData, pos) / devision;
+                    pos += 4;
+                    lows[j] = Utils.readInt(mCommonData, pos) / devision;
+                    pos += 4;
+                    reference = Utils.readInt(mCommonData, pos) / devision;
+                    pos += 4;
+                    volumes[j] = Utils.readInt(mCommonData, pos);
+                    pos += 4;
+                    dates[j] = Utils.readInt(mCommonData, pos);
+                    pos += 4;
+
+                    int nnmua = Utils.readInt(mCommonData, pos);
+                    pos += 4;
+                    int nnban = Utils.readInt(mCommonData, pos);
+                    pos += 4;
+
+                    //-----------------------
+                    j++;
+
+                }
+            }
+
+            if (appendTodayCandle)
+            {
+
+            }
+
+            return j;
+        }
+    
+
         public void loadShareFromCommon(Share s, int maxLastCandle, bool useCommonData)
         {
             loadCommonData();

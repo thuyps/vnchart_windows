@@ -37,6 +37,7 @@ namespace stock123.app.data
         public static int ID_GROUP_GAINLOSS = 9;
         public static int ID_GROUP_MARKET_OVERVIEW = 10;
         public static int ID_GROUP_INDICES = 11;
+        public static int ID_GROUP_FILTER_RESULT = 12;
 
         //=======================================
         String name;
