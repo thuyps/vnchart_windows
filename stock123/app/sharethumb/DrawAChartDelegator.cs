@@ -196,7 +196,7 @@ namespace stock123.app.sharethumb
 
         void renderVolume(xGraphics g)
         {
-            int h = (int)(rcView.Height / 3.3f);
+            int h = (int)(rcView.Height / 2.5f);
 
             //	get biggest volume
             long biggest = 0;
@@ -255,7 +255,7 @@ namespace stock123.app.sharethumb
                     else
                         g.setColor(0xffa08000);
                 }
-                g.fillRect(mChartLineXY[2 * i], y0 + mChartLineXY[2 * i + 1], (int)mVolumeBarW, h - mChartLineXY[2 * i + 1]);
+                g.fillRectF(mChartLineXY[2 * i], y0 + mChartLineXY[2 * i + 1], mVolumeBarW, h - mChartLineXY[2 * i + 1]);
             }
         }
     }

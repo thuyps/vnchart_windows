@@ -905,5 +905,29 @@ namespace xlib.utils
             }
             return false;
         }
+
+        public const long B = 1000000000;
+        public const long M = 1000000;
+        public const long K = 1000;
+        static public String formatVolumeUsingLetters(double number) {
+            String s;
+            if (number > B){
+                number /= B;
+                s = String.Format("{0:F2b}b", number);
+            }
+            else if (number > M){
+                number /= M;
+                s = String.Format("{0:F1}m", number);
+            }
+            else if (number > K){
+                number /= K;
+                s = String.Format("{0}k", (int)number);
+            }
+            else{
+                s = String.Format("{0}", (int)number);
+            }
+
+            return s;
+        }
     }
 }

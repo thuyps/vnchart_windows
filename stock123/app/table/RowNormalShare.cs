@@ -696,8 +696,13 @@ namespace stock123.app.table
            
         }
 
+        public bool _showQuickInfo = true;
         void showQuickInfo(int x, int y)
         {
+            if (!_showQuickInfo)
+            {
+                return;
+            }
             try
             {
                 if (mToolTip == null)

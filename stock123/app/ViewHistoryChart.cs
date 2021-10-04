@@ -1190,6 +1190,17 @@ namespace stock123.app
                     doFilter();
                     recreateTableList(-1);
                 }
+                if (aIntParameter == C.ID_SELECT_SHARE_CANDLE)
+                {
+                    share = (Share)aParameter;
+                    if (share != null)
+                    {
+                        showChartOfShare(share);
+                        //refreshCharts();
+                        onChangedQuote();
+                        //AAA
+                    }
+                }
             }
             if (evt == xBaseControl.EVT_ON_ROW_SELECTED)
             {

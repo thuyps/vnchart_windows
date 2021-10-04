@@ -91,7 +91,14 @@ namespace xlib.ui
 
         public void fillRectF(float x, float y, float w, float h)
         {
-            fillRect((int)x, (int)y, (int)w, (int)h);
+            if (h < 0)
+            {
+                mGraphics.FillRectangle(mPen.Brush, x, y + h, w, -h);
+            }
+            else
+            {
+                mGraphics.FillRectangle(mPen.Brush, x, y, w, h);
+            }
         }
         public void fillRect(int x, int y, int w, int h)
         {

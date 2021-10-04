@@ -15,6 +15,7 @@ namespace stock123.app.table
             : base(listener, _id, w, h)
         {
             //mCandleColumeIdx = -1;
+            _showQuickInfo = false;
         }
 
         override protected void createRow(int _id, int w, int h)
@@ -35,7 +36,7 @@ namespace stock123.app.table
 
                 //  code/ref | +/- | Volume
                 Font[] font = { f, f, f, f, f};
-                float[] percents = {20, 7, 20, 53,
+                float[] percents = {25, 7, 20, 47,
 	                -1};
                 uint[] colors = { BG_GRAY, BG0, BG0, BG0, BG_GRAY };
                 init(w, h, percents, font, colors);
@@ -56,6 +57,7 @@ namespace stock123.app.table
                 setCellValue(0, "Mã/Giá", C.COLOR_GRAY);
 
                 setCellValue(2, "+/-", C.COLOR_GRAY);
+                addCellValue1(2, "%", C.COLOR_GRAY);
 
                 setCellValue(3, "Khối lượng", C.COLOR_GRAY);
             }
@@ -100,13 +102,13 @@ namespace stock123.app.table
 
             //  change percent
             if (reference > 0){
-                s = String.Format("{0:F1%}", (v*100)/reference);
+                s = String.Format("{0:F1}", (float)((v*100)/reference));
                 addCellValue1(2, s, color);
             }
 
             //  volume
-            s = volumeToString(item.getTotalVolume());
-            setCellValue(3, s, C.COLOR_WHITE);
+            //s = volumeToString(item.getTotalVolume());
+            //setCellValue(3, s, C.COLOR_WHITE);
 
             //Share share = (Share)mFilteredShares.elementAt(row);
             if (rcOfView == null)
@@ -176,15 +178,17 @@ namespace stock123.app.table
                 {
                     g.setColor(c.textColor);
                     if (c.text != null)
+                    {
                         g.drawStringInRect(c.f, c.text, c.x, 0, c.w, h, xGraphics.HCENTER | xGraphics.VCENTER);
+                    }
                 }
                 else
                 {
                     g.setColor(c.textColor);
-                    g.drawStringInRect(c.f, c.text, c.x, (int)(h / 2 - c.f.GetHeight()) + 3, c.w, h / 2, xGraphics.HCENTER | xGraphics.VCENTER);
+                    g.drawStringInRect(c.f, c.text, c.x, (int)(h / 2 - c.f.GetHeight()) - 0, c.w, h / 2, xGraphics.HCENTER | xGraphics.VCENTER);
 
                     g.setColor(c.textColor2);
-                    g.drawStringInRect(c.f, c.text2, c.x, h / 2 + 1, c.w, (int)(c.f.GetHeight()), xGraphics.HCENTER | xGraphics.VCENTER);
+                    g.drawStringInRect(c.f, c.text2, c.x, h / 2 + 2, c.w, (int)(c.f.GetHeight()), xGraphics.HCENTER | xGraphics.VCENTER);
                 }
                 //Utils.trace("here 5:" + c.text + " x=" + c.x + " w=" + c.w + " h=" + h);
             }
@@ -204,13 +208,25 @@ namespace stock123.app.table
                 String code = getCode();
                 if (code != null)
                 {
-                    stCell cell = getCellAt(2);
-                    rcOfView.X = cell.x;
-                    rcOfView.Y = 0;
-                    rcOfView.Width = cell.w;
-                    rcOfView.Height = getH();
+                    //  volume
+                    stPriceboardState item = Context.getInstance().mPriceboard.getPriceboard(code);
+                    if (item != null)
+                    {      
+                        stCell cell = getCellAt(3);
 
-                    sharethumb.DrawAChartDelegator.renderToView(code, g, rcOfView);
+                        String s = Utils.formatVolumeUsingLetters(item.total_volume);
+                        g.setColor(C.COLOR_WHITE);
+                        g.drawStringInRect(cell.f, s, cell.x, getH() - 17, cell.w, 17, xGraphics.LEFT);
+
+                        //  snapshot
+                        rcOfView.X = cell.x;
+                        rcOfView.Y = 0;
+                        rcOfView.Width = cell.w;
+                        rcOfView.Height = getH();
+
+                        sharethumb.DrawAChartDelegator.renderToView(code, g, rcOfView);
+                    }
+                    
                 }
             }
             
