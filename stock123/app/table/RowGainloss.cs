@@ -159,8 +159,8 @@ namespace stock123.app.table
 
             addCellValue1(6, s);
             //  date
-            s = Utils.dateIntToString4(gainloss.date);
-            setCellValue(7, s, C.COLOR_WHITE);
+            //s = Utils.dateIntToString4(gainloss.date);
+            //setCellValue(7, s, C.COLOR_WHITE);
         }
 
         override public String getCode()
@@ -170,6 +170,52 @@ namespace stock123.app.table
                 return g.code;
 
             return null;
+        }
+
+        override public stPriceboardState getPriceboard()
+        {
+            stGainloss g = (stGainloss)getUserData();
+            if (g != null)
+            {
+                return Context.getInstance().mPriceboard.getPriceboard(g.code);
+            }
+
+            return null;
+        }
+
+        public override void render(xGraphics g)
+        {
+            base.render(g);
+
+            renderSnapshot2(g);
+        }
+
+        void renderSnapshot2(xGraphics g)
+        {
+            stPriceboardState item = getPriceboard();
+            if (item != null)
+            {
+                stCell cell = getCellAt(7);
+
+                //  snapshot
+                if (rcSnapshot == null)
+                {
+                    rcSnapshot = new Rectangle();
+                }
+                rcSnapshot.X = cell.x;
+                rcSnapshot.Y = 0;
+                rcSnapshot.Width = cell.w;
+                rcSnapshot.Height = getH();
+
+                sharethumb.DrawAChartDelegator.renderToView(item.code, g, rcSnapshot);
+
+                //  date
+                stGainloss gainloss = (stGainloss)getUserData();
+                String s = Utils.dateIntToStringDDMM(gainloss.date);
+
+                g.setColor(C.COLOR_WHITE);
+                g.drawStringInRect(cell.f, s, cell.x, getH()-17, cell.w, 17, xGraphics.LEFT);
+            }
         }
     }
 }

@@ -675,7 +675,7 @@ namespace stock123.app
 
             table.TablePriceboard table = new table.TablePriceboard(this, (stShareGroup)null, w - 20, rowH);
             table.setSize(w, tableH);
-            table.setShareGroupAsFilterResult(g);
+            table.setShareGroupAsFilterResult(g, ShareSortUtils.SORT_DEFAULT);
 
             tableContainer.addControl(table);
 

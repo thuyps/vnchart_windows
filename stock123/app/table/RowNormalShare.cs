@@ -24,7 +24,9 @@ namespace stock123.app.table
         public int mCandleColumeIdx = 1;
 
         protected const int COLOR_NONE = 1;
-        int sortType;
+        protected int sortType;
+        protected int mVolumeColumn = -1;
+        protected int mShortMenuColumnW = 0;
 
         public RowNormalShare(xIEventListener listener, int _id, int w, int h)
             :base(listener)
@@ -82,12 +84,12 @@ namespace stock123.app.table
                                     fsmallB,        /// volume
                  		            fsmall,         //  sort column 
                                     f};
-                float[] percents = {6.5f, 3.7f,          //  11
-		                8, 8, 8.5f,    //  Du mua      =   25
+                float[] percents = {6.5f, 3.4f,          //  11
+		                7.5f, 7.5f, 8.0f,    //  Du mua      =   25
 		                9, 6.5f,    //  khop / +-   =   15.5   
-		                8.5f, 8, 8,    //  Du ban      =   25
+		                8.0f, 7.5f, 7.5f,    //  Du ban      =   25
 		                6.5f,       //  cao/thap    =   6.5
-                        10,       //  Volume =   10.0
+                        13.5f,       //  Volume =   10.0
                         7.5f, 2, -1};    //  Sort column      =   7.5
                 uint[] colors = { BG_GRAY, BG0, BG0, BG0, BG0, BG_GRAY, BG_GRAY, BG0, BG0, BG0, BG_GRAY, BG_GRAY, BG0, COLOR_NONE };
                 init(w, h, percents, font, colors);
@@ -98,6 +100,8 @@ namespace stock123.app.table
                 {
                     //enableClicked();
                 }
+
+                mShortMenuColumnW = (int)(w * 7.5f / 100);
             }
 
             setID(_id);
@@ -305,13 +309,21 @@ namespace stock123.app.table
                     if (c.text != null)
                         g.drawStringInRect(c.f, c.text, c.x, 0, c.w, h, xGraphics.HCENTER | xGraphics.VCENTER);
                 }
-                else
+                else if (getH() < 36)
                 {
                     g.setColor(c.textColor);
                     g.drawStringInRect(c.f, c.text, c.x, (int)(h / 2 - c.f.GetHeight())+3, c.w, h / 2, xGraphics.HCENTER | xGraphics.VCENTER);
 
                     g.setColor(c.textColor2);
                     g.drawStringInRect(c.f, c.text2, c.x, h / 2+1, c.w, (int)(c.f.GetHeight()), xGraphics.HCENTER | xGraphics.VCENTER);
+                }
+                else
+                {
+                    g.setColor(c.textColor);
+                    g.drawStringInRect(c.f, c.text, c.x, (int)(h / 2 - c.f.GetHeight()) - 0, c.w, h / 2, xGraphics.HCENTER | xGraphics.VCENTER);
+
+                    g.setColor(c.textColor2);
+                    g.drawStringInRect(c.f, c.text2, c.x, h / 2 + 2, c.w, (int)(c.f.GetHeight()), xGraphics.HCENTER | xGraphics.VCENTER);
                 }
                 //Utils.trace("here 5:" + c.text + " x=" + c.x + " w=" + c.w + " h=" + h);
             }
@@ -338,6 +350,12 @@ namespace stock123.app.table
                 g.drawLine(x, y + tmp, x + tmp, y);
             }
              */
+            //  render snapshot
+            if (mVolumeColumn >= 0)
+            {
+                stPriceboardState item = getPriceboard();
+                renderSnapshot(11, item, g);
+            }
         }
 
         //  code | _ref | KL1 | G1 |= GiaKhop | KLKhop | TongKL =| KL1 | G1 |=== TB | Cao | Thap
@@ -467,8 +485,9 @@ namespace stock123.app.table
             addCellValue1(10, String.Format("{0:F2}", item.getMin()), ctx.valToColorF(item.getMin(), item.getCe(), item.getRef(), item.getFloor()));
 
             //  total volume
-            s = volumeToString(item.getTotalVolume());
-            setCellValue(11, s, C.COLOR_WHITE);
+//            s = volumeToString(item.getTotalVolume());
+//            setCellValue(11, s, C.COLOR_WHITE);
+            mVolumeColumn = 11;
             
             //  cung - cau
             if (sortType == ShareSortUtils.SORT_DUMUA_DUBAN)
@@ -500,6 +519,8 @@ namespace stock123.app.table
 
         public static String volumeToString(int v)
         {
+            return Utils.formatVolumeUsingLetters(v);
+            /*
             float vf = (float)(v/ 1000.0f);
             String s;
             if (vf > 0)
@@ -513,6 +534,7 @@ namespace stock123.app.table
                 s = "-";
 
             return s;
+             */
         }
 
         public static String valueMToString(double v, bool toBillion)
@@ -559,6 +581,16 @@ namespace stock123.app.table
         virtual public String getCode()
         {
             return (String)getUserData();
+        }
+
+        virtual public stPriceboardState getPriceboard()
+        {
+            String code = getCode();
+            if (code != null)
+            {
+                return Context.getInstance().mPriceboard.getPriceboard(code);
+            }
+            return null;
         }
 
         protected void renderCandle(xGraphics g, stCell c)
@@ -782,7 +814,7 @@ namespace stock123.app.table
             {
                 if (getID() == 0)
                 {
-                    int cellW = (int)(getW()*7.5f/100);
+                    int cellW = mShortMenuColumnW;// (int)(getW() * 7.5f / 100);
                     if ((x > getW() - cellW) && x < getW())
                     {
                         if (onShowSortMenu != null)
@@ -843,6 +875,32 @@ namespace stock123.app.table
         {
             mIsSelected = false;
             invalidate();
+        }
+
+        protected System.Drawing.Rectangle rcSnapshot;
+        public void renderSnapshot(int cellVolume, stPriceboardState item, xGraphics g)
+        {
+            if (item != null)
+            {
+                stCell cell = getCellAt(cellVolume);
+
+                //  snapshot
+                if (rcSnapshot == null)
+                {
+                    rcSnapshot = new Rectangle();
+                }
+                rcSnapshot.X = cell.x;
+                rcSnapshot.Y = 0;
+                rcSnapshot.Width = cell.w;
+                rcSnapshot.Height = getH();
+
+                sharethumb.DrawAChartDelegator.renderToView(item.code, g, rcSnapshot);
+
+                //  volume
+                String s = Utils.formatVolumeUsingLetters(item.total_volume);
+                g.setColor(C.COLOR_WHITE);
+                g.drawStringInRect(cell.f, s, cell.x, getH()-17, cell.w, 17, xGraphics.LEFT);
+            }
         }
     }
 }

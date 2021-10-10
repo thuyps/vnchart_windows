@@ -436,7 +436,7 @@ namespace stock123.app
         {
             if (mFontSmallest == null)
             {
-                Font f = new Font(new FontFamily("Arial"), 8.0f);
+                Font f = new Font(new FontFamily("Arial"), 8.0f + getAjustFont());
                 mFontSmallest = f;
             }
 

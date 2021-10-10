@@ -293,6 +293,10 @@ namespace xlib.utils
         {
             return "" + EXTRACT_DAY(date) + "/" + (EXTRACT_MONTH(date)) + "/" + (EXTRACT_YEAR(date));
         }
+        public static String dateIntToStringDDMM(int date)
+        {
+            return String.Format("{0:d2}/{1:d2}", EXTRACT_DAY(date), EXTRACT_MONTH(date));
+        }
 
         public static String getDateAsString()
         {

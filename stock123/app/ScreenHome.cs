@@ -1364,7 +1364,7 @@ namespace stock123.app
 
         xBaseControl createGainlossTable(int w, int h)
         {
-            int rowH = 34;
+            int rowH = 40;
             stShareGroup g = mContext.getCurrentShareGroup();
             TablePriceboard priceboard = new TablePriceboard(this, Context.userDataManager().gainLossManager(), w, rowH);
             int boardH = rowH * Context.userDataManager().gainLossManager().getTotal() + 160;
@@ -1525,7 +1525,7 @@ namespace stock123.app
 
         xBaseControl _createPriceboardAsTable(int w, int h)
         {
-            int rowH = 35;
+            int rowH = 40;
             stShareGroup g = mContext.getCurrentShareGroup();
             TablePriceboard priceboard = new TablePriceboard(this, g, w, rowH);
             int boardH = rowH * g.getTotal() + 160;

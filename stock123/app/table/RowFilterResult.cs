@@ -6,6 +6,7 @@ using stock123.app.data;
 using xlib.framework;
 using xlib.ui;
 using xlib.utils;
+using stock123.app.utils;
 
 namespace stock123.app.table
 {
@@ -22,7 +23,8 @@ namespace stock123.app.table
         {
             //==================================
             Context ctx = Context.getInstance();
-            Font f = ctx.getFontSmallB();
+            Font f = ctx.getFontSmallestB();
+            Font fSmall = ctx.getFontSmallest();
 
             if (_id >= 0)
             {
@@ -35,11 +37,17 @@ namespace stock123.app.table
                 }
 
                 //  code/ref | +/- | Volume
-                Font[] font = { f, f, f, f, f};
-                float[] percents = {25, 7, 20, 47,
+                Font[] font = { f, fSmall, fSmall, fSmall, fSmall, fSmall, fSmall };
+                float[] percents = {17, 
+                                       7, 
+                                       20, 
+                                       37,
+                                       22,
 	                -1};
-                uint[] colors = { BG_GRAY, BG0, BG0, BG0, BG_GRAY };
+                uint[] colors = { BG_GRAY, BG0, BG0, BG0, BG_GRAY, BG0 };
                 init(w, h, percents, font, colors);
+
+                mShortMenuColumnW = (int)(w * 18 / 100);
             }
 
             setID(_id);
@@ -60,6 +68,8 @@ namespace stock123.app.table
                 addCellValue1(2, "%", C.COLOR_GRAY);
 
                 setCellValue(3, "Khối lượng", C.COLOR_GRAY);
+                setCellValue(4, "▼ " + ShareSortUtils.sortTypeToString(sortType), C.COLOR_ORANGE);
+
             }
 
             if (getID() == 0)
@@ -111,13 +121,21 @@ namespace stock123.app.table
             //setCellValue(3, s, C.COLOR_WHITE);
 
             //Share share = (Share)mFilteredShares.elementAt(row);
-            if (rcOfView == null)
-            {
-                rcOfView = new Rectangle();
-            }
+            mVolumeColumn = 3;
 
+            //  short column
+            Share share = Context.getInstance().mShareManager.getShare(getCode());
+            if (share != null)
+            {
+                setCellValue(4, share.mCompareText, C.COLOR_ORANGE);
+                stCell c = getCellAt(4);
+                if (c != null)
+                {
+                    c.text2 = null;
+                    c.textColor2 = C.COLOR_ORANGE;
+                }
+            }
         }
-        System.Drawing.Rectangle rcOfView;
 
         override public String getCode()
         {
@@ -125,6 +143,7 @@ namespace stock123.app.table
 
             return code;
         }
+
 
         public override void render(xGraphics g)
         {
@@ -203,30 +222,14 @@ namespace stock123.app.table
             }
             g.drawHorizontalLine(0, 0, getW());
 
-            if (getID() > 0)
+            //  snapshot and volume
+            String code = getCode();
+            if (code != null)
             {
-                String code = getCode();
-                if (code != null)
-                {
-                    //  volume
-                    stPriceboardState item = Context.getInstance().mPriceboard.getPriceboard(code);
-                    if (item != null)
-                    {      
-                        stCell cell = getCellAt(3);
-
-                        String s = Utils.formatVolumeUsingLetters(item.total_volume);
-                        g.setColor(C.COLOR_WHITE);
-                        g.drawStringInRect(cell.f, s, cell.x, getH() - 17, cell.w, 17, xGraphics.LEFT);
-
-                        //  snapshot
-                        rcOfView.X = cell.x;
-                        rcOfView.Y = 0;
-                        rcOfView.Width = cell.w;
-                        rcOfView.Height = getH();
-
-                        sharethumb.DrawAChartDelegator.renderToView(code, g, rcOfView);
-                    }
-                    
+                //  volume
+                stPriceboardState item = Context.getInstance().mPriceboard.getPriceboard(code);
+                if (item != null){
+                    renderSnapshot(3, item, g);
                 }
             }
             

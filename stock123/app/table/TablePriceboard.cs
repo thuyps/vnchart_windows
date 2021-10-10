@@ -14,12 +14,18 @@ namespace stock123.app.table
 {
     class TablePriceboard: xContainer
     {
+        public const int TABLE_NORMAL_PRICEBOARD = 0;
+        public const int TABLE_GAINLOSS = 1;
+        protected int mTableType = TABLE_NORMAL_PRICEBOARD;
+
         xVector vRows = new xVector(50);
 
         stShareGroup _shareGroup;
 
         int rowW;
         int rowH;
+
+
 
         public TablePriceboard(xIEventListener listener, stShareGroup g, int w, int rowH)
             :base(listener)
@@ -35,7 +41,15 @@ namespace stock123.app.table
 
         void setShareGroup(stShareGroup g, int sortType)
         {
+            if (mTableType == TABLE_GAINLOSS)
+            {
+                setShareGroupAsFilterResult(g, sortType);
+                return;
+            }
+            //=========================
             this.removeAllControls();
+
+            mTableType = TABLE_NORMAL_PRICEBOARD;
 
             if (g == null)
             {
@@ -154,8 +168,10 @@ namespace stock123.app.table
             invalidate();
         }
 
-        public void setShareGroupAsFilterResult(stShareGroup g)
+        public void setShareGroupAsFilterResult(stShareGroup g, int filterType)
         {
+            mTableType = TABLE_GAINLOSS;
+
             this.removeAllControls();
 
             _shareGroup = g;
@@ -181,6 +197,9 @@ namespace stock123.app.table
                 int rH = i == 0 ? 36 : rowH;
 
                 RowNormalShare r = new RowFilterResult(mListener, i, rowW, rH);
+                r.onShowSortMenu += delegateShowSortMenu;
+                r.setSortType(filterType);
+
                 if (idx >= 0)
                 {
                     String code = g.getCodeAt(idx);
@@ -421,7 +440,14 @@ namespace stock123.app.table
                     columnTexts[2] = "▼ " + columnTexts[2];
 
                     //==================
-                    setShareGroup(_shareGroup, sortType);
+                    if (mTableType == TABLE_GAINLOSS)
+                    {
+                        setShareGroupAsFilterResult(_shareGroup, sortType);
+                    }
+                    else
+                    {
+                        setShareGroup(_shareGroup, sortType);
+                    }
                 });
 
             int posX = (int)((100-7.5f)*rowW);
@@ -432,7 +458,14 @@ namespace stock123.app.table
         void delegateSortABC(Control senderControl)
         {
             _shareGroup.sort();
-            setShareGroup(_shareGroup, _sortType);
+            if (mTableType == TABLE_GAINLOSS)
+            {
+                setShareGroupAsFilterResult(_shareGroup, _sortType);
+            }
+            else
+            {
+                setShareGroup(_shareGroup, _sortType);
+            }
         }
 
         void showGetDaysForRSRankingDialog()
