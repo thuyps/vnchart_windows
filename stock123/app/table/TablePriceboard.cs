@@ -33,10 +33,64 @@ namespace stock123.app.table
             //makeCustomRender(true);
             setBackgroundColor(C.COLOR_BLACK);
 
+
             rowW = w;
             this.rowH = rowH;
 
             setShareGroup(g, ShareSortUtils.SORT_DUMUA_DUBAN);
+        }
+
+        public void onKeyPress(int key)
+        {
+            if (key == (int)Keys.Up)
+            {
+                doMoveNextItem(-1);
+            }
+            else if (key == (int)Keys.Down)
+            {
+                doMoveNextItem(1);
+            }
+        }
+
+        void doMoveNextItem(int dir)
+        {
+            int newItem = mSelectedIndex;
+            newItem += dir;
+            if (newItem < 1)
+            {
+                newItem = 1;
+            }
+            if (newItem >= vRows.size())
+            {
+                newItem = vRows.size() - 1;
+            }
+
+            RowNormalShare row = (RowNormalShare)vRows.elementAt(newItem);
+            String code = row.getCode();
+            if (code != null && code.Length > 0)
+            {
+                Share share = Context.getInstance().mShareManager.getShare(code);
+
+                if (share != null)
+                {
+                    mSelectedIndex = newItem;
+                    mListener.onEvent(this, xBaseControl.EVT_BUTTON_CLICKED, C.ID_SELECT_SHARE_CANDLE, share);
+                }
+            }
+        }
+
+        int mSelectedIndex = 0;
+        public void onSelectItem(xBaseControl c)
+        {
+            for (int i = 0; i < vRows.size(); i++)
+            {
+                xBaseControl vo = (xBaseControl)vRows.elementAt(i);
+                if (vo == c)
+                {
+                    mSelectedIndex = i;
+                    break;
+                }
+            }
         }
 
         void setShareGroup(stShareGroup g, int sortType)

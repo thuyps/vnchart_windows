@@ -810,6 +810,8 @@ namespace stock123.app.table
                 return;
             base.onMouseUp(x, y);
 
+            this.setFocus();
+
             if (getID() <= 0)
             {
                 if (getID() == 0)
@@ -843,6 +845,7 @@ namespace stock123.app.table
                 Share share = Context.getInstance().mShareManager.getShare(getCode());
 
                 mListener.onEvent(this, xBaseControl.EVT_BUTTON_CLICKED, C.ID_SELECT_SHARE_CANDLE, share);
+                mParent.onSelectItem(this);
             }
             else
             {
@@ -901,6 +904,11 @@ namespace stock123.app.table
                 g.setColor(C.COLOR_WHITE);
                 g.drawStringInRect(cell.f, s, cell.x, getH()-17, cell.w, 17, xGraphics.LEFT);
             }
+        }
+
+        override public void onKeyPress(int key)
+        {
+            mParent.onKeyPress(key);
         }
     }
 }
