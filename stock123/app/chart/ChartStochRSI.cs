@@ -39,20 +39,12 @@ namespace stock123.app.chart
                 return;
             if (detectShareCursorChanged())
             {
-                int period = 14;
-                int smooth = 3;
-                if (mChartType == ChartBase.CHART_STOCHRSI)
-                {
-                    period = (int)Context.getInstance().mOptStochRSIPeriod; 
-                    smooth = (int)Context.getInstance().mOptStochRSISMAPeriod;
-                    //GlobalData.getData().getValueInt(GlobalData.kStockRSIPeriod1, 14);
-                }
-                else
-                {
-                    period = GlobalData.getData().getValueInt(GlobalData.kStockRSIPeriod2, 25);
-                    smooth = 3;
-                }
-                share.calcStochRSI(period, period, smooth, pStochRSI, pStochRSISMA);
+                int rsiPeriod = GlobalData.getData().getValueInt(GlobalData.kStochRSIPeriod1, 14);
+                int stochPeriod = GlobalData.getData().getValueInt(GlobalData.kStochRSIPeriodStock, 14);
+                int smoothK = GlobalData.getData().getValueInt(GlobalData.kStockRSISmoothK, 3);
+                int smoothD = GlobalData.getData().getValueInt(GlobalData.kStochRSISmoothD, 3);
+                
+                share.calcStochRSI(rsiPeriod, stochPeriod, smoothK, smoothD, pStochRSI, pStochRSISMA);
 
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
 
@@ -115,22 +107,14 @@ namespace stock123.app.chart
                 vs = pStochRSI[idx];
 
                 int period = 14;
-                if (mChartType == ChartBase.CHART_STOCHRSI)
-                {
-                    period = (int)Context.getInstance().mOptStochRSIPeriod;
-                    //smooth = (int)Context.getInstance().mOptStochRSISMAPeriod;
-                    //period = GlobalData.getData().getValueInt(GlobalData.kStockRSIPeriod1, 14);
-                }
-                else
-                {
-                    period = GlobalData.getData().getValueInt(GlobalData.kStockRSIPeriod1, 25);
-                }
-                sb.AppendFormat("StochRSI({0:F0})={1:F1}", period, vs);
-                v.addElement(new stTitle(sb.ToString(), C.COLOR_ORANGE));
 
-                sb.Length = 0;
-                sb.AppendFormat("Smooth({0})", mContext.mOptStochRSISMAPeriod);
-                v.addElement(new stTitle(sb.ToString(), C.COLOR_MAGENTA));
+                int rsiPeriod = GlobalData.getData().getValueInt(GlobalData.kStochRSIPeriod1, 14);
+                int stochPeriod = GlobalData.getData().getValueInt(GlobalData.kStochRSIPeriodStock, 14);
+                int smoothK = GlobalData.getData().getValueInt(GlobalData.kStockRSISmoothK, 3);
+                int smoothD = GlobalData.getData().getValueInt(GlobalData.kStochRSISmoothD, 3);
+
+                sb.AppendFormat("StochRSI({0}/{1}/{2}/{3})={4:F1}", rsiPeriod, stochPeriod, smoothK, smoothD, vs);
+                v.addElement(new stTitle(sb.ToString(), C.COLOR_ORANGE));
             }
             return v;
         }

@@ -2441,11 +2441,13 @@ namespace stock123.app.data
             }
         }
 
-        public void calcStochRSI(int periodRSI, int periodStoch, int smooth, float[] pStochRSI, float[] pStochRSISMA)
+        public void calcStochRSI(int periodRSI, int periodStoch, int smoothK, int smoothD,
+            float[] pStochRSI, float[] pStochRSISMA)
         {
             if (periodRSI <= 0) periodRSI = 14;
             if (periodStoch <= 0) periodStoch = 14;
-            if (smooth <= 0) smooth = 3;
+            if (smoothK <= 0) smoothK = 3;
+            if (smoothD <= 0) smoothD = 3;
 
             int cnt = getCandleCount();
             if (cnt < 4)
@@ -2499,15 +2501,17 @@ namespace stock123.app.data
                 pStochRSI[i] *= 100;
             }
 
-            SMA(pStochRSI, cnt, smooth, pStaticTMP2);
+            //  smoothK
+            SMA(pStochRSI, cnt, smoothK, pStaticTMP2);
             for (int i = 0; i < cnt; i++)
             {
                 pStochRSI[i] = pStaticTMP2[i];
             }
-            //==========now SMA===============
+            //==========smoothD===============
             if (pStochRSISMA != null)
             {
-                EMA(pStochRSI, cnt, (int)Context.getInstance().mOptStochRSISMAPeriod, pStochRSISMA);
+                //EMA(pStochRSI, cnt, (int)Context.getInstance().mOptStochRSISMAPeriod, pStochRSISMA);
+                SMA(pStochRSI, cnt, smoothD, pStochRSISMA);
             }
         }
 

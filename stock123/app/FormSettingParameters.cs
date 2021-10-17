@@ -792,7 +792,14 @@ namespace stock123.app
 
             int y = 0;
             StringBuilder sb = Utils.getSB();
-            sb.AppendFormat("(Giá trị hiện tại: Period={0}, SMA={1})", mContext.mOptStochRSIPeriod, mContext.mOptStochRSISMAPeriod);
+
+            int rsiPeriod = GlobalData.getData().getValueInt(GlobalData.kStochRSIPeriod1, 14);
+            int stochPeriod = GlobalData.getData().getValueInt(GlobalData.kStochRSIPeriodStock, 14);
+            int smoothK = GlobalData.getData().getValueInt(GlobalData.kStockRSISmoothK, 3);
+            int smoothD = GlobalData.getData().getValueInt(GlobalData.kStochRSISmoothD, 3);
+
+            String s = String.Format("(Giá trị hiện tại: {0}/{1}/{2}/{3})", rsiPeriod, stochPeriod, smoothK, smoothD);
+            sb.Append(s);
             xLabel l = new xLabel(sb.ToString());
             l.setPosition(0, y);
             l.setSize(mContainer.getW(), -1);
@@ -800,13 +807,23 @@ namespace stock123.app
             mContainer.addControl(l);
 
             y = l.getBottom() + 4;
-            //  period
-            mValue1.Value = mContext.mOptStochRSIPeriod;
+            //  periodRSI
+            mValue1.Value = rsiPeriod;
             addSlider(y, "RSI Period", 3, 50, 1, mValue1, 1);
             y += 44;
-            //  period
-            mValue2.Value = mContext.mOptStochRSISMAPeriod;
-            addSlider(y, "SMA Period", 2, 50, 1, mValue2, 1);
+
+            //  periodStoch
+            mValue2.Value = stochPeriod;
+            addSlider(y, "Stoch Period", 3, 50, 1, mValue2, 1);
+            y += 44;
+
+            //  smoothK
+            mValue3.Value = smoothK;
+            addSlider(y, "SmoothK", 3, 50, 1, mValue3, 1);
+            y += 44;
+            //  smoothD
+            mValue4.Value = smoothD;
+            addSlider(y, "SmoothD", 2, 50, 1, mValue4, 1);
             y += 44;
 
             //========================
@@ -1291,8 +1308,15 @@ namespace stock123.app
                         }
                         break;
                     case ChartBase.CHART_STOCHRSI:
-                        mContext.mOptStochRSIPeriod = mValue1.Value;
-                        mContext.mOptStochRSISMAPeriod = mValue2.Value;
+                        {
+                            int rsiPeriod = (int)mValue1.Value;
+                            GlobalData.getData().setValueInt(GlobalData.kStochRSIPeriod1, rsiPeriod);
+                            GlobalData.getData().setValueInt(GlobalData.kStochRSIPeriodStock, (int)mValue2.Value);
+                            GlobalData.getData().setValueInt(GlobalData.kStockRSISmoothK, (int)mValue3.Value);
+                            GlobalData.getData().setValueInt(GlobalData.kStochRSISmoothD, (int)mValue4.Value);
+
+                            GlobalData.saveData();
+                        }
                         break;
                     case ChartBase.CHART_MFI:
                         mContext.mOptMFIPeriod[IDX] = mValue1.Value;
