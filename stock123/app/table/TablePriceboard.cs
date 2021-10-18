@@ -17,6 +17,7 @@ namespace stock123.app.table
         public const int TABLE_NORMAL_PRICEBOARD = 0;
         public const int TABLE_GAINLOSS = 1;
         protected int mTableType = TABLE_NORMAL_PRICEBOARD;
+        public bool hasTitle = true;
 
         xVector vRows = new xVector(50);
 
@@ -24,8 +25,6 @@ namespace stock123.app.table
 
         int rowW;
         int rowH;
-
-
 
         public TablePriceboard(xIEventListener listener, stShareGroup g, int w, int rowH)
             :base(listener)
@@ -56,16 +55,19 @@ namespace stock123.app.table
         {
             int newItem = mSelectedIndex;
             newItem += dir;
-            if (newItem < 1)
+
+            if (newItem >= vRows.size() && vRows.size() > 1)
             {
                 newItem = 1;
             }
-            if (newItem >= vRows.size())
+            if (newItem < 0 || newItem >= vRows.size())
             {
-                newItem = vRows.size() - 1;
+                return;
             }
 
             RowNormalShare row = (RowNormalShare)vRows.elementAt(newItem);
+            
+
             String code = row.getCode();
             if (code != null && code.Length > 0)
             {
@@ -74,6 +76,8 @@ namespace stock123.app.table
                 if (share != null)
                 {
                     mSelectedIndex = newItem;
+                    selectRow(row);
+
                     mListener.onEvent(this, xBaseControl.EVT_BUTTON_CLICKED, C.ID_SELECT_SHARE_CANDLE, share);
                 }
             }
@@ -116,16 +120,20 @@ namespace stock123.app.table
 
             int y = 0;
 
-            Font f = Context.getInstance().getFontText();
-            xLabel l = xLabel.createSingleLabel(g.getName(), f, 300);
-            l.setBackgroundColor(C.COLOR_ORANGE);
-            l.setSize(rowW, (int)f.GetHeight() + 4);
-            l.setPosition(0, 0);
-            l.setTextColor(C.COLOR_WHITE);
+            xLabel l;
+            if (hasTitle)
+            {
+                Font f = Context.getInstance().getFontText();
+                l = xLabel.createSingleLabel(g.getName(), f, 300);
+                l.setBackgroundColor(C.COLOR_ORANGE);
+                l.setSize(rowW, (int)f.GetHeight() + 4);
+                l.setPosition(0, 0);
+                l.setTextColor(C.COLOR_WHITE);
+                addControl(l);
 
-            y = (int)l.getBottom() + 1;
+                y = (int)l.getBottom() + 1;
+            }
 
-            addControl(l);
             bool deletable = g.getType() == stShareGroup.ID_GROUP_FAVOR;
             if (deletable)
                 Utils.trace("++++++++++===============row is detelable");
@@ -234,16 +242,21 @@ namespace stock123.app.table
 
             int y = 0;
 
-            Font f = Context.getInstance().getFontText();
-            xLabel l = xLabel.createSingleLabel(g.getName(), f, 300);
-            l.setBackgroundColor(C.COLOR_ORANGE);
-            l.setSize(rowW, (int)f.GetHeight() + 4);
-            l.setPosition(0, 0);
-            l.setTextColor(C.COLOR_WHITE);
+            xLabel l;
 
-            y = (int)l.getBottom() + 1;
+            if (hasTitle)
+            {
+                Font f = Context.getInstance().getFontText();
+                l = xLabel.createSingleLabel(g.getName(), f, 300);
+                l.setBackgroundColor(C.COLOR_ORANGE);
+                l.setSize(rowW, (int)f.GetHeight() + 4);
+                l.setPosition(0, 0);
+                l.setTextColor(C.COLOR_WHITE);
 
-            addControl(l);
+                y = (int)l.getBottom() + 1;
+
+                addControl(l);
+            }
 
             for (int i = 0; i <= cnt; i++)
             {

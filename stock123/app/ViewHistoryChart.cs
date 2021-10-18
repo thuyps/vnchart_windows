@@ -11,6 +11,7 @@ using stock123.app.chart;
 using stock123.app.ui;
 using stock123.app.net;
 using stock123.app.utils;
+using stock123.app.data.userdata;
 
 namespace stock123.app
 {
@@ -51,6 +52,7 @@ namespace stock123.app
         xTextField mQuickCode;
 
         xVector mFilteredShares = new xVector(1000);
+        String mTitleOfFilter;
         bool[] mFilteredSharesOrderAccend = {true, true, true};
         int mFilteredSharesOrderLastSortType = -1;
         xContainer mTableList;
@@ -670,11 +672,16 @@ namespace stock123.app
             }
 
             int rowH = 44;
-            int tableH = rowH * (g.getTotal() + 1);
+            int tableH = 22 + 37 + (rowH+1) * (g.getTotal());
             xScrollView tableContainer = new xScrollView(null, w, h);
 
             table.TablePriceboard table = new table.TablePriceboard(this, (stShareGroup)null, w - 20, rowH);
             table.setSize(w, tableH);
+            table.hasTitle = true;
+            if (mTitleOfFilter != null)
+            {
+                g.setName(mTitleOfFilter);
+            }
             table.setShareGroupAsFilterResult(g, ShareSortUtils.SORT_DEFAULT);
 
             tableContainer.addControl(table);
@@ -1350,6 +1357,12 @@ namespace stock123.app
             recreateTableList(ShareSortUtils.SORT_IGNORE);
             refreshCharts();
         }
+
+        override public void setTitle(String title)
+        {
+            base.setTitle(title);
+            mTitleOfFilter = title;
+        }
         /*
         void doSortTA(int sort)
         {
@@ -1936,6 +1949,7 @@ namespace stock123.app
             //int flags = mContext.mSortTechnicalParams[type].elementAt(idx);
             //string s = (string)mContext.mSortTechnicalName[type].elementAt(idx);
             setTitle(filterSet.name);
+            mTitleOfFilter = filterSet.name;
 
             showBusyDialog();
             isProcessing = true;
@@ -2379,13 +2393,29 @@ namespace stock123.app
             stShareGroup g = mContext.getCurrentShareGroup();
             mFilteredShares.removeAllElements();
 
-            for (int i = 0; i < g.getTotal(); i++)
+            if (g.getType() == stShareGroup.ID_GROUP_GAINLOSS)
             {
-                String code = g.getCodeAt(i);
-                Share share = mContext.mShareManager.getShare(code);
-                if (share != null)
+                GainLossManager gm = Context.userDataManager().gainLossManager();
+                for (int i = 0; i < gm.getTotal(); i++)
                 {
-                    mFilteredShares.addElement(share);
+                    stGainloss gainloss = gm.getGainLossAt(i);
+                    Share share = mContext.mShareManager.getShare(gainloss.code);
+                    if (share != null)
+                    {
+                        mFilteredShares.addElement(share);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < g.getTotal(); i++)
+                {
+                    String code = g.getCodeAt(i);
+                    Share share = mContext.mShareManager.getShare(code);
+                    if (share != null)
+                    {
+                        mFilteredShares.addElement(share);
+                    }
                 }
             }
             recreateTableList(ShareSortUtils.SORT_SYMBOL);

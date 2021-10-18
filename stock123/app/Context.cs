@@ -455,6 +455,18 @@ namespace stock123.app
             return mFontSmallB;
         }
 
+        public Font getFontSmallestBNoAdjust()
+        {
+            if (mFontSmallB == null)
+            {
+                //Font f = new Font(new FontFamily("Arial"), 9.0f + getAjustFont(), FontStyle.Bold);
+                Font f = new Font(new FontFamily("Arial"), 8.0f, FontStyle.Bold);
+                mFontSmallB = f;
+            }
+
+            return mFontSmallB;
+        }
+
         public Font getFontSmaller()
         {
             if (mFontSmaller == null)

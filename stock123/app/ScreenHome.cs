@@ -1367,7 +1367,7 @@ namespace stock123.app
             int rowH = 40;
             stShareGroup g = mContext.getCurrentShareGroup();
             TablePriceboard priceboard = new TablePriceboard(this, Context.userDataManager().gainLossManager(), w, rowH);
-            int boardH = rowH * Context.userDataManager().gainLossManager().getTotal() + 160;
+            int boardH = 22 + (rowH+1) * Context.userDataManager().gainLossManager().getTotal() + 160;
             if (boardH < h)
                 boardH = h;
             priceboard.setSize(w, boardH);
@@ -1528,7 +1528,7 @@ namespace stock123.app
             int rowH = 40;
             stShareGroup g = mContext.getCurrentShareGroup();
             TablePriceboard priceboard = new TablePriceboard(this, g, w, rowH);
-            int boardH = rowH * g.getTotal() + 160;
+            int boardH = 22 + (rowH+1) * g.getTotal() + 160;
             if (boardH < h)
                 boardH = h;
             priceboard.setSize(w, boardH);

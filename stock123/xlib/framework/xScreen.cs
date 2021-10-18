@@ -71,7 +71,7 @@ namespace xlib.framework
             return this.ClientSize.Width;
         }
 
-        public void setTitle(String title)
+        virtual public void setTitle(String title)
         {
             xMainApplication.getxMainApplication().Text = title;
         }

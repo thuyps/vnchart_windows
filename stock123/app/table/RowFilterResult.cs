@@ -38,7 +38,7 @@ namespace stock123.app.table
 
                 //  code/ref | +/- | Volume
                 Font[] font = { f, fSmall, fSmall, fSmall, fSmall, fSmall, fSmall };
-                float[] percents = {17, 
+                float[] percents = {19, 
                                        7, 
                                        20, 
                                        37,
