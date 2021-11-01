@@ -979,7 +979,14 @@ namespace stock123.app.chart
         protected String formatPrice(float v)
         {
             mSb.Length = 0;
-            mSb.AppendFormat("{0:F1}", v);
+            if (v < 20)
+            {
+                mSb.AppendFormat("{0:F2}", v);
+            }
+            else
+            {
+                mSb.AppendFormat("{0:F1}", v);
+            }
             return mSb.ToString();
         }
 
