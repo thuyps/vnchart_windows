@@ -1812,6 +1812,11 @@ namespace stock123.app.data
         {
             mCurrentScope = _scope;
 
+            if (getCandleCount() == 0)
+            {
+                return;
+            }
+
             int scope = _scope;
             if (_scope == SCOPE_1WEEKS)
             {

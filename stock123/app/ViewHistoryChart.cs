@@ -2102,6 +2102,7 @@ namespace stock123.app
 
                 mShare.setCode(share.getCode(), share.getMarketID());
                 mShare.setID(share.getID());
+                mShare.setCursorScope(Context.getInstance().mOptHistoryChartTimeFrame);
 
                 mShare.allocMemoryUsingShared(false);
 
