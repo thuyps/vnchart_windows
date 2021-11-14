@@ -131,7 +131,9 @@ namespace stock123.app.chart
             if (mIsMasterChart)
             {
                 g.setColor(C.COLOR_GREEN);
-                g.drawString(Context.getInstance().getFontSmaller(), "[Refresh]", getW() - 50, getH() - 20, xGraphics.LEFT);
+                int refreshing = GlobalData.vars().getValueInt("share_refreshing", 0);
+                g.drawString(Context.getInstance().getFontSmaller(), refreshing==0?"[Refresh]":"...", 
+                    getW() - 32, getH() - 20, xGraphics.HCENTER);
             }
         }
 
@@ -1050,6 +1052,10 @@ namespace stock123.app.chart
                 if (mListener != null)
                 {
                     mListener.onEvent(this, C.EVT_REFRESH_SHARE_DATA, 0, null);
+
+                    invalidate();
+
+                    return;
                 }
             }
 

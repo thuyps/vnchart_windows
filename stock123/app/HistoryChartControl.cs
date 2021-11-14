@@ -526,6 +526,9 @@ namespace stock123.app
             {
                 return;
             }
+
+            GlobalData.vars().setValueInt("share_refreshing", 1);
+
             netRefreshShareData = mContext.createNetProtocol();
             netRefreshShareData.setListener(this);
 
@@ -535,8 +538,9 @@ namespace stock123.app
 
             netRefreshShareData.onDoneDelegate = (sender, ok) =>
             {
-                reloadShare(mShare, true);
+                GlobalData.vars().setValueInt("share_refreshing", 0);
 
+                reloadShare(mShare, true);
             };
 
             netRefreshShareData.flushRequest();

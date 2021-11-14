@@ -328,10 +328,26 @@ namespace stock123.app.data
 
         public void appendTodayCandle()
         {
+            if (getCandleCnt() < 3){
+                return;
+            }
             stCandle c = getTodayCandle(false);
             if (c != null)
             {
-                if (getLastCandleDate() < c.date)
+                if (getLastCandleDate() == c.date)
+                {
+                    int last = getCandleCnt() - 1;
+                    if (mCVolume[last] < c.volume){
+                        mCClose[last] = c.close;
+                        mCOpen[last] = c.open;
+                        mCHighest[last] = c.highest;
+                        mCLowest[last] = c.lowest;
+                        mCDate[last] = c.date;
+                        mCVolume[last] = c.volume;
+                        mCRef[last] = c.open;
+                    }
+                }
+                else if (getLastCandleDate() < c.date)
                 {
                     int last = getCandleCnt();
                     mCClose[last] = c.close;

@@ -64,7 +64,7 @@
             this.MinimizeBox = false;
             this.Name = "DlgContactingServer";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "vnChart 7.47";
+            this.Text = "vnChart 7.48";
             this.TopMost = true;
             this.ResumeLayout(false);
             this.PerformLayout();
