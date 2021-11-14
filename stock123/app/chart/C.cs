@@ -124,6 +124,7 @@ namespace stock123.app
         public const int EVT_SUB_CHART_CONTAINER_CHANGED = 92;
         public const int EVT_WINDOW_INITIALIZED = 93;
         public const int EVT_FOCUS_AT_CURSOR = 94;
+        public const int EVT_REFRESH_SHARE_DATA = 95;
         //==============================================
 
         public const int ID_BUTTON_INDICES_DETAIL = 1000;

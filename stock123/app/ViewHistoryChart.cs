@@ -1083,6 +1083,8 @@ namespace stock123.app
             {
                 refreshCharts();
             }
+
+
             if (evt == C.EVT_SHOW_TUTORIAL)
             {
                 showHelp(aIntParameter);
@@ -1807,7 +1809,14 @@ namespace stock123.app
 
         void reloadShare(Share share, bool applyTodayCandle)
         {
-            if (share != null)
+            if (share == null){
+                return;
+            }
+            if (mMainHistoryChartControl != null)
+            {
+                ((HistoryChartControl)mMainHistoryChartControl).reloadShare(share, applyTodayCandle);
+            }
+            else
             {
                 if (mContext.isQuoteFavorite(share)
                     || share.isIndex())

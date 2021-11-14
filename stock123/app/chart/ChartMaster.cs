@@ -61,7 +61,7 @@ namespace stock123.app.chart
                 return;
 
             Share share = getShare(3);
-            if (share == null || share.mCode == null || share.mCode.Length == 0 || share.getCandleCount() < 10)
+            if (share == null || share.mCode == null || share.mCode.Length == 0 || share.getCandleCount() < 3)
             {
                 return;
             }
@@ -125,6 +125,13 @@ namespace stock123.app.chart
             if (mHasFibonacci && mDrawer != null)
             {
                 mDrawer.render(g);
+            }
+
+            //  refresh
+            if (mIsMasterChart)
+            {
+                g.setColor(C.COLOR_GREEN);
+                g.drawString(Context.getInstance().getFontSmaller(), "[Refresh]", getW() - 50, getH() - 20, xGraphics.LEFT);
             }
         }
 
@@ -1032,7 +1039,20 @@ namespace stock123.app.chart
             mOnMouseDown = false;
             Share s = getShare();
             if (s == null)
+            {
                 return;
+            }
+
+
+            if (mIsMasterChart && x > getW() - 50 && y > getH() - 22)
+            {
+                //  refresh
+                if (mListener != null)
+                {
+                    mListener.onEvent(this, C.EVT_REFRESH_SHARE_DATA, 0, null);
+                }
+            }
+
 
             if (mHasFibonacci)
             {

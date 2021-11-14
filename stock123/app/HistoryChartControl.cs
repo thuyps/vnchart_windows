@@ -9,6 +9,7 @@ using xlib.utils;
 using stock123.app.chart;
 using stock123.app.data;
 using stock123.app.ui;
+using stock123.app.net;
 
 namespace stock123.app
 {
@@ -422,6 +423,7 @@ namespace stock123.app
                 }
             }
 
+
             if (evt == xBaseControl.EVT_BUTTON_CLICKED)
             {
                 Share share = mShare;
@@ -432,23 +434,8 @@ namespace stock123.app
                     if (mChartType > Share.CANDLE_MONTHLY)
                         mChartType = Share.CANDLE_DAILY;
 
-                    int scope = share.getCursorScope();
-                    int endDate = share.getEndDate();
-                    share.loadShareFromFile(true);
-                    if (share.getCandleCount() == 0)
-                        share.loadShareFromCommonData(true);
-
-                    if (mChartType == Share.CANDLE_WEEKLY)
-                        share.toWeekly();
-                    else if (mChartType == Share.CANDLE_MONTHLY)
-                        share.toMonthly();
-
-                    share.setEndDate(endDate);
-                    share.setCursorScope(scope);
-
-                    createChartRangeControls(share, mTimingRange);
-
-                    mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, null);
+                    reloadShare(share, true);
+                    
                 }
                 //------------------------------
 
@@ -484,6 +471,12 @@ namespace stock123.app
             {
                 adjustChartsSize();
             }
+
+            if (evt == C.EVT_REFRESH_SHARE_DATA)
+            {
+                refreshShareData();
+            }
+
             if (evt == C.EVT_REPAINT_CHARTS)
             {
                 mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, null);
@@ -524,6 +517,67 @@ namespace stock123.app
                     mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, null);
                 }
             }
+        }
+
+        NetProtocol netRefreshShareData;
+        void refreshShareData()
+        {
+            if (mShare == null || mShare.getID() == 0)
+            {
+                return;
+            }
+            netRefreshShareData = mContext.createNetProtocol();
+            netRefreshShareData.setListener(this);
+
+            xVector ids = new xVector();
+            ids.addElement(mShare.getID());
+            netRefreshShareData.requestGetPriceboard(ids);
+
+            netRefreshShareData.onDoneDelegate = (sender, ok) =>
+            {
+                reloadShare(mShare, true);
+
+            };
+
+            netRefreshShareData.flushRequest();
+        }
+
+        public void reloadShare(Share share, bool applyTodayCandle)
+        {
+            int scope = share.getCursorScope();
+            int endDate = share.getEndDate();
+
+            /*
+            share.loadShareFromFile(true);
+            if (share.getCandleCount() == 0)
+                share.loadShareFromCommonData(true);
+            */
+
+            if (mContext.isQuoteFavorite(share)
+                    || share.isIndex())
+            {
+                if (!share.loadShareFromFile(applyTodayCandle))
+                {
+
+                    share.loadShareFromCommonData(true);
+                }
+            }
+            else
+            {
+                share.loadShareFromCommonData(true);
+            }
+
+            if (mChartType == Share.CANDLE_WEEKLY)
+                share.toWeekly();
+            else if (mChartType == Share.CANDLE_MONTHLY)
+                share.toMonthly();
+
+            share.setEndDate(endDate);
+            share.setCursorScope(scope);
+
+            createChartRangeControls(share, mTimingRange);
+
+            mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, null);
         }
 
         void adjustChartsSize()
@@ -1529,5 +1583,7 @@ namespace stock123.app
             mChartMaster.setShare(share);
             mChartMaster.invalidate();
         }
+
+
     }
 }
