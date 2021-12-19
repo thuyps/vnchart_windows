@@ -308,6 +308,7 @@ namespace stock123.app
 
         public const int ID_CAPTURE_IMAGE = 1470;
         public const int ID_RELOAD_DATA_OF_SYMBOL = 1471;
+        public const int ID_ADD_SYMBOL_TO_GROUP = 1472;
 
         public const int ID_TS_VSTOP = 1480;
 

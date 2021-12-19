@@ -137,7 +137,7 @@ namespace stock123.app.chart
             }
         }
 
-        void renderOverlayAttachedCharts(xGraphics g)
+        virtual public void renderOverlayAttachedCharts(xGraphics g)
         {
             if (mOverlayAttachedCharts != null)
             {
@@ -154,7 +154,7 @@ namespace stock123.app.chart
             }
         }
 
-        void renderAttachedCharts(xGraphics g)
+        virtual public void renderAttachedCharts(xGraphics g)
         {
             if (mAttachedCharts != null)
             {
@@ -815,7 +815,7 @@ namespace stock123.app.chart
             }
         }
 
-        protected void renderMasterCursor(xGraphics g, int cx, int cy)
+        virtual protected void renderMasterCursor(xGraphics g, int cx, int cy)
         {
             if (!mRenderCursor)
                 return;
@@ -1368,7 +1368,7 @@ namespace stock123.app.chart
             mCursorType = type;
         }
 
-        void renderCursorCrossHair(xGraphics g)
+        virtual public void renderCursorCrossHair(xGraphics g)
         {
             g.setColor(C.COLOR_FADE_YELLOW0);
             Share share = getShare();
@@ -1426,7 +1426,7 @@ namespace stock123.app.chart
             }
         }
 
-        void renderSelection(xGraphics g)
+        virtual public void renderSelection(xGraphics g)
         {
             if (mSelecting && mSelectionBX >= 0 && mSelectionEX >= 0)
             {
@@ -1577,7 +1577,7 @@ namespace stock123.app.chart
         {
             return mDrawer;
         }
-        public void setShare(Share share)
+        override public void setShare(Share share)
         {
             mShare = share;
 

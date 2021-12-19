@@ -1512,7 +1512,7 @@ namespace stock123.app.chart
             }
         }
 
-        public void setShare(Share share)
+        virtual public void setShare(Share share)
         {
             mShare = share;
         }
@@ -1526,7 +1526,7 @@ namespace stock123.app.chart
             }
             return null;
         }
-        public Share getShare()
+        virtual public Share getShare()
         {
             if (mRefChart != null)
             {
@@ -1544,6 +1544,11 @@ namespace stock123.app.chart
             }
 
             return mShare;
+        }
+
+        public ChartBase refChart()
+        {
+            return mRefChart;
         }
 
         public void setRefChart(ChartBase refChart)

@@ -1327,8 +1327,13 @@ namespace stock123.app.data
 
         static public void deleteSavedFile(string code)
         {
+            code = Utils.MD5String(code);
+
             xFileManager.removeFile("data\\" + code);
             xFileManager.removeFile("data\\draw_" + code);
+
+            code = String.Format("{0}.rt", code);
+            code = Utils.MD5String(code);
         }
         /*
             public void addMoreCandle(byte[] data, int offset, int len) {
@@ -1663,6 +1668,24 @@ namespace stock123.app.data
             return c1;
         }
         //=======================================
+
+        public int dateToIndex(int date)
+        {
+            int cnt = getCandleCnt();
+            for (int i = 0; i < cnt; i++)
+            {
+                if (mCDate[i] == date)
+                {
+                    return i;
+                }
+                if (mCDate[i] > date)
+                {
+                    return i - 1;
+                }
+            }
+
+            return 0;
+        }
 
         public int getDate(int t)
         {

@@ -318,6 +318,7 @@ namespace xlib.ui
                         item.Tag = ids[i];
                         item.Click += new EventHandler(onMenuClick);
                     }
+
                     menu.MenuItems.Add(item);
                 }
             }

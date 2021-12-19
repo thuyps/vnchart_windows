@@ -212,7 +212,8 @@ namespace stock123.app
                 C.ID_EDIT_BOLLINGER, C.ID_EDIT_ENVELOP, C.ID_EDIT_ICHIMOKU, C.ID_EDIT_PSAR, C.ID_EDIT_ZIGZAG, -1, 
                 C.ID_CAPTURE_IMAGE,
                 -1,
-                C.ID_RELOAD_DATA_OF_SYMBOL
+                C.ID_RELOAD_DATA_OF_SYMBOL,
+                -1
 
                         };
             string[] texts = {
@@ -230,9 +231,57 @@ namespace stock123.app
                                 "",
                                 "Lưu file ảnh",
                                 "",
-                                "Tải lại dữ liệu của mã"
+                                "Tải lại dữ liệu của mã",
+                                ""
                              };
-            setMenuContext(ids, texts, ids.Length);
+
+            ContextMenu menu = createMenuContext(ids, texts, texts.Length);
+
+            xVector gs = mContext.favoriteGroups();
+
+            if (gs.size() > 1){
+                MenuItem[] groups = new MenuItem[gs.size()-1];
+
+                int j = 0;
+                for (int i = 0; i < gs.size(); i++)
+                {
+                    stShareGroup g = (stShareGroup)gs.elementAt(i);
+                    if (i == 0)
+                    {
+                        continue;
+                    }
+                    MenuItem item = new MenuItem(g.getName());
+                    item.Tag = C.ID_ADD_SYMBOL_TO_GROUP;
+                    item.Click += new EventHandler(onClickAddSymbolToGroup);
+
+                    groups[j++] = item;
+                }
+
+                menu.MenuItems.Add("Thêm mã vào nhóm", groups); 
+            }
+            getControl().ContextMenu = menu;
+            //setMenuContext(ids, texts, ids.Length);
+        }
+
+        public void onClickAddSymbolToGroup(object sender, EventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            String gn = item.Text;
+
+            xVector gs = mContext.favoriteGroups();
+
+            if (gs.size() > 0)
+            {
+                for (int i = 0; i < gs.size(); i++)
+                {
+                    stShareGroup g = (stShareGroup)gs.elementAt(i);
+                    if (g.getName().CompareTo(gn) == 0)
+                    {
+                        g.addCode(mShare.getCode());
+                        Context.userDataManager().flushUserData();
+                    }
+                }
+            }
         }
 
         xBaseControl createDrawingToolStrip()
@@ -505,7 +554,7 @@ namespace stock123.app
                         if (idx >= 0 && idx < scopes.Length)
                         {
                             scope = scopes[idx];
-                            if (mChartType == Share.CANDLE_DAILY)
+                            //if (mChartType == Share.CANDLE_DAILY)
                             {
                                 mContext.mOptHistoryChartTimeFrame = scope;
                                 mContext.saveOptions2();
@@ -572,9 +621,13 @@ namespace stock123.app
             }
 
             if (mChartType == Share.CANDLE_WEEKLY)
+            {
                 share.toWeekly();
+            }
             else if (mChartType == Share.CANDLE_MONTHLY)
+            {
                 share.toMonthly();
+            }
 
             share.setEndDate(endDate);
             share.setCursorScope(scope);

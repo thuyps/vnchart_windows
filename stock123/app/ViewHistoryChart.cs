@@ -1876,6 +1876,10 @@ namespace stock123.app
                     Utils.captureViewAsImage(mRightPanel, dlg.FileName);
                 }
             }
+            else if (idx == C.ID_ADD_SYMBOL_TO_GROUP)
+            {
+
+            }
             else if (idx == C.ID_RELOAD_DATA_OF_SYMBOL)
             {
                 Share.deleteSavedFile(mShare.getCode());

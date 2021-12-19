@@ -556,10 +556,11 @@ namespace stock123.app.chart
             }
             else if (chartID == ChartBase.CHART_COMPARING_SECOND_SHARE)
             {
-                c = new ChartLine(f);
+                c = new ChartMasterSimple(f);
                 c.setChartType(chartID);
                 c.mShouldDrawCursor = true;
-                ((ChartLine)c).compareToShare("^VNINDEX");
+                ((ChartMasterSimple)c).setShareCode("^VNINDEX");
+                //((ChartLine)c).compareToShare("^VNINDEX");
             }
             else if (chartID == ChartBase.CHART_CRS_PERCENT)
             {
