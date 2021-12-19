@@ -110,6 +110,7 @@ namespace stock123.app.chart
                 ChartBase.CHART_MASSINDEX,
                 ChartBase.CHART_MFI,
                 ChartBase.CHART_MACD,
+                ChartBase.CHART_MCDX,
                 ChartBase.CHART_NVI,
                 ChartBase.CHART_PVI,
                 ChartBase.CHART_OBV,
@@ -131,28 +132,29 @@ namespace stock123.app.chart
                 string[] ss = {
                             "Aroon",
                             "Aroon Oscillator",
-                            "Average true range (ATR)",
-                            "Accumulation Distribution Line (ADL)",
-                            "Average Directional Index (ADX)",
-                            "Commodity Channel Index (CCI)",
-                            "Chaikin Money Flow (CMF)",
+                            "ATR - Average true range",
+                            "ADL - Accumulation Distribution Line",
+                            "ADX - Average Directional Index",
+                            "CCI - Commodity Channel Index",
+                            "CMF - Chaikin Money Flow",
                             "Chaikin Oscillator",
                             "Mass Index (Mass)",
-                            "Money Flow Index (MFI)",
-                            "Moving Average Convergence-Divergence (MACD)",
-                            "Negative Volume Index (NVI)",
-                            "Positive Volume Index (PVI)",
-                            "On Balance Volume (OBV)",
-                            "Rate of Change (ROC)",
-                            "Price Volume Trend (PVT)",
-                            "Relative Strength Index (RSI)",
+                            "MFI - Money Flow Index",
+                            "MACD - Moving Average Convergence-Divergence",
+                            "MCDX",
+                            "NVI - Negative Volume Index",
+                            "PVI - Positive Volume Index",
+                            "OBV - On Balance Volume",
+                            "ROC - Rate of Change",
+                            "PVT - Price Volume Trend",
+                            "RSI - Relative Strength Index",
                             "Relative Strength Comparative (RS=A/B)",
                             //"Relative Price performance (RS=[A/A(period)]/[B/B(period)])",
                             "So sánh VNINDEX",
                             "Stochastic Fast",
                             "Stochastic Full",
                             "StochRSI",
-                            "Triple Exponential Average (TRIX)",
+                            "TRIX - Triple Exponential Average",
                             "William %R",
                             "Volume",
                 //"ThuyPS",
@@ -429,6 +431,11 @@ namespace stock123.app.chart
             if (chartID == ChartBase.CHART_MACD)
             {
                 c = new ChartMACD(f);
+                c.mShouldDrawCursor = true;
+            }
+            if (chartID == ChartBase.CHART_MCDX)
+            {
+                c = new ChartMCDX(f);
                 c.mShouldDrawCursor = true;
             }
             if (chartID == ChartBase.CHART_MFI)

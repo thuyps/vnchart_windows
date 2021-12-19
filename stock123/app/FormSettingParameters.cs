@@ -32,23 +32,27 @@ namespace stock123.app
         Share mShare;
 
         int[] mIndicators = {
+                                                ChartBase.CHART_ADX,
+                ChartBase.CHART_ADL,
                 ChartBase.CHART_AROON,
                 ChartBase.CHART_AROON_OSCILLATOR,
                 ChartBase.CHART_ATR,
                 ChartBase.CHART_BOLLINGER,
+                ChartBase.CHART_CCI,
                 ChartBase.CHART_CFM,
+                ChartBase.CHART_CHAIKIN,
                 ChartBase.CHART_ENVELOP,
-                ChartBase.CHART_PSAR,
-            ChartBase.CHART_VSTOP,
+                ChartBase.CHART_ICHIMOKU,
                 ChartBase.CHART_MACD,
-                ChartBase.CHART_RSI,
+                ChartBase.CHART_MCDX,
                 ChartBase.CHART_MFI,
+                ChartBase.CHART_MASSINDEX,
+                ChartBase.CHART_OBV,
+                ChartBase.CHART_RSI,
                 ChartBase.CHART_STOCHASTIC_FAST,
                 ChartBase.CHART_STOCHASTIC_SLOW,
-                ChartBase.CHART_ICHIMOKU,
-                ChartBase.CHART_ADX,
-                ChartBase.CHART_ADL,
-                ChartBase.CHART_CHAIKIN,
+                ChartBase.CHART_PSAR,
+            ChartBase.CHART_VSTOP,
                 ChartBase.CHART_ROC,
                 ChartBase.CHART_CRS_RATIO,
                 ChartBase.CHART_CRS_PERCENT,
@@ -56,17 +60,52 @@ namespace stock123.app
                 ChartBase.CHART_VOLUME,
                 ChartBase.CHART_STOCHRSI,
                 ChartBase.CHART_TRIX,
-                ChartBase.CHART_OBV,
                 ChartBase.CHART_NVI,
                 ChartBase.CHART_PVI,
 
                 ChartBase.CHART_WILLIAMR,
 
                 ChartBase.CHART_PVT,
-                ChartBase.CHART_CCI,
-                ChartBase.CHART_PVO,
-                ChartBase.CHART_MASSINDEX,
+                ChartBase.CHART_PVO
         };
+
+        object[] indicatorTitles =
+            new object[] {
+                                "ADX - Average Directional Index",
+                "ADL - Accumulation Distribution Line",
+                "Aroon",
+                "Aroon oscillator",
+                "ATR - Average true range",
+                "Bollinger Bands",
+                "CCI - Commodity Channel Index",
+                "Chaikin Money Flow",
+                "Chaikin Oscillator",
+                "Envelops",
+                "Ichimoku",
+                "MACD - Moving Average Convergence-Divergence",
+                "MCDX",
+                "MFI - Money Flow Index",
+                "Mass Index (MASS)",
+                "On Balance Volume",
+                "RSI - Relative Strength Index",
+                "Fast Stochastic",
+                "Slow Stochastic",
+                "PSAR - Parabollic",
+                "VSTOP - Volatility Stop Indicator",
+                "ROC - Rate of Change",
+                "Relative Strength Comparative (RS=A/B)",
+                "Relative Price performance (RS=[A/A(period)]/[B/B(period)])",
+                "Zigzag",
+                "Volume",
+                "StochRSI",
+                "TRIX - Triple Exponential Average",
+                "NVI - Negative Volume Index",
+                "PVI - Positive Volume Index",
+                "William %R",
+                "PVT - Price Volume Trend",
+                "PVO - Percentage Volume Oscillator"
+            };
+
         public FormSettingParameters(Share share, xIEventListener listener)
         {
             InitializeComponent();
@@ -136,40 +175,7 @@ namespace stock123.app
             // cb_Indicator
             // 
             this.cb_Indicator.FormattingEnabled = true;
-            this.cb_Indicator.Items.AddRange(new object[] {
-                "Aroon",
-                "Aroon oscillator",
-                "Average true range (ATR)",
-                "Bollinger Bands",
-                "Chaikin Money Flow",
-                "Envelops",
-                "Parabollic (PSAR)",
-                "Volatility Stop Indicator (VSTOP)",
-                "Moving Average Convergence-Divergence (MACD)",
-                "Relative Strength Index (RSI)",
-                "Money Flow Index (MFI)",
-                "Fast Stochastic",
-                "Slow Stochastic",
-                "Ichimoku",
-                "Average Directional Index (ADX)",
-                "Accumulation Distribution Line - (ADL)",
-                "Chaikin Oscillator",
-                "Rate of Change (ROC)",
-                "Relative Strength Comparative (RS=A/B)",
-                "Relative Price performance (RS=[A/A(period)]/[B/B(period)])",
-                "Zigzag",
-                "Volume",
-                "StochRSI",
-                "Triple Exponential Average (TRIX)",
-                "On Balance Volume",
-                "Negative Volume Index (NVI)",
-                "Positive Volume Index (PVI)",
-                "William %R",
-                "Price Volume Trend (PVT)",
-                "Commodity Channel Index (CCI)",
-                "Percentage Volume Oscillator (PVO)",
-                "Mass Index (MASS)"
-            });
+            this.cb_Indicator.Items.AddRange(indicatorTitles);
 
             this.cb_Indicator.Location = new System.Drawing.Point(86, 12);
             this.cb_Indicator.Name = "cb_Indicator";
@@ -205,6 +211,9 @@ namespace stock123.app
                     break;
                 case ChartBase.CHART_MACD:
                     setupMACD();
+                    break;
+                case ChartBase.CHART_MCDX:
+                    setupMCDX();
                     break;
                 case ChartBase.CHART_RSI:
                     setupRSI();
@@ -328,6 +337,35 @@ namespace stock123.app
             mValue3.Value = mContext.mOptMACDSignal;
             addSlider(y, "Signal period", 1, 20, 1, mValue3, 1);
             y += 44;
+            //========================
+            addOKButton(y);
+        }
+
+        void setupMCDX()
+        {
+            mContainer.removeAllControls();
+
+            String[] tt = { "Period/Base/Sensitivity Banker", "Period/Base/Sensitivity HotMoney" };
+
+            String banker = GlobalData.getData().getValueString(GlobalData.kBankerPeriod_Base_Sens, "50/50/1.5");
+            String hotmoney = GlobalData.getData().getValueString(GlobalData.kHotmoneyPeriod_Base_Sens, "40/30/0.7");
+
+            int y = 0;
+            /*
+            xLabel l = new xLabel("MCDX");
+            l.setPosition(0, y);
+            l.setSize(mContainer.getW(), -1);
+            l.setAlign(xGraphics.RIGHT);
+            mContainer.addControl(l);
+
+            y = l.getBottom() + 4;
+             */
+            //  Slow period
+            mTextField1 = addText2(y, "Period/base/sens (50/50/1.5)", banker);
+
+            y += 44;
+            mTextField2 = addText2(y, "Period/base/sens (40/30/0.7)", hotmoney);
+            y += 52;
             //========================
             addOKButton(y);
         }
@@ -1293,6 +1331,15 @@ namespace stock123.app
                         mContext.mOptMACDFast = mValue2.Value;
                         mContext.mOptMACDSignal = mValue3.Value;
                         break;
+                    case ChartBase.CHART_MCDX:
+                        {
+                            String banker = mTextField1.getText();
+                            String hotmoney = mTextField2.getText();
+                            GlobalData.getData().setValueString(GlobalData.kBankerPeriod_Base_Sens, banker);
+                            GlobalData.getData().setValueString(GlobalData.kHotmoneyPeriod_Base_Sens, hotmoney);
+                            GlobalData.saveData();
+                        }
+                        break;
                     case ChartBase.CHART_RSI:
                         mContext.mOptRSIPeriod[IDX] = mValue1.Value;
                         if (IDX == 0)
@@ -1467,6 +1514,10 @@ namespace stock123.app
                         mContext.mOptMACDSlow = mContext.mOptMACDSlowDefault;
                         mContext.mOptMACDFast = mContext.mOptMACDFastDefault;
                         mContext.mOptMACDSignal = mContext.mOptMACDSignalDefault;
+                        break;
+                    case ChartBase.CHART_MCDX:
+                        GlobalData.getData().setValueString(GlobalData.kBankerPeriod_Base_Sens, "50/50/1.5");
+                        GlobalData.getData().setValueString(GlobalData.kHotmoneyPeriod_Base_Sens, "40/30/0.7");
                         break;
                     case ChartBase.CHART_RSI:
                         if (IDX == 0)

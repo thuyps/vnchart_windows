@@ -53,7 +53,7 @@ namespace stock123.app.chart
             g.setColor(C.COLOR_FADE_YELLOW0);
             g.drawString(mFont, "0", getW() - 8, mOY, xGraphics.VCENTER | xGraphics.RIGHT);
 
-            int hisW = (int)(((float)mDrawingW / mChartLineLength) * 2.0f / 3);
+            int hisW = (int)(((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
             
             for (int i = 0; i < mChartLineLength; i++)
             {
@@ -121,7 +121,7 @@ namespace stock123.app.chart
             mHistogramH = allocMem(mHistogramH, cnt * 1);
 
             //	get the highest
-            float rx = (float)mDrawingW / cnt;
+            float rx = (float)getDrawingW() / cnt;
 
             //	lo/hi
             for (i = 0; i < cnt; i++)

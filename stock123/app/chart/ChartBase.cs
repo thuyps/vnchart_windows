@@ -88,6 +88,7 @@ namespace stock123.app.chart
         public const int CHART_CRS_RATIO = 44;
         public const int CHART_CRS_PERCENT = 45;
 
+        public const int CHART_MCDX = 52;
         //--------------------------------------------
 
         //public int CHART_BORDER_SPACING_Y = 5;
@@ -111,9 +112,9 @@ namespace stock123.app.chart
         public bool mShouldDrawGrid = false;
         //xImage* mImgCursor;
 
-        protected int mInternalW;
+        //protected int internalW();
         //protected int mDrawingH;
-        protected int mDrawingW;
+        //protected int getDrawingW();
 
         protected int mCurrentKey;	//	for detecting share's cursor change
         protected int mLastScope;
@@ -124,7 +125,7 @@ namespace stock123.app.chart
         protected short[] mChartLineXY2;
         protected int mChartLineXYSize;
 
-        protected int mVolumeBarW;
+        protected float mVolumeBarW;
 
         protected float mPriceDistance;
         protected int mChartLineLength;
@@ -205,7 +206,7 @@ namespace stock123.app.chart
                 if (mPricesY[i] < -2000)    //  bug
                     break;
                 g.setColor(C.GREY_LINE_COLOR);
-                g.drawLine(0, mPricesY[i], mInternalW, mPricesY[i]);
+                g.drawLine(0, mPricesY[i], internalW(), mPricesY[i]);
 
                 String sz = (mPrices[i]).ToString("0.0");
                 g.setColor(C.COLOR_GRAY_LIGHT);
@@ -237,7 +238,7 @@ namespace stock123.app.chart
             float rY = (float)getDrawingH() / distance;
             int mH = getH();
             int mY = 0;
-            //		float rX = (float)mDrawingW/mChartLineLength;
+            //		float rX = (float)getDrawingW()/mChartLineLength;
             //price
             //rY = (float)priceDistance/drawingH;
             float priceStep = distance / 5;
@@ -251,7 +252,7 @@ namespace stock123.app.chart
             for (int i = 0; i < 5; i++)
             {
                 g.setColor(C.GREY_LINE_COLOR);
-                g.drawLine(0, mPricesY[i], mInternalW, mPricesY[i]);
+                g.drawLine(0, mPricesY[i], internalW(), mPricesY[i]);
 
                 String sz = (mPrices[i]).ToString("0.0");
                 g.setColor(C.COLOR_GRAY_LIGHT);
@@ -393,9 +394,11 @@ namespace stock123.app.chart
         }
         public void clearModifyKey() { 
             mCurrentKey = 0x0fffffff;
-            mInternalW = getW() - 40;
-            //mDrawingH = getH() - 2 * CHART_BORDER_SPACING_Y;
-            mDrawingW = mInternalW - 2 * CHART_BORDER_SPACING_X;
+        }
+
+        public int internalW()
+        {
+            return getW() - 40;
         }
 
         public int getDrawingH()
@@ -407,6 +410,16 @@ namespace stock123.app.chart
             int h = getH() - 6;// 2 * getMarginY();
 
             return (int)(h * getScaleY());
+        }
+
+        public int getDrawingW()
+        {
+            return internalW() - 2 * CHART_BORDER_SPACING_X;
+        }
+
+        public bool themeDark()
+        {
+            return true;
         }
         //=============================================
         protected int screenToCandleIndex(int x, int y)
@@ -434,13 +447,13 @@ namespace stock123.app.chart
 
         protected bool isHiding() { return isShow() == false; }
 
-        protected int getInternalW() { return mInternalW; }
+        protected int getInternalW() { return internalW(); }
 
         public void setRenderCursor(bool render) { mRenderCursor = render; }
 
         float getCandleW()
         {
-            int w = mInternalW - 2 * CHART_BORDER_SPACING_X;
+            int w = internalW() - 2 * CHART_BORDER_SPACING_X;
             if (mChartLineLength == 0)
                 return 0;
             return (float)w / mChartLineLength;
@@ -448,7 +461,7 @@ namespace stock123.app.chart
 
         public int dxToCandles(int dx)
         {
-            int w = mInternalW - 2 * CHART_BORDER_SPACING_X;
+            int w = internalW() - 2 * CHART_BORDER_SPACING_X;
 
             int candles = (dx * mChartLineLength) / w;
 
@@ -463,7 +476,7 @@ namespace stock123.app.chart
                 if (share != null)
                     mChartLineLength = share.mEndIdx - share.mBeginIdx + 1;
             }
-            int w = mInternalW - 2 * CHART_BORDER_SPACING_X;
+            int w = internalW() - 2 * CHART_BORDER_SPACING_X;
             float rX = (float)w / mChartLineLength;
 
             return (int)(candles * rX);
@@ -477,7 +490,7 @@ namespace stock123.app.chart
                 if (share != null)
                     mChartLineLength = share.mEndIdx - share.mBeginIdx + 1;
             }
-            int w = mInternalW - 2 * CHART_BORDER_SPACING_X;
+            int w = internalW() - 2 * CHART_BORDER_SPACING_X;
             float rX = (float)w / mChartLineLength;
 
             return (int)(candles * rX);
@@ -593,10 +606,8 @@ namespace stock123.app.chart
                 if (mChartLineLength > MAX_DRAW_POINT)
                     mChartLineLength = MAX_DRAW_POINT;
 
-                if (mInternalW == 0)
-                    mInternalW = getW() - 40;
                 //mDrawingH = mH - 2 * CHART_BORDER_SPACING_Y;
-                mDrawingW = mInternalW - 2 * CHART_BORDER_SPACING_X;
+                //getDrawingW() = internalW() - 2 * CHART_BORDER_SPACING_X;
                 /*
                 mPriceDistance = share.getHighestPrice() - share.getLowestPrice();
                 //	price lines
@@ -604,7 +615,7 @@ namespace stock123.app.chart
                 //	priceDistance will fit drawingH
                 //	ex: 100k == 120 pixels . 1k = 1.2 pixels
                 float rY = (float)getDrawingH() / mPriceDistance;
-                //		float rX = (float)mDrawingW/mChartLineLength;
+                //		float rX = (float)getDrawingW()/mChartLineLength;
                 //price
                 //rY = (float)priceDistance/drawingH;
                 float priceStep = (float)mPriceDistance / 5;
@@ -761,7 +772,7 @@ namespace stock123.app.chart
             //	ex: 100k == 120 pixels . 1k = 1.2 pixels
             float rY = (float)getDrawingH() / priceDistance;
 
-            float rX = (float)mDrawingW / (share.mEndIdx - share.mBeginIdx + 1);
+            float rX = (float)getDrawingW() / (share.mEndIdx - share.mBeginIdx + 1);
 
             int mX = 0;
             int mY = 0;
@@ -791,7 +802,7 @@ namespace stock123.app.chart
             //	ex: 100k == 120 pixels . 1k = 1.2 pixels
             float rY = (float)getDrawingH() / priceDistance;
 
-            float rX = (float)mDrawingW / (share.mEndIdx - share.mBeginIdx + 1);
+            float rX = (float)getDrawingW() / (share.mEndIdx - share.mBeginIdx + 1);
 
             //	int begin = share.mBeginIdx;
             for (int i = 0; i < len; i++)

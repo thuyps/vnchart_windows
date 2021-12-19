@@ -25,6 +25,9 @@ namespace stock123.app.data
         public const String kStockRSISmoothK = "stochrsi_smoothk";
         public const String kStochRSISmoothD = "stochrsi_smoothd";
 
+        public const String kBankerPeriod_Base_Sens = "banker_b_p_s";
+        public const String kHotmoneyPeriod_Base_Sens = "hotmoney_b_p_s";
+
         static VTDictionary data = new VTDictionary();
         static VTDictionary dataPriceboard = new VTDictionary();
         static VTDictionary _vars = new VTDictionary();

@@ -82,11 +82,11 @@ namespace stock123.app.chart
                 lowest /= 4;
 
                 double ry = (float)getDrawingH() / (biggest - lowest);
-                double rw = (float)mDrawingW / mChartLineLength;
-                mVolumeBarW = (int)(((float)mDrawingW / mChartLineLength) * 2.0f / 3);
+                double rw = (float)getDrawingW() / mChartLineLength;
+                mVolumeBarW = (int)(((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
 
                 if (mVolumeBarW < 1) mVolumeBarW = 1;
-                int volumeBarWHalf = mVolumeBarW / 2;
+                float volumeBarWHalf = mVolumeBarW / 2;
                 int vH = 0;
                 int vL = 0xffffff;
                 for (i = 0; i < mChartLineLength; i++)
@@ -127,7 +127,7 @@ namespace stock123.app.chart
                     else
                         g.setColor(0xffa08000);
                 }
-                g.fillRect(mChartLineXY[2 * i], mChartLineXY[2 * i + 1], mVolumeBarW, tmp - mChartLineXY[2 * i + 1]);
+                g.fillRectF(mChartLineXY[2 * i], mChartLineXY[2 * i + 1], mVolumeBarW, tmp - mChartLineXY[2 * i + 1]);
             }
 
             //  sma

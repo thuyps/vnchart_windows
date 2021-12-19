@@ -80,7 +80,7 @@ namespace stock123.app.chart
                     int i;
                     float low = share.getLowestPrice();
                     float rY = (float)getDrawingH() / mPriceDistance;
-                    float rX = (float)mDrawingW / mChartLineLength;
+                    float rX = (float)getDrawingW() / mChartLineLength;
                     int begin = -1;
                     for (i = 0; i < mZigzag.size(); i++)
                     {

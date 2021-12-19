@@ -281,7 +281,7 @@ namespace stock123.app.chart
             //-------draw candles-------------
             //	PriceDistance	- drawingH
             //	price			- ?
-            int candleW = (int)(((float)mDrawingW / mChartLineLength) * 2.0f / 3);
+            int candleW = (int)(((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
 
             if (candleW % 2 == 0) candleW++;
             int candleWHalf = candleW / 2 + 1;
@@ -298,7 +298,7 @@ namespace stock123.app.chart
             int x, y;
             float low = s.getLowestPrice();
             float ry = (float)getDrawingH() / mPriceDistance;
-            float rw = (float)mDrawingW / mChartLineLength;
+            float rw = (float)getDrawingW() / mChartLineLength;
 
             int shadowH = 0;
             int shadowY = 0;
@@ -418,7 +418,7 @@ namespace stock123.app.chart
             //-------draw candles-------------
             //	PriceDistance	- drawingH
             //	price			- ?
-            int candleW = (int)(((float)mDrawingW / mChartLineLength) * 2.0f / 3);
+            int candleW = (int)(((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
 
             if (candleW % 2 == 0) candleW++;
             int candleWHalf = candleW / 2 + 1;
@@ -435,7 +435,7 @@ namespace stock123.app.chart
             int x, y;
             float low = s.getLowestPrice();
             float ry = (float)getDrawingH() / mPriceDistance;
-            float rw = (float)mDrawingW / mChartLineLength;
+            float rw = (float)getDrawingW() / mChartLineLength;
 
             int shadowH = 0;
             int shadowY = 0;
@@ -583,7 +583,7 @@ namespace stock123.app.chart
             //-------draw candles-------------
             //	PriceDistance	- drawingH
             //	price			- ?
-            int candleW = (int)(((float)mDrawingW / mChartLineLength) * 2.0f / 3);
+            int candleW = (int)(((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
 
             if (candleW % 2 == 0) candleW++;
             int candleWHalf = candleW / 2 + 1;
@@ -599,7 +599,7 @@ namespace stock123.app.chart
             int x, y;
             float low = s.getLowestPrice();
             float ry = (float)getDrawingH() / mPriceDistance;
-            float rw = (float)mDrawingW / mChartLineLength;
+            float rw = (float)getDrawingW() / mChartLineLength;
 
             int shadowH = 0;
             int shadowY = 0;
@@ -713,7 +713,7 @@ namespace stock123.app.chart
             //-------draw candles-------------
             //	PriceDistance	- drawingH
             //	price			- ?
-            int candleW = (int)(((float)mDrawingW / mChartLineLength) * 2.0f / 3);
+            int candleW = (int)(((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
 
             if (candleW % 2 == 0) candleW++;
             int candleWHalf = candleW / 2 + 1;
@@ -729,7 +729,7 @@ namespace stock123.app.chart
             int x, y;
             float low = s.getLowestPrice();
             float ry = (float)getDrawingH() / mPriceDistance;
-            float rw = (float)mDrawingW / mChartLineLength;
+            float rw = (float)getDrawingW() / mChartLineLength;
 
             int shadowH = 0;
             int shadowY = 0;

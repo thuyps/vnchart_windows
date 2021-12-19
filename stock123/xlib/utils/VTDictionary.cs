@@ -332,6 +332,23 @@ namespace xlib.utils
             return null;
         }
 
+        public String getValueString(String key, String defValue)
+        {
+            if (hasKey(key))
+            {
+                if (dict[key].GetType().Equals(typeof(String)))
+                {
+                    return (String)dict[key];
+                }
+                else
+                {
+                    return defValue;
+                }
+            }
+
+            return defValue;
+        }
+
         public ArrayList getArray(String key)
         {
             if (hasKey(key))
