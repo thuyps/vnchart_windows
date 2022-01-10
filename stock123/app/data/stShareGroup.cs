@@ -243,7 +243,22 @@ namespace stock123.app.data
             for (int j = 0; j < members; j++)
             {
                 String code = di.readUTF();
-                this.addCode(code);
+                if (code != null && code.Length >= 3)
+                {
+                    if (Context.getInstance() != null && Context.getInstance().mShareManager != null)
+                    {
+                        int id = Context.getInstance().mShareManager.getShareID(code);
+                        if (id > 0)
+                        {
+                            this.addCode(code);
+                        }
+                    }
+                    else
+                    {
+                        this.addCode(code);
+                    }
+                    
+                }
             }
         }
         public void save(xDataOutput o)

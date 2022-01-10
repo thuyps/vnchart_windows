@@ -1332,17 +1332,11 @@ namespace stock123.app
             }
             else if (buttonID == C.ID_REFRESH_DATA)
             {
-                if (mNetState == STATE_NORMAL)
+                if (!isUpdatingPriceboard)
                 {
-                    mNetState = STATE_PREPARING_PRICEBOARD_ZERO;
-                    //mTimer.expireTimer();
-                    mTimer.setExpiration(3 * 1000);
-                    setStatusMsg("Refreshing...");
+                    doUpdatePriceboard();
                 }
-                else
-                {
-                    setStatusMsg("System is busy :(");
-                }
+                setStatusMsg("Refreshing...");
             }
             if (buttonID == C.ID_LOGIN)
             {    
@@ -2915,11 +2909,19 @@ namespace stock123.app
             net.flushRequest();
         }
 
+
+        bool isRealtimeUpdating = false;
         void doUpdateRealtime()
         {
+            if (isRealtimeUpdating)
+            {
+                return;
+            }
+            isRealtimeUpdating = true;
             NetProtocol net = mContext.createNetProtocol();
             net.onDoneDelegate = (sender, ok) =>
             {
+                isRealtimeUpdating = false;
                 hideContactingServerDlg();
 
                 if (mNetState == STATE_GETTING_PRICEBOARD_ZERO)
@@ -3090,6 +3092,73 @@ namespace stock123.app
                 
                 mNetState = STATE_UPDATING_REALTIME;
             }
+            //---------------------------
+            net.flushRequest();
+        }
+
+        bool isUpdatingPriceboard = false;
+        void doUpdatePriceboard()
+        {
+            if (isUpdatingPriceboard)
+            {
+                return;
+            }
+            isUpdatingPriceboard = true;
+            NetProtocol net = mContext.createNetProtocol();
+            net.onDoneDelegate = (sender, ok) =>
+            {
+                isUpdatingPriceboard = false;
+                hideContactingServerDlg();
+                    
+                mContext.mPriceboard.savePriceboard();
+
+                //  refresh: priceboard, 2 indices, realtime charts
+                mPriceboard.invalidate();
+                updateItemsAfterNetDone();
+            };
+            //=end of network done's callback================================
+            //  get priceboard reference + zero
+            //  indices
+            if (!mIsLoadIndicesDataAtStartup)
+            {
+                for (int i = 0; i < mContext.mShareManager.getVnindexCnt(); i++)
+                {
+                    Share share = mContext.mShareManager.getVnindexShareAt(i);
+                    if (share == null)
+                        break;
+                    share.loadShareFromFile(false);
+                    int date = share.getLastCandleDate();
+                    if (date == 0)
+                    {
+                        date = Utils.getDateAsInt(5000);
+                    }
+                    else
+                    {
+                        long l = Utils.dateToNumber(date);
+                        date = Utils.dateFromNumber(l - 10);
+                    }
+                    net.requestGet1ShareData(share.mID, date);
+                }
+                //  loadShareFromFile makes mClose,mOpen... incorrect, fix it
+                if (mContext.getSelectedShare() != null)
+                {
+                    mContext.getSelectedShare().clearCalculations();
+                    if (mContext.getSelectedShare().isIndex())
+                        mContext.getSelectedShare().loadShareFromFile(false);
+                    else
+                        mContext.getSelectedShare().loadShareFromCommonData(false);
+                }
+                //=========================
+            }
+            //mNetProtocol.requestPriceboardRef(-1);
+            net.requestPriceboardInitial(-1, null);
+
+            net.requestOpens();
+
+            //  json indices
+            VTDictionary dict = new VTDictionary();
+            dict.setValueInt(JSONHandler.kMessageID, JSONHandler.JMSG_LIST_INDICES);
+            net.requestJSONMessage(dict.toJson());
             //---------------------------
             net.flushRequest();
         }

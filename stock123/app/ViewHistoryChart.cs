@@ -55,7 +55,19 @@ namespace stock123.app
         String mTitleOfFilter;
         bool[] mFilteredSharesOrderAccend = {true, true, true};
         int mFilteredSharesOrderLastSortType = -1;
-        xContainer mTableList;
+        xContainer listFilteredShare;
+
+        xContainer myGroupPage;
+        xContainer nhomnganhPage;
+
+        xContainer listMygroupShares;
+        xContainer listNhomnganhShares;
+        
+        xTabControl mTabOfGroups;
+
+        xListView listMyGroups;
+        xListView listNhomnganhs;
+
 
         int[] mAcceptedMarkets = { 1, 0, 0, 0};
 
@@ -64,7 +76,6 @@ namespace stock123.app
 
         DlgContactingServer mNetworkContacting;
         HistoryChartControl mMainHistoryChartControl;
-        HistoryChartControl mSecondHistoryChartControl;
 
         ToolBarButton mAlarmButton;
         int mAlarmAnimationIDX = 0;
@@ -245,6 +256,7 @@ namespace stock123.app
             //--------------------------------------
             removeAllControls();
             mRightPanel = null;
+            mLeftPanel = null;
             //--------------------------------------
             createToolbar();
 
@@ -398,9 +410,14 @@ namespace stock123.app
         }
         //=========================================
 
+        const int LEFT_PANEL_W = 240;
+        int heightOfSharelist()
+        {
+            return mLeftPanel.getH() / 2 + 40;
+        }
         void createLeftPanel()
         {
-            int leftW = 240;
+            int leftW = LEFT_PANEL_W;
             long t = Utils.currentTimeMillis();
 
             logTimeElapsedStart();
@@ -408,25 +425,106 @@ namespace stock123.app
             {
                 mLeftPanel = new xContainer();
                 mLeftPanel.setSize(leftW, getWorkingH());
-                mLeftPanel.setPosition(getW()-leftW, getToolbarH());
+                mLeftPanel.setPosition(0, getToolbarH());
 
-                xBaseControl search = recreateSearchControl();
+                
+                //  tabs
+                int h = heightOfSharelist();
+                int y = getH() - h;
 
-                search.setPosition(0, mLeftPanel.getH() - search.getH());
-                mLeftPanel.addControl(search);
+                int tw = mLeftPanel.getW();
+                int th = mLeftPanel.getH();
 
-                //  share list
-                mTableList = new xContainer();
-                mTableList.setSize(mLeftPanel.getW(), mLeftPanel.getH() - search.getH());
-                mLeftPanel.addControl(mTableList);
+                //  tabs control
+                mTabOfGroups = new xTabControl();
+                mTabOfGroups.setSize(tw, th);
+                mLeftPanel.addControl(mTabOfGroups);
+
+                xTabPage page;
+
+                //  filter
+                page = new xTabPage("Filter");
+                xContainer filterContainer = new xContainer();
+                filterContainer.setSize(tw, th);
+
+                listFilteredShare = new xContainer();
+                listFilteredShare.setSize(mLeftPanel.getW(), h);
+                filterContainer.addControl(listFilteredShare);
+                
+                y = h;
+
+                xBaseControl search = recreateSearchControl(mLeftPanel.getW(), mLeftPanel.getH() - h);
+
+                search.setPosition(0, y);
+                filterContainer.addControl(search);
+
+                page.addControl(filterContainer);
+                mTabOfGroups.addPage(page);
+
+                //  my group
+                page = new xTabPage("Theo dõi");
+
+                myGroupPage = new xContainer();
+                myGroupPage.setSize(tw, th);
+                listMygroupShares = new xContainer();
+                listMygroupShares.setSize(tw, h);
+                
+                myGroupPage.addControl(listMygroupShares);
+
+                int h2 = mLeftPanel.getH() - h;
+                y = h;
+
+                xContainer c = new xContainer();
+                c.setSize(tw, th-y);
+                c.setPosition(0, y);
+
+                string[] ss = { "NHÓM" };
+                float[] cols = {100.0f};
+                listMyGroups = xListView.createListView(this, ss, cols, tw, c.getH(), null);
+                listMyGroups.setSize(tw, c.getH());
+                c.addControl(listMyGroups);
+
+                myGroupPage.addControl(c);
+
+                page.addControl(myGroupPage);
+                mTabOfGroups.addPage(page);
+
+                updateMyShareGroupList();
+
+                //  Nhom nganh
+                page = new xTabPage("Nhóm ngành");
+                nhomnganhPage = new xContainer();
+                nhomnganhPage.setSize(tw, th);
+
+                listNhomnganhShares = new xContainer();
+                listNhomnganhShares.setSize(tw-10, h);
+                nhomnganhPage.addControl(listNhomnganhShares);
+
+                y = h;
+
+                c = new xContainer();
+                c.setSize(tw, th - y);
+                c.setPosition(0, y);
+                nhomnganhPage.addControl(c);
+
+                string[] ss2 = { "NGÀNH" };
+                listNhomnganhs = xListView.createListView(this, ss2, cols, tw, c.getH(), null);
+                listNhomnganhs.setSize(tw-50, th - y);
+                listNhomnganhs.setPosition(0, 0);
+                c.addControl(listNhomnganhs);
+
+                page.addControl(nhomnganhPage);
+
+                updateNhomnganhGroupList();
+
+                mTabOfGroups.addPage(page);
+                //-------------------------------
+                mLeftPanel.addControl(mTabOfGroups);//mTableList);
 
 
                 //===================
             }
-            logTimeElapsedStop("createLeftPanel0");
-//            if (mScreenType == TYPE_CHART)
-//                leftW = 0;  //  hide it
-            mLeftPanel.setPosition(getW() - leftW, getToolbarH());
+            mLeftPanel.setPosition(0, getToolbarH());
             mLeftPanel.setSize(leftW, getWorkingH());
             addControl(mLeftPanel);
 
@@ -442,17 +540,17 @@ namespace stock123.app
 
         void recreateTableList(int sortType)
         {
-            mTableList.removeAllControls();
+            listFilteredShare.removeAllControls();
             //xListView list = createFilteredList(sortType, mTableList.getW(), mTableList.getH());
 
             logTimeElapsedStart2();
-            xBaseControl list = createFilteredList(sortType, mTableList.getW(), mTableList.getH());
+            xBaseControl list = createFilteredList(sortType, listFilteredShare.getW(), listFilteredShare.getH());
 
             logTimeElapsedStop2("recreateTableList1");
 
             list.setPosition(0, 0);
 
-            mTableList.addControl(list);
+            listFilteredShare.addControl(list);
 
             logTimeElapsedStop2("recreateTableList2");
 
@@ -474,7 +572,9 @@ namespace stock123.app
         {
             Share share = mShare;
             if (share == null)
+            {
                 return;
+            }
 
             //============================
             int y0 = getToolbarH();
@@ -492,55 +592,26 @@ namespace stock123.app
             logTimeElapsedStop("createRightPanel2");
             mRightPanel.setSize(getW() - mLeftPanel.getW(), mLeftPanel.getH());
             //mRightPanel.setPosition(mLeftPanel.getRight(), y0);
-            mRightPanel.setPosition(0, y0);
+            mRightPanel.setPosition(mLeftPanel.getW(), y0);
             
-
             int w = mRightPanel.getW();
             mPanels.removeAllElements();
             logTimeElapsedStop("createRightPanel3");
             bool showDrawingTool = false;
             if (mMainHistoryChartControl != null)
+            {
                 showDrawingTool = mMainHistoryChartControl.hasDrawing();
+            }
             //==========================
-            if (mContext.mIsViewSplitted)
-            {
-                float tmp = (float)w/5;
-                int[] ws = { (int)tmp * 3, (int)tmp * 2 };
-                logTimeElapsedStop("createRightPanel4");
+            
+            HistoryChartControl his = new HistoryChartControl(mShare, "pannel0", w, mRightPanel.getH(), false);
+            his.setListener(this);
+            his.setPosition(0, 0);
 
-                xBaseControl[] panels = { null, null };
-                xSplitter splitter = xSplitter.createSplitter(false, mRightPanel.getW(), mRightPanel.getH(), ws[0], 120, 120);
-                for (int i = 0; i < 2; i++)
-                {
-                    HistoryChartControl his = new HistoryChartControl(mShare, "panel" + (i+1), ws[i], mRightPanel.getH(), i==1);
-                    his.setListener(this);
-                    his.setPosition(0, 0);
-                    panels[i] = his;
-                }
-                logTimeElapsedStop("createRightPanel5");
+            mMainHistoryChartControl = his;
 
-                mMainHistoryChartControl = (HistoryChartControl)panels[0];
-                mSecondHistoryChartControl = (HistoryChartControl)panels[1];
-
-                splitter.setPanels(panels[0], panels[1]);
-                mPanels.addElement(panels[0]);
-                mPanels.addElement(panels[1]);
-
-                mRightPanel.addControl(splitter);
-                logTimeElapsedStop("createRightPanel6");
-            }
-            else
-            {
-                HistoryChartControl his = new HistoryChartControl(mShare, "pannel0", w, mRightPanel.getH(), false);
-                his.setListener(this);
-                his.setPosition(0, 0);
-
-                mMainHistoryChartControl = his;
-                mSecondHistoryChartControl = null;
-
-                mPanels.addElement(his);
-                mRightPanel.addControl(his);
-            }
+            mPanels.addElement(his);
+            mRightPanel.addControl(his);
 
             if ((showDrawingTool && !mMainHistoryChartControl.hasDrawing())
                 || (!showDrawingTool && mMainHistoryChartControl.hasDrawing()))
@@ -649,6 +720,71 @@ namespace stock123.app
             return list;
         }
 
+        void updateMyShareGroupList()
+        {
+            xVector v = Context.userDataManager().shareGroups();
+            
+            updateShareGroupList(v, listMyGroups);
+        }
+
+        void updateNhomnganhGroupList()
+        {
+            xVector v = new xVector();
+            
+            //--------------------
+            //  cat 1
+            for (int i = 0; i < mContext.getShareGroupCount(1); i++)
+            {
+                stShareGroup g = mContext.getShareGroup(1, i);
+                v.addElement(g);
+            }
+            //  cat 2
+            for (int i = 0; i < mContext.getShareGroupCount(2); i++)
+            {
+                stShareGroup g = mContext.getShareGroup(2, i);
+                v.addElement(g);
+            }
+
+            updateShareGroupList(v, listNhomnganhs);
+        }
+
+        void updateShareGroupList(xVector groups, xListView listView)
+        {
+            listView.clear();
+            for (int i = 0; i < groups.size(); i++)
+            {
+                stShareGroup g = (stShareGroup)groups.elementAt(i);
+                xListViewItem item = xListViewItem.createListViewItem(this, 1);// xListViewItem.createListViewItem(this, 1);
+                item.getItem().SubItems[0].Font = mContext.getFontText2();
+                //item.getItem().SubItems[0].ForeColor = Color.Blue;
+                item.setTextColor(0, C.COLOR_BLACK);
+                item.setTextForCell(0, g.getName());
+
+                item.setData(g);
+                listView.addRow(item);
+            }
+        }
+
+        xBaseControl createSharelistOfCurrentGroup(stShareGroup g, int w, int h)
+        {
+            int rowH = 44;
+            int tableH = 22 + 37 + (rowH + 1) * (g.getTotal());
+            xScrollView tableContainer = new xScrollView(null, w, h);
+
+            table.TablePriceboard table = new table.TablePriceboard(this, (stShareGroup)null, w - 20, rowH);
+            table.setSize(w, tableH);
+            table.hasTitle = true;
+            if (mTitleOfFilter != null)
+            {
+                g.setName(mTitleOfFilter);
+            }
+            table.setShareGroupAsFilterResult(g, ShareSortUtils.SORT_DEFAULT);
+
+            tableContainer.addControl(table);
+
+            return tableContainer;
+        }
+
         xBaseControl createFilteredList(int sortType, int w, int h)
         {
             xVector shares = mFilteredShares;
@@ -723,13 +859,6 @@ namespace stock123.app
             {
                 FormSettingParameters dlg = new FormSettingParameters(mShare, this);
                 dlg.ShowDialog();
-            }
-            if (buttonID == C.ID_SPLIT_VIEW)
-            {
-                mContext.mIsViewSplitted = !mContext.mIsViewSplitted;
-                mContext.saveOptions();
-                //updateUI();
-                createRightPanel();
             }
             if (buttonID == C.ID_SHOW_FILTER_PARAMETER_FORM)
             {
@@ -1658,7 +1787,10 @@ namespace stock123.app
                 object o = v0.elementAt(i);
                 share = (Share)o;
                 //System.Console.WriteLine(share.mCode + "/" + share.mSortParam);
-                mFilteredShares.addElement(o);
+                if (o != null)
+                {
+                    mFilteredShares.addElement(o);
+                }
             }
         }
 
@@ -1672,7 +1804,10 @@ namespace stock123.app
             {
                 shareID = g.getIDAt(i);
                 Share share = mContext.mShareManager.getShare(shareID);
-                mFilteredShares.addElement(share);
+                if (share != null)
+                {
+                    mFilteredShares.addElement(share);
+                }
             }
             //============now recreate the list
             recreateTableList(ShareSortUtils.SORT_IGNORE);
@@ -1681,7 +1816,7 @@ namespace stock123.app
         }
 
         xTabControl mSearchControl = null;
-        xBaseControl recreateSearchControl()
+        xBaseControl recreateSearchControl(int w, int h)
         {
             xTabControl tab = mSearchControl;
 
@@ -1692,8 +1827,6 @@ namespace stock123.app
             tab = mSearchControl;
             tab.removeAllPages();
 
-            int w = mLeftPanel.getW();
-            int h = mLeftPanel.getH()*2/5;
             tab.setSize(w, h);
             
             xContainer controls;
@@ -1723,22 +1856,6 @@ namespace stock123.app
             page.setSize(controls);
             page.addControl(controls);
             tab.addPage(page);
-
-            logTimeElapsedStop2("recreateSearchControl3");
-            /*
-            page = new xTabPage("Cơ bản2");
-            controls = createFilterBasicControls2(w - 20, h - 30);
-            page.setSize(controls);
-            page.addControl(controls);
-            tab.addPage(page);*/
-            //==========candle=========
-            /*
-            page = new xTabPage("Candle");
-            controls = createFilterCandleControls(w - 20, h - 30);
-            page.setSize(controls);
-            page.addControl(controls);
-            tab.addPage(page);
-             */
 
             return tab;
         }
@@ -1918,7 +2035,7 @@ namespace stock123.app
                 FilterManager.getInstance().addFilterSet(filterSet);
                 //FilterManager.getInstance().saveFilterSets();
                 Context.userDataManager().flushUserData();
-                recreateSearchControl();
+                recreateSearchControl(mLeftPanel.getW(), heightOfSharelist());
             }
         }
 
@@ -2003,7 +2120,10 @@ namespace stock123.app
                      for (int i = 0; i < vFired.size(); i++)
                      {
                          Share share = (Share)vFired.elementAt(i);
-                         mFilteredShares.addElement(share);
+                         if (share != null)
+                         {
+                             mFilteredShares.addElement(share);
+                         }
                      }
 
                      mContext.mShareManager.sortABC(mFilteredShares);
@@ -2040,7 +2160,7 @@ namespace stock123.app
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 Context.userDataManager().flushUserData();
-                recreateSearchControl();
+                recreateSearchControl(mLeftPanel.getW(), heightOfSharelist());
             }
         }
 
@@ -2056,7 +2176,9 @@ namespace stock123.app
             if (this.Size.Width == 0 || this.Size.Height == 0)
                 return;
             if (getW() > 0 && getH() > 0)
+            {
                 updateUI();
+            }
         }
 
         public void onClickSortTichluy()
@@ -2094,7 +2216,7 @@ namespace stock123.app
                 doFilter();
                 mContext.mShareManager.sortTichluy((int)filterItem.param1, (int)filterItem.param2, mFilteredShares);
                 
-                recreateSearchControl();
+                recreateSearchControl(mLeftPanel.getW(), heightOfSharelist());
             }
         }
 
@@ -2113,10 +2235,7 @@ namespace stock123.app
                 reloadShare(mShare, true);
 
                 mMainHistoryChartControl.setShare(mShare);
-                if (mSecondHistoryChartControl != null)
-                {
-                    mSecondHistoryChartControl.setShare(mShare);
-                }
+                
                 mNetState = NETSTATE_GET_QUOTE_DATA_PREPARING;
 
                 refreshCharts();

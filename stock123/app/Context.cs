@@ -2032,7 +2032,7 @@ namespace stock123.app
         //=========================
   
         public String getServerURL()
-        {
+        {   
             return ServerURL;
         }
         void checkServerSoft123()
@@ -2702,7 +2702,7 @@ namespace stock123.app
             net.setServerURL(ServerURL);
 
             //  for test only
-            //net.setServerURL("http://192.168.1.30:8080/srv/");
+            //net.setServerURL("http://soft123.com.vn:8282/srv/");
 
             return net;
         }
