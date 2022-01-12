@@ -444,6 +444,7 @@ namespace stock123.app
 
                 //  filter
                 page = new xTabPage("Filter");
+                page.setBackgroundColor(C.COLOR_GRAY_DARK);
                 xContainer filterContainer = new xContainer();
                 filterContainer.setSize(tw, th);
 
@@ -463,6 +464,7 @@ namespace stock123.app
 
                 //  my group
                 page = new xTabPage("Theo dõi");
+                page.setBackgroundColor(C.COLOR_GRAY_DARK);
 
                 myGroupPage = new xContainer();
                 myGroupPage.setSize(tw, th);
@@ -482,6 +484,16 @@ namespace stock123.app
                 float[] cols = {100.0f};
                 listMyGroups = xListView.createListView(this, ss, cols, tw, c.getH(), null);
                 listMyGroups.setSize(tw, c.getH());
+
+                xListView.OnClickItem onClickItemMyGroup = (xListViewItem item) =>{
+                    stShareGroup g = (stShareGroup)item.getData();
+                    createShareListControl(listMygroupShares, g);
+
+                    showChartOfGroup(g);
+                };
+                listMyGroups.onClickItem += onClickItemMyGroup;    //  action
+            
+
                 c.addControl(listMyGroups);
 
                 myGroupPage.addControl(c);
@@ -495,6 +507,7 @@ namespace stock123.app
                 page = new xTabPage("Nhóm ngành");
                 nhomnganhPage = new xContainer();
                 nhomnganhPage.setSize(tw, th);
+                page.setBackgroundColor(C.COLOR_GRAY_DARK);
 
                 listNhomnganhShares = new xContainer();
                 listNhomnganhShares.setSize(tw-10, h);
@@ -511,6 +524,15 @@ namespace stock123.app
                 listNhomnganhs = xListView.createListView(this, ss2, cols, tw, c.getH(), null);
                 listNhomnganhs.setSize(tw-50, th - y);
                 listNhomnganhs.setPosition(0, 0);
+                xListView.OnClickItem onClickItemNhomnganhGroup = (xListViewItem item) =>
+                {
+                    stShareGroup g = (stShareGroup)item.getData();
+                    createShareListControl(listNhomnganhShares, g);
+
+                    showChartOfGroup(g);
+                };
+                listNhomnganhs.onClickItem = onClickItemNhomnganhGroup;   //  action
+
                 c.addControl(listNhomnganhs);
 
                 page.addControl(nhomnganhPage);
@@ -536,6 +558,15 @@ namespace stock123.app
                 recreateTableList(-1);
                 logTimeElapsedStop("createLeftPanel3");
             }
+        }
+
+        void createShareListControl(xContainer c, stShareGroup g)
+        {
+            c.removeAllControls();
+
+            xBaseControl list = createSharelistOfCurrentGroup(g, c.getW(), c.getH());
+            c.addControl(list);
+
         }
 
         void recreateTableList(int sortType)
@@ -750,6 +781,9 @@ namespace stock123.app
 
         void updateShareGroupList(xVector groups, xListView listView)
         {
+            ((ListView)listView.getControl()).HideSelection = false;
+            ((ListView)listView.getControl()).Scrollable = true;
+            listView.setBackgroundColor(C.COLOR_GRAY_DARK);
             listView.clear();
             for (int i = 0; i < groups.size(); i++)
             {
@@ -757,7 +791,7 @@ namespace stock123.app
                 xListViewItem item = xListViewItem.createListViewItem(this, 1);// xListViewItem.createListViewItem(this, 1);
                 item.getItem().SubItems[0].Font = mContext.getFontText2();
                 //item.getItem().SubItems[0].ForeColor = Color.Blue;
-                item.setTextColor(0, C.COLOR_BLACK);
+                item.setTextColor(0, C.COLOR_WHITE);
                 item.setTextForCell(0, g.getName());
 
                 item.setData(g);
@@ -2584,6 +2618,10 @@ namespace stock123.app
                 mSymbolContainer.addControl(l);
             }
              */
+        }
+
+        void showChartOfGroup(stShareGroup group)
+        {
         }
     }
 }

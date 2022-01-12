@@ -11,6 +11,8 @@ namespace xlib.ui
 {
     public class xListView: xBaseControl
     {
+        public delegate void OnClickItem(xListViewItem item);
+        public OnClickItem onClickItem;
         protected ColumnClickEventHandler _columnClickHandler;
         public xListView(xIEventListener listener, ImageList imglist)
             : base(listener)
@@ -253,8 +255,16 @@ namespace xlib.ui
             if (lv.SelectedItems.Count > 0)
             {
                 xListViewItem xitem = (xListViewItem)lv.SelectedItems[0].Tag;
+
+                if (onClickItem != null)
+                {
+                    onClickItem(xitem);
+                }
+
                 if (mListener != null)
+                {
                     mListener.onEvent(this, xBaseControl.EVT_ON_ROW_SELECTED, getID(), xitem);
+                }
             }
         }
 
