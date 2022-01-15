@@ -768,6 +768,17 @@ namespace stock123.app
 
             tableContainer.addControl(table);
 
+            //  index of the group
+            Share indexOfGroup = mContext.mShareManager.calcIndexOfGroup(g);
+
+            if (indexOfGroup != null)
+            {
+                indexOfGroup.setCursorScope(mContext.mOptHistoryChartTimeFrame);
+
+                showChartOfShare(indexOfGroup);
+                onChangedQuote();
+            }
+
             return tableContainer;
         }
 
@@ -1892,12 +1903,14 @@ namespace stock123.app
 
         void onChangedQuote()
         {
+            /*
             for (int i = 0; i < mPanels.size(); i++)
             {
                 HistoryChartControl his = (HistoryChartControl)mPanels.elementAt(i);
                 his.onChangedQuote();
                 //his.invalidateCharts();
             }
+             */
         }
 
         void refreshCharts()
@@ -2208,6 +2221,12 @@ namespace stock123.app
 
         void showChartOfShare(Share share)
         {
+            if (share != null && share.mIsGroupIndex)
+            {
+                mMainHistoryChartControl.setShare(share);
+                return;
+            }
+            //------------------------
             if (share != null && share != mShare)
             {
                 mShare = new Share();
