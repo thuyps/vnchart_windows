@@ -304,8 +304,8 @@ namespace stock123.app
             bool viewPushed = mContext.mIsViewSplitted;
             addToolbarButton(C.ID_TOOGLE_DRAWING_TOOL, 9, "Vẽ", ToolBarButtonStyle.ToggleButton, false);
             //addToolbarSeparator();
-            addToolbarSeparator();
-            addToolbarButton(C.ID_SPLIT_VIEW, 8, "-View-", ToolBarButtonStyle.ToggleButton, viewPushed);
+            //addToolbarSeparator();
+            //addToolbarButton(C.ID_SPLIT_VIEW, 8, "-View-", ToolBarButtonStyle.ToggleButton, viewPushed);
             //addToolbarButton(C.ID_GOTO_MINI_SCREEN, 4, "Minimize");
             //addToolbarSeparator();
             addToolbarSeparator();
@@ -316,71 +316,21 @@ namespace stock123.app
             //addToolbarButton(C.ID_ADD_SUB_CHART, 2, "+Sub chart");
             //addToolbarButton(C.ID_ADD_MASTER_CHART, 2, "+Master chart");
             //=================================================
-            /*
-            xBaseControl dropdown = null;
-            dropdown = createShareGroupDroplist(C.ID_DROPDOWN_COMMON_GROUP, "Nhóm mặc định", mContext.mShareGroups);
-            dropdown.setPosition(getW() - dropdown.getW()-100, 0);
-            tb.Controls.Add(dropdown.getControl());
-
-            int x = dropdown.getX() - 10 - dropdown.getW();
-            dropdown = createShareGroupDroplist(C.ID_DROPDOWN_FAVOR_GROUP, "Nhóm yêu thích", mContext.mFavorGroups);
-            dropdown.setPosition(x, 0);
-            tb.Controls.Add(dropdown.getControl());
-            */
+            
             //  quick look
             xLabel l = xLabel.createSingleLabel("Mã:");
             xTextField tf = xTextField.createTextField(54);
             mQuickCode = tf;
-            int x = getW() - tf.getW() - 275;
+            int x = 500;
 
             l.setSize(28, l.getH());
-            l.setPosition(x, 12);
+            l.setPosition(x, 9);
             tb.Controls.Add(l.getControl());
 
-            tf.setPosition(x+28, 8);//, dropdown.getY() + l.getH() + 4);
+            tf.setPosition(x+28, 7);//, dropdown.getY() + l.getH() + 4);
             tb.Controls.Add(tf.getControl());
             tf.setButtonEvent(C.ID_BUTTON_QUOTE, this);
-
-            x += tf.getW() + 28 + 10;
-            //  chọn nhóm
-            btChonNhom = xButton.createStandardButton(C.ID_BUTTON_CHON_NHOM_CP, this, "Chọn nhóm", 115);
-            //l.setSize(100, l.getH());
-            //l.setTextColor(0xffff0000);
-            btChonNhom.setPosition(x, 8);
-            tb.Controls.Add(btChonNhom.getControl());
-
-            x += btChonNhom.getW() + 16;
-            //  chonj nhom nganh
-            xButton nganh = xButton.createStandardButton(C.ID_BUTTON_CHON_NHOM_CP_NGANH, this, "Ngành", 55);
-            //l.setSize(100, l.getH());
-            //l.setTextColor(0xffff0000);
-            nganh.setPosition(x, 8);
-            tb.Controls.Add(nganh.getControl());
-            //  scroll
-/*
-            stShareGroup g = mContext.getCurrentShareGroup();
-            if (g != null && g.getTotal() > 1)
-            {
-                int itemW = 35;
-                int itemH = 15;
-                xContainer symbolContainer = new xContainer();
-                mSymbolContainer = symbolContainer;
-                mSymbolContainer.setBackgroundColor(0xffd0d0d0);
-
-                int cw = btChonNhom.getX() - 600-10;// itemW * (g.getTotal() / 2 + 1);
-                int ch = 2 * itemH;// 2 * itemH + 1;
-                symbolContainer.setSize(cw, ch);
-
-                //symbolContainer.setBackgroundColor(0x80808000);
-                createSymbolList(itemW, itemH);
-                //xScrollView scroll = new xScrollView(null, 16 * itemW, ch+ 17);
-                //scroll.addControl(symbolContainer);
-                //scroll.setPosition(getW() - 166 - scroll.getW(), 0);
-                symbolContainer.setPosition(600, 3);
-
-                tb.Controls.Add(symbolContainer.getControl());
-            }
-*/            
+  
             //==============================================================
             addStatusBar();
             setStatusMsg("{Chọn vùng: shift+bấm&rê chuột}, {Vẽ đường: ctrl+bấm&rê chuột}, {Clone trend: ctrl+center point}");
@@ -410,7 +360,7 @@ namespace stock123.app
         }
         //=========================================
 
-        const int LEFT_PANEL_W = 240;
+        const int LEFT_PANEL_W = 320;
         int heightOfSharelist()
         {
             return mLeftPanel.getH() / 2 + 40;
@@ -442,27 +392,8 @@ namespace stock123.app
 
                 xTabPage page;
 
-                //  filter
-                page = new xTabPage("Filter");
-                page.setBackgroundColor(C.COLOR_GRAY_DARK);
-                xContainer filterContainer = new xContainer();
-                filterContainer.setSize(tw, th);
-
-                listFilteredShare = new xContainer();
-                listFilteredShare.setSize(mLeftPanel.getW(), h);
-                filterContainer.addControl(listFilteredShare);
                 
-                y = h;
-
-                xBaseControl search = recreateSearchControl(mLeftPanel.getW(), mLeftPanel.getH() - h);
-
-                search.setPosition(0, y);
-                filterContainer.addControl(search);
-
-                page.addControl(filterContainer);
-                mTabOfGroups.addPage(page);
-
-                //  my group
+                //  tab my group
                 page = new xTabPage("Theo dõi");
                 page.setBackgroundColor(C.COLOR_GRAY_DARK);
 
@@ -503,7 +434,7 @@ namespace stock123.app
 
                 updateMyShareGroupList();
 
-                //  Nhom nganh
+                //  tab Nhom nganh
                 page = new xTabPage("Nhóm ngành");
                 nhomnganhPage = new xContainer();
                 nhomnganhPage.setSize(tw, th);
@@ -540,6 +471,27 @@ namespace stock123.app
                 updateNhomnganhGroupList();
 
                 mTabOfGroups.addPage(page);
+
+                //  tab filter
+                page = new xTabPage("Filter");
+                page.setBackgroundColor(C.COLOR_GRAY_DARK);
+                xContainer filterContainer = new xContainer();
+                filterContainer.setSize(tw, th);
+
+                listFilteredShare = new xContainer();
+                listFilteredShare.setSize(mLeftPanel.getW(), h);
+                filterContainer.addControl(listFilteredShare);
+
+                y = h;
+
+                xBaseControl search = recreateSearchControl(mLeftPanel.getW(), mLeftPanel.getH() - h);
+
+                search.setPosition(0, y);
+                filterContainer.addControl(search);
+
+                page.addControl(filterContainer);
+                mTabOfGroups.addPage(page);
+
                 //-------------------------------
                 mLeftPanel.addControl(mTabOfGroups);//mTableList);
 

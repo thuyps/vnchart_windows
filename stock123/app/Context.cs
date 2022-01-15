@@ -321,7 +321,7 @@ namespace stock123.app
         public bool mNeedRefreshOpens = true;
         public int mViewTypeOfPriceboard = 1;
 
-        public int mFontAdjust = 3;
+        public int mFontAdjust = 2;
 
         public bool noupdate = false;
         String ServerURL;

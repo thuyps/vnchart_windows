@@ -316,7 +316,7 @@ namespace stock123.app.utils
             }
         }
 
-        static void evalueSortValueTrade(xVector v)
+        public static void evalueSortValueTrade(xVector v)
         {
             for (int i = 0; i < v.size(); i++)
             {

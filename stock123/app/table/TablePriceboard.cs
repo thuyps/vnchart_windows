@@ -258,6 +258,18 @@ namespace stock123.app.table
                 addControl(l);
             }
 
+            //  gia tri GD
+            if (filterType <= 0)
+            {
+                filterType = ShareSortUtils.SORT_TRADE_VALUE;
+                xVector v = shareGroupToVector();
+                if (v != null && v.size() > 0)
+                {
+                    ShareSortUtils.evalueSortValueTrade(v);
+                }
+            }
+
+            //-------------------
             for (int i = 0; i <= cnt; i++)
             {
                 int idx = i - 1;

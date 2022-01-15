@@ -39,10 +39,10 @@ namespace stock123.app.table
                 //  code/ref | +/- | Volume
                 Font[] font = { f, fSmall, fSmall, fSmall, fSmall, fSmall, fSmall };
                 float[] percents = {19, 
-                                       7, 
-                                       20, 
-                                       37,
-                                       22,
+                                       5, 
+                                       18, 
+                                       32,
+                                       26,
 	                -1};
                 uint[] colors = { BG_GRAY, BG0, BG0, BG0, BG_GRAY, BG0 };
                 init(w, h, percents, font, colors);
@@ -68,7 +68,7 @@ namespace stock123.app.table
                 addCellValue1(2, "%", C.COLOR_GRAY);
 
                 setCellValue(3, "Khối lượng", C.COLOR_GRAY);
-                setCellValue(4, "▼ " + ShareSortUtils.sortTypeToString(sortType), C.COLOR_ORANGE);
+                setCellValue(4, ShareSortUtils.sortTypeToString(sortType), C.COLOR_ORANGE);
 
             }
 
