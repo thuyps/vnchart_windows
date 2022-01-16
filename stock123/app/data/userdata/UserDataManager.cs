@@ -19,6 +19,7 @@ namespace stock123.app.data.userdata
         public const int DATA_DRAWING = 4;
         public const int DATA_BLOCK_COUNT = 4;
 
+        bool usingFilterWindowsNew = false;
         xVector _shareGroups;
         GainLossManager _gainLossManager;
 
@@ -58,6 +59,10 @@ namespace stock123.app.data.userdata
                         loadGainload(block.dataInput);
                     }
                     else if (block.id == DATA_FILTERS_WINDOWS){
+                        if (usingFilterWindowsNew)
+                        {
+                            continue;   //  old version, discard this block
+                        }
                         bool ok = loadFilters(block.dataInput);
                         if (!ok)
                         {
@@ -66,6 +71,7 @@ namespace stock123.app.data.userdata
                     }
                     else if (block.id == DATA_FILTERS_WINDOWS_NEW)
                     {
+                        usingFilterWindowsNew = true;
                         loadFilters(block.dataInput);
                     }
                     else if (block.id == DATA_DRAWING){

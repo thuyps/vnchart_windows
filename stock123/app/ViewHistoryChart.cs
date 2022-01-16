@@ -821,7 +821,7 @@ namespace stock123.app
             ShareSortUtils.doSort(shares, sortType, 0);
 
             stShareGroup g = new stShareGroup();
-            /*
+     
             g.setName("Filter");
             for (int i = 0; i < shares.size(); i++)
             {
@@ -831,8 +831,6 @@ namespace stock123.app
                     g.addCode(share.getCode());
                 }
             }
-
-            */
 
             int rowH = 44;
             int tableH = 22 + 37 + (rowH+1) * (g.getTotal());
