@@ -81,6 +81,13 @@ namespace xlib.framework
             {
                 //System.Windows.Forms.MessageBox.Show("readfile: " + e.ToString());
             }
+            catch (System.Exception e1)
+            {
+            }
+            finally
+            {
+
+            }
             return di;
         }
         public static void removeFile(String file)

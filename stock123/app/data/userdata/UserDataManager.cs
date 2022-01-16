@@ -212,7 +212,16 @@ namespace stock123.app.data.userdata
                 }
 
                 if (code != null && code.Length >= 3&& code.Length < 15) {
-                    m.addGainLoss(code, date, price, vol);
+                    if (Context.getInstance() != null && Context.getInstance().mShareManager != null)
+                    {
+                        int id = Context.getInstance().mShareManager.getShareID(code);
+                        if (id > 0)
+                        {
+                            m.addGainLoss(code, date, price, vol);
+                        }
+                    }
+
+                    //m.addGainLoss(code, date, price, vol);
                 }
             }
             m.sortList();

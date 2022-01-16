@@ -375,8 +375,8 @@ namespace stock123.app
             {
                 mLeftPanel = new xContainer();
                 mLeftPanel.setSize(leftW, getWorkingH());
-                mLeftPanel.setPosition(0, getToolbarH());
-
+                //mLeftPanel.setPosition(0, getToolbarH());
+                mLeftPanel.setPosition(getW() - mLeftPanel.getW(), getToolbarH());
                 
                 //  tabs
                 int h = heightOfSharelist();
@@ -499,7 +499,7 @@ namespace stock123.app
                 mTabOfGroups.addPage(page);
 
                 //  tab filter
-                page = new xTabPage("Filter");
+                page = new xTabPage("Lọc");
                 page.setBackgroundColor(C.COLOR_GRAY_DARK);
                 xContainer filterContainer = new xContainer();
                 filterContainer.setSize(tw, th);
@@ -524,7 +524,8 @@ namespace stock123.app
 
                 //===================
             }
-            mLeftPanel.setPosition(0, getToolbarH());
+            //mLeftPanel.setPosition(0, getToolbarH());
+            mLeftPanel.setPosition(getW() - leftW, getToolbarH());
             mLeftPanel.setSize(leftW, getWorkingH());
             addControl(mLeftPanel);
 
@@ -600,8 +601,8 @@ namespace stock123.app
             }
             logTimeElapsedStop("createRightPanel2");
             mRightPanel.setSize(getW() - mLeftPanel.getW(), mLeftPanel.getH());
-            //mRightPanel.setPosition(mLeftPanel.getRight(), y0);
-            mRightPanel.setPosition(mLeftPanel.getW(), y0);
+            mRightPanel.setPosition(0, y0);
+            //mRightPanel.setPosition(mLeftPanel.getW(), y0);
             
             int w = mRightPanel.getW();
             mPanels.removeAllElements();
