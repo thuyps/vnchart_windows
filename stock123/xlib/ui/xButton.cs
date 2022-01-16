@@ -12,16 +12,27 @@ namespace xlib.ui
         public xButton(xIEventListener listener):base(listener)
         {
             Button bt = new Button();
-            bt.Click += new EventHandler(onClick);
+
+            //bt.Click += new EventHandler(onClick);
             //bt.FlatStyle = FlatStyle.Flat;
             setControl(bt);
+
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
+            {
+                ((Button)getControl()).Click += onClick;
+            }, null);
         }
 
         public xButton(Button bt, int id, xIEventListener listener):base(listener)
         {
-            bt.Click += new EventHandler(onClick);
+            //bt.Click += new EventHandler(onClick);
             setControl(bt);
             setID(id);
+
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
+            {
+                ((Button)getControl()).Click += onClick;
+            }, null);
         }
 
         public static xButton createStandardButton(int id, xIEventListener listener, string text, int w)

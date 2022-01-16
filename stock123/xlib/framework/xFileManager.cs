@@ -40,6 +40,10 @@ namespace xlib.framework
 
         static public xDataInput readFile(String filename, bool resource)
         {
+            if (filename == null || filename.Contains("*"))
+            {
+                return null;
+            }
             xDataInput di = null;
             try
             {

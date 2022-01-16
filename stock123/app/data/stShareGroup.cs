@@ -15,7 +15,7 @@ namespace stock123.app.data
     public class stShareGroup
     {
 
-        public static int MAX_SHARES_IN_GROUP = 40;
+        public static int MAX_SHARES_IN_GROUP = 50;
         public static int MAX_FAVORITE_GROUPS = 30;
         /*
         public static  int GROUP_TYPE_DEFAULT = 0;

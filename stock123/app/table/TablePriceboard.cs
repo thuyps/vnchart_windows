@@ -230,6 +230,17 @@ namespace stock123.app.table
             invalidate();
         }
 
+        long timeMark2 = 0;
+        void logTimeElapsedStart2()
+        {
+            timeMark2 = Utils.currentTimeMillis();
+        }
+        void logTimeElapsedStop2(String tag)
+        {
+            Utils.trace(String.Format("----time mark2 TAG: {0}={1}", tag, (Utils.currentTimeMillis() - timeMark2)));
+            timeMark2 = Utils.currentTimeMillis();
+        }
+
         public void setShareGroupAsFilterResult(stShareGroup g, int filterType)
         {
             mTableType = TABLE_GAINLOSS;

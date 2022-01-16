@@ -19,7 +19,10 @@ namespace xlib.ui
 
             setCheck(o[0]);
 
-            cb.CheckedChanged += new EventHandler(cb_CheckedChanged);
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
+            {
+                ((CheckBox)getControl()).CheckedChanged += new EventHandler(cb_CheckedChanged);
+            }, null);
 
             mValue = o;
         }

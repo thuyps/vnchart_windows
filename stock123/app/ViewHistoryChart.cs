@@ -264,7 +264,7 @@ namespace stock123.app
 
             createLeftPanel();
             logTimeElapsedStop("updateUI2");
-
+            logTimeElapsedStop("updateUI0");
             createRightPanel(); //  main chart & sub charts
             logTimeElapsedStop("updateUI3");
             
@@ -355,8 +355,8 @@ namespace stock123.app
         }
         void logTimeElapsedStop2(String tag)
         {
-            Utils.trace(String.Format("----time mark2 TAG: {0}={1}", tag, (Utils.currentTimeMillis() - timeMark)));
-            timeMark = Utils.currentTimeMillis();
+            Utils.trace(String.Format("----time mark2 TAG: {0}={1}", tag, (Utils.currentTimeMillis() - timeMark2)));
+            timeMark2 = Utils.currentTimeMillis();
         }
         //=========================================
 
@@ -433,6 +433,32 @@ namespace stock123.app
                 mTabOfGroups.addPage(page);
 
                 updateMyShareGroupList();
+
+                //  context menu
+                int[] ids = { C.ID_ADD_GROUP, C.ID_REMOVE_GROUP};
+                String[] texts = { "Thêm nhóm theo dõi", "Xóa nhóm"};
+                listMyGroups.setMenuContext(ids, texts, 2);
+
+                xListView.OnMenuItemClick onMenuItemClick = (int id, string title) =>
+                {
+                    if (id == C.ID_ADD_GROUP)
+                    {
+                        doAddGroup();
+                    }
+                    else if (id == C.ID_REMOVE_GROUP)
+                    {
+                        xListViewItem selItem = listMyGroups.getSelectedItem();
+                        if (selItem != null)
+                        {
+                            stShareGroup g = (stShareGroup)selItem.getData();
+                            if (g != null && g.getType() == stShareGroup.ID_GROUP_FAVOR)
+                            {
+                                doRemoveGroup(g);
+                            }
+                        }
+                    }
+                };
+                listMyGroups.onMenuItemClick = onMenuItemClick;
 
                 //  tab Nhom nganh
                 page = new xTabPage("Nhóm ngành");
@@ -586,8 +612,9 @@ namespace stock123.app
                 showDrawingTool = mMainHistoryChartControl.hasDrawing();
             }
             //==========================
-            
+            logTimeElapsedStart2();
             HistoryChartControl his = new HistoryChartControl(mShare, "pannel0", w, mRightPanel.getH(), false);
+            logTimeElapsedStop2("hhhhhhhhhhhhhhhhhhhhhhhhhh");
             his.setListener(this);
             his.setPosition(0, 0);
 
@@ -794,6 +821,7 @@ namespace stock123.app
             ShareSortUtils.doSort(shares, sortType, 0);
 
             stShareGroup g = new stShareGroup();
+            /*
             g.setName("Filter");
             for (int i = 0; i < shares.size(); i++)
             {
@@ -803,6 +831,8 @@ namespace stock123.app
                     g.addCode(share.getCode());
                 }
             }
+
+            */
 
             int rowH = 44;
             int tableH = 22 + 37 + (rowH+1) * (g.getTotal());
@@ -815,6 +845,7 @@ namespace stock123.app
             {
                 g.setName(mTitleOfFilter);
             }
+
             table.setShareGroupAsFilterResult(g, ShareSortUtils.SORT_DEFAULT);
 
             tableContainer.addControl(table);
@@ -1033,15 +1064,19 @@ namespace stock123.app
                 FilterSet item = fm.getFilterSetAt(i);
                 string name = item.name;// (string)mContext.mSortTechnicalName[0].elementAt(i);
                 //int sort_params = mContext.mSortTechnicalParams[0].elementAt(i);
-
+                logTimeElapsedStart2();
+                
                 bt = xButton.createStandardButton(C.ID_SORT_TECHNICAL, this, name, w);
+                                
                 bt.setSize(bw, bth);
                 bt.setPosition(x, y);
                 //bt.setDataInt(i);   //  (0 << 16) | i
                 bt.setData(item);
                 c.addControl(bt);
+
                 //  edit button
                 xButton edit = xButton.createImageButton(C.ID_SORT_TECHNICAL_EDIT, this, imgs, 0);
+
                 //edit.setDataInt(i);
                 edit.setData(item);
                 edit.setPosition(w - edit.getW(), y + (bt.getH() - edit.getH()) / 2);
@@ -1854,6 +1889,8 @@ namespace stock123.app
             page.addControl(controls);
             tab.addPage(page);
 
+            logTimeElapsedStop2("recreateSearchControl3");
+
             return tab;
         }
 
@@ -2593,6 +2630,64 @@ namespace stock123.app
 
         void showChartOfGroup(stShareGroup group)
         {
+        }
+
+
+        void doAddGroup()
+        {
+            if (mContext.favoriteGroups().size() > stShareGroup.MAX_FAVORITE_GROUPS)
+            {
+                showDialogOK(String.Format("Số nhóm tự tạo không quá: {0}", stShareGroup.MAX_FAVORITE_GROUPS));
+                return;
+            }
+            DlgAddShareGroup dlg = new DlgAddShareGroup();
+            dlg.ShowDialog();
+            if (dlg.getResultID() == C.ID_DLG_BUTTON_OK)
+            {
+                String group = dlg.getText();
+                if (group != null)
+                {
+                    group = group.Trim();
+                    if (group.Length == 0)
+                        return;
+
+                    stShareGroup g = mContext.getFavoriteGroup(group);
+                    mContext.setCurrentShareGroup(g);
+                    //mContext.saveFavorGroup();
+
+                    //mContext.uploadUserData();
+                    Context.userDataManager().flushUserData();
+
+                    updateMyShareGroupList();
+                }
+
+                mMainHistoryChartControl.setupMenuContext();
+            }
+        }
+
+        void doRemoveGroup(stShareGroup g)
+        {
+            if (g.isFavorGroup())
+            {
+                StringBuilder sb = Utils.sb;
+                sb.Length = 0;
+                sb.AppendFormat("Xóa nhóm {0}", g.getName());
+                if (showDialogYesNo(sb.ToString()))
+                {
+                    mContext.removeShare(g);
+                    mContext.selectDefaultShareGroup();
+
+                    Context.userDataManager().flushUserData();
+
+                    updateMyShareGroupList();
+
+                    mMainHistoryChartControl.setupMenuContext();
+                }
+            }
+            else
+            {
+                showDialogOK("Bạn chỉ xóa được nhóm do bạn tự tạo");
+            }
         }
     }
 }

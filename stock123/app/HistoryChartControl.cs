@@ -39,9 +39,20 @@ namespace stock123.app
 
         int mChartType;
 
+        long timeMark2 = 0;
+        void logTimeElapsedStart2()
+        {
+            timeMark2 = Utils.currentTimeMillis();
+        }
+        void logTimeElapsedStop2(String tag)
+        {
+            Utils.trace(String.Format("----time mark2 TAG: {0}={1}", tag, (Utils.currentTimeMillis() - timeMark2)));
+            timeMark2 = Utils.currentTimeMillis();
+        }
         public HistoryChartControl(Share share, string name, int w, int h, bool isSecondPanel)
             : base()
         {
+            logTimeElapsedStart2();
             mChartType = Share.CANDLE_DAILY;
             setSize(w, h);
             mIsSecondPanel = isSecondPanel;
@@ -51,7 +62,7 @@ namespace stock123.app
             mContext = Context.getInstance();
 
             mDrawer = new Drawer();
-
+            logTimeElapsedStop2("HHHHHHHHHHHHHHHHHH_1");
             int x = 0;
 
             if (isSecondPanel)
@@ -67,7 +78,7 @@ namespace stock123.app
                 CHART_X0 = ts.Size.Width;
                 CHART_W = getW() - ts.Size.Width;
             }
-
+            logTimeElapsedStop2("HHHHHHHHHHHHHHHHHH_2");
             int mainH = getH()/5;
             //===================================
             int subCnt = 4;
@@ -79,7 +90,7 @@ namespace stock123.app
             mMainContainer = new xContainer();
             mMainContainer.setSize(CHART_W, mainH);
             mMainContainer.setPosition(0, 0);
-
+            logTimeElapsedStop2("HHHHHHHHHHHHHHHHHH_3");
             //  drawing tool
             if (!isSecondPanel)
             {
@@ -90,6 +101,7 @@ namespace stock123.app
 
                 tool.show(false);
             }
+            logTimeElapsedStop2("HHHHHHHHHHHHHHHHHH_4");
             //=================MASTER chart=====================
             if (!isSecondPanel)
             {
@@ -108,7 +120,7 @@ namespace stock123.app
                 mTimingRange.setPosition((CHART_W - mTimingRange.getW()) / 2, mMainContainer.getH() - mTimingRange.getH() - 16);
                 mMainContainer.addControl(mTimingRange);
             }
-
+            logTimeElapsedStop2("HHHHHHHHHHHHHHHHHH_5");
             //=========================================================
             ChartMaster cl = createMasterChart(ChartBase.CHART_LINE, CHART_W, mMainContainer.getH());
             if (isSecondPanel)
@@ -123,11 +135,11 @@ namespace stock123.app
             cl.setShare(mShare);
             cl.setIsMasterChart(true);//isSecondPanel == false);
             mMainContainer.addControl(cl);
-
+            logTimeElapsedStop2("HHHHHHHHHHHHHHHHHH_6");
             mChartMaster = cl;
             cl.toggleAttachChart(ChartBase.CHART_BOLLINGER);
             //mChartMaster.loadOption();
-
+            logTimeElapsedStop2("HHHHHHHHHHHHHHHHHH_7");
             //=========================================================
             xDataInput di = xFileManager.readFile("data\\" + name, false);
             if (di != null && di.readInt() == Context.FILE_VERSION)
@@ -174,7 +186,7 @@ namespace stock123.app
                     mainH = getH()*3/4;
                 }
             }
-
+            logTimeElapsedStop2("HHHHHHHHHHHHHHHHHH_8");
             mChartMaster.setHasDrawer(true);
             //====================SUB container
             mSubContainer = new xContainer();
@@ -186,7 +198,7 @@ namespace stock123.app
                 mSubCharts.addElement(sub);
                 mSubContainer.addControl(sub);
             }
-
+            logTimeElapsedStop2("HHHHHHHHHHHHHHHHHH_9");
             if (mMainContainer == null || mSubContainer == null)
                 return;
 
@@ -201,8 +213,16 @@ namespace stock123.app
             mSplitter = splitter;
 
             addControl(splitter);
-
+            logTimeElapsedStop2("HHHHHHHHHHHHHHHHHH_10");
             //============================
+            setupMenuContext();
+
+            logTimeElapsedStop2("HHHHHHHHHHHHHHHHHHHH_12");
+            //setMenuContext(ids, texts, ids.Length);
+        }
+
+        public void setupMenuContext()
+        {
             int[] ids = {
                 C.ID_TS_CHARTLINE,
                 C.ID_TS_CHARTCANDLE,
@@ -238,9 +258,10 @@ namespace stock123.app
             ContextMenu menu = createMenuContext(ids, texts, texts.Length);
 
             xVector gs = mContext.favoriteGroups();
-
-            if (gs.size() > 1){
-                MenuItem[] groups = new MenuItem[gs.size()-1];
+            logTimeElapsedStop2("HHHHHHHHHHHHHHHHHH_11");
+            if (gs.size() > 1)
+            {
+                MenuItem[] groups = new MenuItem[gs.size() - 1];
 
                 int j = 0;
                 for (int i = 0; i < gs.size(); i++)
@@ -252,15 +273,18 @@ namespace stock123.app
                     }
                     MenuItem item = new MenuItem(g.getName());
                     item.Tag = C.ID_ADD_SYMBOL_TO_GROUP;
-                    item.Click += new EventHandler(onClickAddSymbolToGroup);
+                    System.Threading.ThreadPool.QueueUserWorkItem(delegate
+                    {
+                        item.Click += new EventHandler(onClickAddSymbolToGroup);
+                    }, null);
+
 
                     groups[j++] = item;
                 }
 
-                menu.MenuItems.Add("Thêm mã vào nhóm", groups); 
+                menu.MenuItems.Add("Thêm mã vào nhóm", groups);
             }
             getControl().ContextMenu = menu;
-            //setMenuContext(ids, texts, ids.Length);
         }
 
         public void onClickAddSymbolToGroup(object sender, EventArgs e)
@@ -277,8 +301,12 @@ namespace stock123.app
                     stShareGroup g = (stShareGroup)gs.elementAt(i);
                     if (g.getName().CompareTo(gn) == 0)
                     {
-                        g.addCode(mShare.getCode());
-                        Context.userDataManager().flushUserData();
+                        stPriceboardState ps = mContext.mPriceboard.getPriceboard(mShare.mCode);
+                        if (ps != null && ps.id > 0)
+                        {
+                            g.addCode(mShare.getCode());
+                            Context.userDataManager().flushUserData();
+                        }
                     }
                 }
             }

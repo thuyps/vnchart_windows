@@ -121,8 +121,12 @@ namespace xlib.ui
             setID(id);
             mListener = listener;
 
-            Label l = (Label)getControl();
-            l.Click += new EventHandler(onClick);
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
+            {
+                Label l = (Label)getControl();
+                l.Click += new EventHandler(onClick);
+            }, null);
+
         }
 
         void onClick(object sender, EventArgs e)

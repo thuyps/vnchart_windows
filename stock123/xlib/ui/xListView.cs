@@ -12,6 +12,8 @@ namespace xlib.ui
     public class xListView: xBaseControl
     {
         public delegate void OnClickItem(xListViewItem item);
+        
+
         public OnClickItem onClickItem;
         protected ColumnClickEventHandler _columnClickHandler;
         public xListView(xIEventListener listener, ImageList imglist)
@@ -21,9 +23,7 @@ namespace xlib.ui
             lv.Dock = DockStyle.Fill;
             lv.GridLines = true;
             lv.View = View.Details;
-            lv.ColumnClick += new ColumnClickEventHandler(columnClick);
-            lv.DoubleClick += new EventHandler(lv_DoubleClick);
-            lv.SelectedIndexChanged += new EventHandler(selectChanged); 
+
             lv.FullRowSelect = true;
 
             //lv.LostFocus += new EventHandler(lv_LostFocus);
@@ -39,6 +39,15 @@ namespace xlib.ui
 
             //--------------------------------------
             setControl(lv);
+
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
+            {
+                ListView _lv = (ListView)getControl();
+                _lv.ColumnClick += new ColumnClickEventHandler(columnClick);
+                _lv.DoubleClick += new EventHandler(lv_DoubleClick);
+                _lv.SelectedIndexChanged += new EventHandler(selectChanged); 
+            }, null);
+
         }
 
         public void hideHeader()
@@ -65,10 +74,7 @@ namespace xlib.ui
             lv.Dock = DockStyle.Fill;
             lv.GridLines = true;
             lv.View = View.Details;
-            if (sortable)
-                lv.ColumnClick += new ColumnClickEventHandler(columnClick);
-            lv.DoubleClick += new EventHandler(lv_DoubleClick);
-            lv.SelectedIndexChanged += new EventHandler(selectChanged);
+            
             lv.FullRowSelect = true;
 
             if (imglist != null)
@@ -82,6 +88,15 @@ namespace xlib.ui
 
             //--------------------------------------
             setControl(lv);
+
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
+            {
+                ListView _lv = (ListView)getControl();
+                if (sortable)
+                    _lv.ColumnClick += new ColumnClickEventHandler(columnClick);
+                _lv.DoubleClick += new EventHandler(lv_DoubleClick);
+                _lv.SelectedIndexChanged += new EventHandler(selectChanged);
+            }, null);
         }
 
         public void setColumnHeaders(String[] columnHeaders, float[] columnPercents)

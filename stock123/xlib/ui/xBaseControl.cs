@@ -9,6 +9,9 @@ namespace xlib.ui
 {
     public class xBaseControl
     {
+        public delegate void OnMenuItemClick(int id, string title);
+        public OnMenuItemClick onMenuItemClick;
+
         public const int EVT_BUTTON_CLICKED = 100;
         public const int EVT_ON_MOUSE_DOWN = 101;
         public const int EVT_ON_MOUSE_MOVE = 102;
@@ -54,7 +57,11 @@ namespace xlib.ui
             mControl = c;
             mControl.Tag = this;
 
-            mControl.LostFocus += new EventHandler(mControl_LostFocus);
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
+            {
+                mControl.LostFocus += new EventHandler(mControl_LostFocus);
+            }, null);
+
         }
 
         public Control getControl()
@@ -316,7 +323,11 @@ namespace xlib.ui
                     if (ids[i] > 0)
                     {
                         item.Tag = ids[i];
-                        item.Click += new EventHandler(onMenuClick);
+                        System.Threading.ThreadPool.QueueUserWorkItem(delegate
+                        {
+                            item.Click += new EventHandler(onMenuClick);
+                        }, null);
+
                     }
 
                     menu.MenuItems.Add(item);
@@ -368,6 +379,11 @@ namespace xlib.ui
 
         virtual public bool onMenuEvent(MenuItem item)
         {
+            if (onMenuItemClick != null)
+            {
+                onMenuItemClick((int)item.Tag, item.Text);
+                return true;
+            }
             return false;
         }
 

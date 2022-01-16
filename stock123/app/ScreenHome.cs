@@ -1481,7 +1481,7 @@ namespace stock123.app
                 String[] texts = new String[cnt];
                 //==================
                 int[] ids0 = { C.ID_ADD_SHARE, C.ID_REMOVE_SHARE, -1, C.ID_ADD_GROUP, C.ID_REMOVE_GROUP, -1, C.ID_SET_ALARM };
-                String[] texts0 = { "Thêm cổ phiếu", "Xóa CP khỏi d/s", "", "Thêm nhóm yêu thích", "Xóa nhóm", "", "Cài đặt cảnh báo" };
+                String[] texts0 = { "Thêm cổ phiếu", "Xóa CP khỏi d/s", "", "Thêm nhóm theo dõi", "Xóa nhóm", "", "Cài đặt cảnh báo" };
 
                 int i;
                 for (i = 0; i < ids0.Length; i++)
@@ -3117,38 +3117,16 @@ namespace stock123.app
                 updateItemsAfterNetDone();
             };
             //=end of network done's callback================================
-            //  get priceboard reference + zero
-            //  indices
-            if (!mIsLoadIndicesDataAtStartup)
+            //  vnindex & hastc
+            for (int t = 0; t < mContext.mPriceboard.getIndicesCount(); t++)
             {
-                for (int i = 0; i < mContext.mShareManager.getVnindexCnt(); i++)
+                stPriceboardStateIndex pi = mContext.mPriceboard.getPriceboardIndexAt(t);
+
+                if (pi.id != 0)
                 {
-                    Share share = mContext.mShareManager.getVnindexShareAt(i);
-                    if (share == null)
-                        break;
-                    share.loadShareFromFile(false);
-                    int date = share.getLastCandleDate();
-                    if (date == 0)
-                    {
-                        date = Utils.getDateAsInt(5000);
-                    }
-                    else
-                    {
-                        long l = Utils.dateToNumber(date);
-                        date = Utils.dateFromNumber(l - 10);
-                    }
-                    net.requestGet1ShareData(share.mID, date);
+                    TradeHistory trade = mContext.getTradeHistory(pi.id);
+                    net.requestTradeHistory(pi.code, pi.marketID, 0, trade.getLastTime());
                 }
-                //  loadShareFromFile makes mClose,mOpen... incorrect, fix it
-                if (mContext.getSelectedShare() != null)
-                {
-                    mContext.getSelectedShare().clearCalculations();
-                    if (mContext.getSelectedShare().isIndex())
-                        mContext.getSelectedShare().loadShareFromFile(false);
-                    else
-                        mContext.getSelectedShare().loadShareFromCommonData(false);
-                }
-                //=========================
             }
             //mNetProtocol.requestPriceboardRef(-1);
             net.requestPriceboardInitial(-1, null);
