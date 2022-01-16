@@ -15,6 +15,7 @@ namespace stock123.app.data.userdata
         public const int DATA_GAINLOSS = 2;
         public const int DATA_FILTERS_ANDROID = 3;
         public const int DATA_FILTERS_WINDOWS = 5;
+        public const int DATA_FILTERS_WINDOWS_NEW = 6;
         public const int DATA_DRAWING = 4;
         public const int DATA_BLOCK_COUNT = 4;
 
@@ -57,6 +58,14 @@ namespace stock123.app.data.userdata
                         loadGainload(block.dataInput);
                     }
                     else if (block.id == DATA_FILTERS_WINDOWS){
+                        bool ok = loadFilters(block.dataInput);
+                        if (!ok)
+                        {
+                            _unknownBlocks.addElement(block);
+                        }
+                    }
+                    else if (block.id == DATA_FILTERS_WINDOWS_NEW)
+                    {
                         loadFilters(block.dataInput);
                     }
                     else if (block.id == DATA_DRAWING){
@@ -88,7 +97,7 @@ namespace stock123.app.data.userdata
 
             UserDataBlock.saveBlock(DATA_SHARE_GROUPS, blockData, o);
             UserDataBlock.saveBlock(DATA_GAINLOSS, blockGainloss, o);
-            UserDataBlock.saveBlock(DATA_FILTERS_WINDOWS, blockFilters, o);
+            UserDataBlock.saveBlock(DATA_FILTERS_WINDOWS_NEW, blockFilters, o);
             UserDataBlock.saveBlock(DATA_DRAWING, blockDrawings, o);
 
             if (_unknownBlocks != null) {
@@ -211,8 +220,8 @@ namespace stock123.app.data.userdata
 
             return o;
         }
-        void loadFilters(xDataInput di){
-            FilterManager.getInstance().loadFilterSets(di);
+        bool loadFilters(xDataInput di){
+            return FilterManager.getInstance().loadFilterSets(di);
         }
         //==========================================
         xDataOutput drawingBlock(){
