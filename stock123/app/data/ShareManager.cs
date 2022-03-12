@@ -2567,6 +2567,22 @@ namespace stock123.app.data
             }
         }
 
+        const int MAX_CANDLE_CHART_COUNT = 5000;
+        int[] iVolume = new int[MAX_CANDLE_CHART_COUNT];
+        int[] iDate = new int[MAX_CANDLE_CHART_COUNT];
+        float[] iOpen = new float[MAX_CANDLE_CHART_COUNT];
+        float[] iClose = new float[MAX_CANDLE_CHART_COUNT];
+        float[] iHighest = new float[MAX_CANDLE_CHART_COUNT];
+        float[] iLowest = new float[MAX_CANDLE_CHART_COUNT];
+
+        double tradingCapOfShare(Share share)
+        {
+            double avgVol = share.getAveVolumeInDays(45);
+            avgVol /= 1000;    //  to kilo
+            double marketCap = (share.getClose(-1) * avgVol);
+
+            return marketCap;
+        }
         public Share calcIndexOfGroup(stShareGroup g)
         {
             //--------------------------------------------------
@@ -2576,106 +2592,106 @@ namespace stock123.app.data
 
             _index.setCode(g.getName(), 1);
             _index.mIsGroupIndex = true;
+            
+            int iCandleCnt = 0;
+            int ii = 0;
+
+            String code;
+
             String rootCode = null;
             int startDate = 0;
             int candleCnt = 0;
+            int rootCandleCnt = 0;
+            int rootMinDate = 0;
+            int rootMaxDate = 0;
 
-            xVector vBad2 = new xVector();
-            xVector vBad1 = new xVector();
-            xVector vGood = new xVector();
-            //  loai bo cp giao dich qua it
+            int tmp = g.getTotal() > 10 ? 10 : g.getTotal();
+
+            stCompanyInfo inf = null;
             for (int i = 0; i < g.getTotal(); i++)
             {
-                string code = g.getCodeAt(i);
-                _share = mShareManager.getShare(code);
+                code = g.getCodeAt(i);
+                _share = this.getShare(code);
                 if (_share == null)
                 {
-                    Utils.trace("Share is null:" + code);
+                    //Utils.trace("Share is null: %s", code);
                     continue;
                 }
-                _share.loadShareFromCommonData(true);
-                int avgVol = _share.getAveVolumeInDays(5);
-                if (avgVol < 200000)
+                inf = getCompanyInfo(_share.mID);
+                if (inf == null)
                 {
-                    vBad2.addElement(code);
-                    if (avgVol < 100000)
-                    {
-                        vBad1.addElement(code);
-                    }
-                }
-                else{
-                    vGood.addElement(code);
-                }
-            }
-
-            int goods = g.getTotal() - vBad2.size();
-            if (goods < 5)
-            {
-                vBad2.removeAllElements();
-                vBad2.addAll(vBad1);
-
-                goods = g.getTotal() - vBad2.size();
-                if (goods < 5){
-                    vBad2.removeAllElements();
-                }
-            }
-            //==================================
-
-            int tmp = g.getTotal() > 5 ? 5 : g.getTotal();
-
-            for (int i = 0; i < tmp; i++)
-            {
-                string code = g.getCodeAt(i);
-                _share = mShareManager.getShare(code);
-                if (_share == null)
-                {
-                    Utils.trace("Share is null:" + code);
+                    //xUtils.trace("cannot find company info");
                     continue;
                 }
                 _share.loadShareFromCommonData(true);
 
-                if (_share.getCandleCount() > 0)
+                if (_share.getCandleCnt() < 30)
                 {
-                    int d = _share.getDate(0);
-                    if (startDate == 0)
-                    {
-                        startDate = d;
-                        rootCode = code;
-                        candleCnt = _share.getCandleCount();
-                    }
-                    if (d < startDate)
-                    {
-                        startDate = d;
-                        rootCode = code;
-                        candleCnt = _share.getCandleCount();
-                    }
+                    continue;
+                }
+
+                int _minDate = _share.getDate(0);
+                int _maxDate = _share.getDate(_share.getCandleCnt() - 1);
+
+                if (rootCode == null)
+                {
+                    rootCandleCnt = _share.getCandleCnt();
+                    rootMinDate = _minDate;
+                    rootMaxDate = _maxDate;
+                    rootCode = code;
+                }
+
+                if (_minDate > rootMinDate && _maxDate >= rootMaxDate && rootCandleCnt <= _share.getCandleCnt())
+                {
+                    rootCandleCnt = _share.getCandleCnt();
+                    rootMinDate = _minDate;
+                    rootMaxDate = _maxDate;
+                    rootCode = code;
+                }
+
+                if (_minDate >= rootMinDate && _maxDate >= rootMaxDate && rootCandleCnt < _share.getCandleCnt())
+                {
+                    rootCandleCnt = _share.getCandleCnt();
+                    rootMinDate = _minDate;
+                    rootMaxDate = _maxDate;
+                    rootCode = code;
                 }
             }
 
-            if (candleCnt == 0)
+            if (rootCandleCnt == 0)
             {
                 return null;
             }
             //rootCode = "ACB";
             //  root code
             double marketCap = 0;
+            double maxCap = 0;
+            stCandle ci = new stCandle();
+
             _share = getShare(rootCode);// .setCode(rootCode, 1);
             _share.removeAllCandles();
             _share.loadShareFromCommonData(true);
 
+            double totalVolumeOfIndex = 0;
+
+            //_index->prepareCandleNums(_share->getCandleCnt() + 100);
+
             stCandle candle = new stCandle();
             stCandle c0 = new stCandle();
             stCandle c = new stCandle();
-            stCandle c1 = new stCandle();
+            stCandle c1;
+
+
+            c0.close = 0;
+
+            //  root as the index
 
             for (int i = 0; i < _share.getCandleCount(); i++)
             {
-                c = _share.getCandle(i, c);
-                if (i == 0 && c.close > 0)
+                _share.getCandle(i, c);
+                if (c0.close == 0 && c.close > 0)
                 {
-                    c0 = _share.getCandle(i, c0);
-                    stCompanyInfo inf = mShareManager.getCompanyInfo(_share.getShareID());
-                    marketCap = inf.volume * c.close;
+                    _share.getCandle(i, c0);
                 }
 
                 if (c0.close == 0)
@@ -2683,40 +2699,47 @@ namespace stock123.app.data
                     continue;
                 }
 
-                candle.close = (c.close * 100) / c0.close;
-                candle.open = (c.open * 100) / c0.close;
-                candle.highest = (c.highest * 100) / c0.close;
-                candle.lowest = (c.lowest * 100) / c0.close;
-                candle.volume = c.volume;
+                candle.close = (c.close * 100);// / c0.close;
+                candle.open = (c.open * 100);// / c0.close;
+                candle.highest = (c.highest * 100);// / c0.close;
+                candle.lowest = (c.lowest * 100);// / c0.close;
+                candle.volume = (int)((c.volume * c.close) / 1000.0f);  //value in million
                 candle.date = c.date;
 
-                _index.addMoreCandle(candle.open, candle.close, candle.close, candle.highest, candle.lowest, candle.volume, candle.date);
+                //_index.addCandle(candle.open, candle.close, candle.highest, candle.lowest, candle.volume, candle.date);
+                iOpen[ii] = candle.open;
+                iClose[ii] = candle.close;
+                iHighest[ii] = candle.highest;
+                iLowest[ii] = candle.lowest;
+                iVolume[ii] = candle.volume;
+                iDate[ii] = candle.date;
+                ii++;
+
+
             }
-            stCandle lastIndexCandle;
-            //------------------------------
+
+            marketCap = tradingCapOfShare(_share);
+
+            iCandleCnt = ii;
+
+            //----------------------------
+
             for (int i = 0; i < g.getTotal(); i++)
             {
-                string code = g.getCodeAt(i);
+                code = g.getCodeAt(i);
+
+                if (i == 2)
+                {
+                    //break;
+                }
 
                 if (code.CompareTo(rootCode) == 0)
                 {
                     continue;
                 }
 
-                if (vBad2.size() > 0)
-                {
-                    for (int k = 0; k < vBad2.size(); k++)
-                    {
-                        String _c = (String)vBad2.elementAt(k);
-                        if (_c.CompareTo(code) == 0)
-                        {
-                            continue;
-                        }
-                    }
-                }
+                _share = getShare(code);
 
-                _share = mShareManager.getShare(code);
-                //_share.setCode(code);
                 if (_share == null)
                 {
                     continue;
@@ -2731,93 +2754,157 @@ namespace stock123.app.data
                 {
                     continue;
                 }
-                double Mo = marketCap;
-                double ri = 0;
-                bool isFirst = true;
 
-                c0.close = 0;
+                float firstIndexPoint = 0;
+
+                _share.getCandle(0, c0);
                 //==========================
+                //  seek to first candle
+                bool firstMatch = false;
+                int sharePos = 0;
+                int indexPos = 0;
+
                 int lastCandleFound = -1;
                 int candleFound = -1;
-                for (int j = 0; j < _index.getCandleCnt(); j++)
+
+                int lastMatchedIndex = 0;
+                int j;
+                for (j = 0; j < iCandleCnt; j++)
                 {
-                    stCandle ci = _index.getCandle(j, c1);
-                    newMarketCap = marketCap;
-                    bool replaced = false;
-                    for (int t = 0; t < _share.getCandleCnt(); t++)
+                    ci.open = iOpen[j];
+                    ci.close = iClose[j];
+                    ci.highest = iHighest[j];
+                    ci.lowest = iLowest[j];
+                    ci.volume = iVolume[j];
+                    ci.date = iDate[j];
+
+                    /*
+                    int testdate = (2021<<16)|(5<<8)|12;
+                    if (ci.date == testdate){
+                        xUtils.trace("aaaa");
+                    }
+
+                     */
+                    if (c0.date == ci.date)
                     {
-                        c = _share.getCandle(t, c);
-                        if (t == 0 || c0.close == 0)
+                        indexPos = j;
+                        sharePos = 0;
+                        firstMatch = true;
+                        break;
+                    }
+                    else if (c0.date < ci.date)
+                    {
+                        for (int t = 0; t < _share.getCandleCnt(); t++)
                         {
-                            c0 = _share.getCandle(t, c0);
-                            stCompanyInfo inf = mShareManager.getCompanyInfo(_share.getShareID());
-                            shareCap = inf.volume * c.close;
-                            newMarketCap = marketCap + shareCap;
-                            r = shareCap / newMarketCap;
-                            ri = marketCap / newMarketCap;
-                            replaced = true;
-                            continue;
+                            _share.getCandle(t, c0);
+                            if (c0.date == ci.date)
+                            {
+                                firstMatch = true;
+                                indexPos = j;
+                                sharePos = t;
+                                break;
+                            }
                         }
 
-                        if (c0.close == 0)
+                        if (firstMatch)
                         {
-                            replaced = true;
                             break;
                         }
+                    }
+                    else if (c0.date > ci.date)
+                    {
+                        //  move next
+                    }
+                }
+                j = 0;
+                if (!firstMatch)
+                {
+                    continue;
+                }
 
-                        int check = (2018 << 16) | (3 << 8) | 1;
-                        if (ci.date == check)
-                        {
-                            check = check;
-                        }
+                firstIndexPoint = ci.close;
+                if (c0.close == 0)
+                {
+                    continue;
+                }
 
-                        if (c.date == ci.date)
-                        {
-                            candleFound = t;
-                        }
+                for (j = indexPos; j < iCandleCnt; j++)
+                {
+                    //ci = _index->getCandle(j);
+                    ci.open = iOpen[j];
+                    ci.close = iClose[j];
+                    ci.highest = iHighest[j];
+                    ci.lowest = iLowest[j];
+                    ci.volume = iVolume[j];
+                    ci.date = iDate[j];
+
+                    if (j == iCandleCnt - 2)
+                    {
+                        //xUtils.trace("a");
                     }
 
-                    if (candleFound == -1)
+                    if (sharePos >= _share.getCandleCnt())
                     {
-                        if (lastCandleFound > 0)
-                        {
-                            candleFound = lastCandleFound;
-                        }
+                        break;
+                    }
+                    _share.getCandle(sharePos, c);
+
+                    if (shareCap == 0)
+                    {
+                        shareCap = tradingCapOfShare(_share);
+
+                        newMarketCap = marketCap + shareCap;
+                        r = shareCap / newMarketCap;
                     }
 
-                    if (candleFound > 0)
+                    if (shareCap == 0)
                     {
-                        lastCandleFound = candleFound;
-                        c = _share.getCandle(candleFound, c);
-                        if (c.close > 0)
-                        {
-                            float open, close, hi, lo;
-                            int vol, date;
-                            close = (c.close * 100 / c0.close);
-                            open = (c.open * 100 / c0.close);
-                            hi = (c.highest * 100 / c0.close);
-                            lo = (c.lowest * 100 / c0.close);
+                        continue;
+                    }
+                    //------------
 
-                            vol = c.volume;
-                            date = c.date;
-                            //-------------------------
-                            ci.volume += vol;
-                            ci.close = (float)(ci.close * ri + close * r);
-                            ci.open = (float)(ci.open * ri + open * r);
-                            ci.highest = (float)(ci.highest * ri + hi * r);
-                            ci.lowest = (float)(ci.lowest * ri + lo * r);
+                    float open, close, hi, lo;
+                    int vol, date;
 
-                            _index.replaceCandle(j, ci);
-                            replaced = true;
-                        }
+                    close = (c.close * firstIndexPoint / c0.close);
+                    open = (c.open * firstIndexPoint / c0.close);
+                    hi = (c.highest * firstIndexPoint / c0.close);
+                    lo = (c.lowest * firstIndexPoint / c0.close);
+
+                    vol = (int)((c.volume * c.close) / 1000.0f);  //value in million c->volume;
+                    date = c.date;
+
+                    double rIndex = marketCap / newMarketCap;
+
+                    iVolume[j] += vol;
+                    iClose[j] = (float)(ci.close * rIndex + close * r);
+                    iOpen[j] = (float)(ci.open * rIndex + open * r);
+                    iHighest[j] = (float)(ci.highest * rIndex + hi * r);
+                    iLowest[j] = (float)(ci.lowest * rIndex + lo * r);
+
+                    //_index.replaceCandle(j, ci);
+
+                    if (ci.date == c.date)
+                    {
+                        sharePos++;
+                    }
+                    else if (ci.date < c.date)
+                    {
+                        //  a candle is missing, move to next candle of index, keep share pos
+                    }
+                    else
+                    {
+                        //  missing a candle in index???? non sense
+                        break;
                     }
                 }
 
-                //
                 marketCap = newMarketCap;
             }
 
-            _index.saveShare();
+            Share.saveShare(_index.getCode(), iOpen, iClose, iHighest, iLowest, iVolume, iDate, iCandleCnt);
+
+            _index.loadShareFromFile(false);
 
             return _index;
 

@@ -911,7 +911,7 @@ namespace stock123.app.chart
 
                 //  open
                 sb.Length = 0;
-                sb.AppendFormat("O/C: {0}/{1}", formatPrice(share.getOpen(candleIdx)), formatPrice(share.getClose(candleIdx)));
+                sb.AppendFormat("C/O: {0}/{1}", formatPrice(share.getClose(candleIdx)), formatPrice(share.getOpen(candleIdx)));
                 mOpen = sb.ToString();
                 sb.Length = 0;
                 /*
@@ -921,7 +921,7 @@ namespace stock123.app.chart
                 sb.Length = 0;
                  */
                 //  highest
-                sb.AppendFormat("H/L: {0}/{1}", formatPrice(share.getHighest(candleIdx)), formatPrice(share.getLowest(candleIdx)));
+                sb.AppendFormat("L/H: {0}/{1}", formatPrice(share.getLowest(candleIdx)), formatPrice(share.getHighest(candleIdx)));
                 mHigh = sb.ToString();
                 sb.Length = 0;
                 /*
@@ -996,7 +996,7 @@ namespace stock123.app.chart
             }
             else
             {
-                mSb.AppendFormat("{0:F1}", v);
+                mSb.AppendFormat("{0:F2}", v);
             }
             return mSb.ToString();
         }

@@ -194,6 +194,7 @@ namespace xlib.framework
             {
                 xMainApplication.getxMainApplication().postMessageInUIThread(this, mListener, xBaseControl.EVT_NET_CONNECTING, 0, null);
                 //mURL = "http://soft123.com.vn:8888/SmaSrv/SSTK";// "http://soft123.com.vn/web/home";
+                //mURL = "http://soft123.com.vn:8282/srv/"
                 Uri uri = new Uri(mURL);
 
                 HttpWebRequest req = (HttpWebRequest)WebRequest.Create(uri);

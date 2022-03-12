@@ -648,6 +648,11 @@ namespace stock123.app
                 share.loadShareFromCommonData(true);
             }
 
+            if (!share.isRealtime())
+            {
+                share.appendTodayCandle();
+            }
+
             if (mChartType == Share.CANDLE_WEEKLY)
             {
                 share.toWeekly();

@@ -304,6 +304,10 @@ namespace stock123.app.data
 
         public void appendTodayCandle2()
         {
+            if (mIsGroupIndex)
+            {
+                return;
+            }
             stCandle c = getTodayCandle(true);
 
             if (c != null && c.open > 0 && getLastCandleDate() < c.date)
@@ -328,7 +332,7 @@ namespace stock123.app.data
 
         public void appendTodayCandle()
         {
-            if (getCandleCnt() < 3){
+            if (getCandleCnt() < 3 || mIsGroupIndex){
                 return;
             }
             stCandle c = getTodayCandle(false);
@@ -383,7 +387,8 @@ namespace stock123.app.data
             if (isIndex())
             {
                 stPriceboardStateIndex pi = ctx.mPriceboard.getPriceboardIndexOfMarket(mMarketID);
-                if (pi != null && getLastCandleDate() < ctx.mPriceboard.mDate && getCandleCount() > 0)
+                bool shouldUpdate = Utils.isWorkingTime() ? getLastCandleDate() <= ctx.mPriceboard.getDate() : getLastCandleDate() < ctx.mPriceboard.getDate();
+                if (pi != null && shouldUpdate && getCandleCount() > 0)
                 {
                     //mLastCandleDate = ctx.mPriceboard.mDate;
                     int last = getCandleCount();
@@ -436,7 +441,8 @@ namespace stock123.app.data
             else
             {
                 stPriceboardState ps = ctx.mPriceboard.getPriceboard(mID);
-                if (ps != null && getLastCandleDate() < ctx.mPriceboard.getDate())
+                bool shouldUpdate = Utils.isWorkingTime()?getLastCandleDate() <= ctx.mPriceboard.getDate():getLastCandleDate() < ctx.mPriceboard.getDate();
+                if (ps != null && shouldUpdate && getCandleCount() > 0)
                 {
                     int last = getCandleCount();
                     float division = 1;
@@ -1312,10 +1318,58 @@ namespace stock123.app.data
             xFileManager.saveFile(o, "data\\" + getShareName());
         }
 
-        String getShareName()
+        static public void saveShare(String code,
+                                 float[] open,
+                                 float[] close,
+                                 float[] high,
+                                 float[] low,
+                                 int[] volume,
+                                 int[] date,
+                                 int candleCnt)
+        {
+            //==================for managing saved shares============
+            //Context.getInstance().mShareManager.addSavedShare(mCode);
+            //==============================
+
+            xDataOutput o = new xDataOutput(64 + candleCnt * CANDLE_SIZE);
+            o.writeShort(Context.FILE_SHARE_DATA_VERSION);
+            o.writeUTF(code);
+            o.writeByte(1);
+            o.writeInt(candleCnt);
+            for (int i = 0; i < candleCnt; i++)
+            {
+                o.writeFloat(open[i]);
+                o.writeFloat(close[i]);
+                o.writeFloat(high[i]);
+                o.writeFloat(low[i]);
+                o.writeFloat((high[i]+low[i])/2);
+                //o.writeInt(0);  //  ce value, not used
+                o.writeInt(volume[i]);
+                o.writeInt(0);
+                o.writeInt(0);
+                o.writeInt(date[i]);
+            }
+
+            xFileManager.saveFile(o, "data\\" + getShareName(code, false));
+        }
+
+        public String getShareName()
         {
             String md5 = Utils.MD5String(mCode);
             if (isRealtime())
+            {
+                return String.Format("{0}.rt", md5);
+            }
+            else
+            {
+                return md5;
+            }
+        }
+
+        static public String getShareName(String code, bool isRealtime)
+        {
+            String md5 = Utils.MD5String(code);
+            if (isRealtime)
             {
                 return String.Format("{0}.rt", md5);
             }
@@ -3414,9 +3468,9 @@ namespace stock123.app.data
             if (cnt < 10)
                 return;
 
-            if (mIsCalcPSAR)
-                return;
-            mIsCalcPSAR = true;
+            //if (mIsCalcPSAR)
+                //return;
+            //mIsCalcPSAR = true;
 
             float alpha0 = Context.getInstance().mOptPSAR_alpha;// 0.02f;
             float alpha = a > 0?a:alpha0;
@@ -3431,6 +3485,7 @@ namespace stock123.app.data
             psar_last = pPSAR[0];
     	
             float EP = mCHighest[0];
+            float prioEP = EP;
             float lastEP = EP;
     	    bool uptrend = true;
     	    bool newtrend = true;
@@ -3462,7 +3517,7 @@ namespace stock123.app.data
                         else
                             alpha = alpha_max;
     			    }
-                    psar_next = psar_last + lastAlpha*(Utils.ABS_FLOAT(EP - psar_last));
+                    psar_next = psar_last + lastAlpha * (Utils.ABS_FLOAT(prioEP - psar_last));
     		    }
     		    else
     		    {
@@ -3474,9 +3529,10 @@ namespace stock123.app.data
                         else
                             alpha = alpha_max;
     			    }
-                    psar_next = psar_last - lastAlpha*(Utils.ABS_FLOAT(EP - psar_last));
+                    psar_next = psar_last - lastAlpha * (Utils.ABS_FLOAT(prioEP - psar_last));
     		    }
                 lastAlpha = alpha;
+                prioEP = EP;
 
                 //========================
     		    //If tomorrow's SAR value lies within (or beyond) today's or yesterday's price range, the SAR must
