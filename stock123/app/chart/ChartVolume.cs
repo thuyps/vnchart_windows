@@ -20,7 +20,7 @@ namespace stock123.app.chart
         {
         }
 
-        short[] mSMAVolumeXY;
+        float[] mSMAVolumeXY;
 
         double biggest = 0;
         double lowest = -1;
@@ -40,7 +40,7 @@ namespace stock123.app.chart
             {
                 mHighestVolume = "";
                 if (mChartLineXY == null)
-                    mChartLineXY = new short[2 * MAX_DRAW_POINT];
+                    mChartLineXY = new float[2 * MAX_DRAW_POINT];
 
                 //	get biggest volume
                 biggest = 0;
@@ -83,7 +83,7 @@ namespace stock123.app.chart
 
                 double ry = (float)getDrawingH() / (biggest - lowest);
                 double rw = (float)getDrawingW() / mChartLineLength;
-                mVolumeBarW = (int)(((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
+                mVolumeBarW = (((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
 
                 if (mVolumeBarW < 1) mVolumeBarW = 1;
                 float volumeBarWHalf = mVolumeBarW / 2;
@@ -92,8 +92,8 @@ namespace stock123.app.chart
                 for (i = 0; i < mChartLineLength; i++)
                 {
                     j = (i + share.mBeginIdx);
-                    mChartLineXY[i * 2] = (short)(mX + CHART_BORDER_SPACING_X + i * rw + getStartX() - volumeBarWHalf);	//	x
-                    mChartLineXY[i * 2 + 1] = (short)(mY + getMarginY() + getDrawingH() - (share.getVolume(j) - lowest) * ry);
+                    mChartLineXY[i * 2] = (float)(mX + CHART_BORDER_SPACING_X + i * rw + getStartX() - volumeBarWHalf);	//	x
+                    mChartLineXY[i * 2 + 1] = (float)(mY + getMarginY() + getDrawingH() - (share.getVolume(j) - lowest) * ry);
 
                     if (share.mCVolume[j] > vH) vH = share.mCVolume[j];
                     if (share.mCVolume[j] < vL) vL = share.mCVolume[j];
@@ -114,7 +114,7 @@ namespace stock123.app.chart
             //g.drawLine(0, 150, getW(), 150);
 
             g.setColor(0xff00ff00);
-            int tmp = mY + getH() - getMarginY();
+            float tmp = mY + getH() - getMarginY();
 
             for (int i = 0; i < mChartLineLength; i++)
             {

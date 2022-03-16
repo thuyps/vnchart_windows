@@ -13,12 +13,12 @@ namespace stock123.app.chart
 {
     public class ChartADX: ChartBase
     {
-        short[] mLinePDI;
+        float[] mLinePDI;
         int mLinePDISize;
-        short[] mLineMDI;
+        float[] mLineMDI;
         int mLineMDISize;
-        int mY20;
-        int mY40;
+        float mY20;
+        float mY40;
         //===================================
         public ChartADX(Font f)
             : base(f)
@@ -56,8 +56,8 @@ namespace stock123.app.chart
                 pricesToYs(share.pADX, idx, mChartLineXY, mChartLineLength, 0, maxPrice);
 
                 float ry = (float)getDrawingH() / maxPrice;
-                mY20 = (int)(getMarginY() + getDrawingH() - 20 * ry);
-                mY40 = (int)(getMarginY() + getDrawingH() - 40 * ry);
+                mY20 = (getMarginY() + getDrawingH() - 20 * ry);
+                mY40 = (getMarginY() + getDrawingH() - 40 * ry);
             }
 
             if (mChartLineLength == 0)

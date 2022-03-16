@@ -205,7 +205,7 @@ namespace stock123.app.chart
             {
                 string s = buttons[i];
                 g.setColor(C.COLOR_GRAY_LIGHT);
-                g.drawRect((int)x, 2, buttonW, buttonH);
+                g.drawRect(x, 2, buttonW, buttonH);
                 g.setColor(mPeriod == periods[i]?C.COLOR_ORANGE:C.COLOR_WHITE);
                 g.drawStringInRect(mContext.getFontSmallB(), s, (int)x, (int)y, buttonW, buttonH, xGraphics.HCENTER | xGraphics.VCENTER);
 

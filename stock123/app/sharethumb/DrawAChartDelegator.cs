@@ -27,7 +27,7 @@ namespace stock123.app.sharethumb
         int candleCount;
         protected float mPriceDistance;
         protected int mChartLineLength;
-        protected short[] mChartLineXY;
+        protected float[] mChartLineXY;
 
         float priceMax;
         float priceMin;
@@ -130,7 +130,7 @@ namespace stock123.app.sharethumb
             opens = new float[MAX_CANDLEs];
             volumes = new int[MAX_CANDLEs];
             dates = new int[MAX_CANDLEs];
-            mChartLineXY = new short[5000];
+            mChartLineXY = new float[5000];
         }
 
         void calcHiLo(float[] close, int candleCount)
@@ -174,7 +174,7 @@ namespace stock123.app.sharethumb
             return rcView.Height - dy;
         }
 
-        protected void pricesToYs(float[] price, int offset, short[] xy, int len, float price_low, float price_hi)
+        protected void pricesToYs(float[] price, int offset, float[] xy, int len, float price_low, float price_hi)
         {
             float priceDistance = priceMax - priceMin;
             float low = priceMin;
@@ -189,8 +189,8 @@ namespace stock123.app.sharethumb
             //	int begin = share.mBeginIdx;
             for (int i = 0; i < len; i++)
             {
-                xy[2 * i] = (short)(rcView.X + (short)(i * rX));
-                xy[2 * i + 1] = (short)(rcView.Y + (short)(rcView.Height - (price[i + offset] - low) * rY));
+                xy[2 * i] = (float)(rcView.X + (float)(i * rX));
+                xy[2 * i + 1] = (float)(rcView.Y + (float)(rcView.Height - (price[i + offset] - low) * rY));
             }
         }
 
@@ -235,8 +235,8 @@ namespace stock123.app.sharethumb
             for (i = 0; i < mChartLineLength; i++)
             {
                 j = (i + beginIdx);
-                mChartLineXY[i * 2] = (short)(rcView.X + (i * rw - volumeBarWHalf));	//	x
-                mChartLineXY[i * 2 + 1] = (short)(rcView.Y + (h - (volumes[j] - lowest) * ry)); //  h
+                mChartLineXY[i * 2] = (float)(rcView.X + (i * rw - volumeBarWHalf));	//	x
+                mChartLineXY[i * 2 + 1] = (float)(rcView.Y + (h - (volumes[j] - lowest) * ry)); //  h
             }
 
             //  render

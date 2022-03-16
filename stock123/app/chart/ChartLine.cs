@@ -13,15 +13,15 @@ namespace stock123.app.chart
 {
     public class ChartLine: ChartBase
     {
-        short[] mPricelines = new short[10];
-        short[] mChartLineXY3;
-        short[] mChartLineXY4;
-        short[] mChartLineXY5;
+        float[] mPricelines = new float[10];
+        float[] mChartLineXY3;
+        float[] mChartLineXY4;
+        float[] mChartLineXY5;
         int mSMAIdx;
         public int mSMAPeriod;
         //==================
-        short[] mChartEMA;
-        short[] mChartEMA2;
+        float[] mChartEMA;
+        float[] mChartEMA2;
         float[] mEmaValue1;
         float[] mEmaValue2;
         //=========================================
@@ -530,7 +530,7 @@ namespace stock123.app.chart
             g.setColor(C.COLOR_FADE_YELLOW);
 
             float[] tmp = {0};
-            short[] yy = {0, 0};
+            float[] yy = { 0, 0 };
             pricesToYs(tmp, 0, yy, 1, lo, hi);
             g.drawLine(0, yy[1], getW() - 20, yy[1]);
             g.setColor(C.COLOR_FADE_YELLOW0);
@@ -724,7 +724,7 @@ namespace stock123.app.chart
              */
 
             float[] tmp = { -10, 0, 10};
-            short[] yy = { 0, 0, 0, 0, 0, 0};
+            float[] yy = { 0, 0, 0, 0, 0, 0 };
             string[] ls = { "-10", "0%", "+10" };
             pricesToYs(tmp, 0, yy, 3, lo, hi);
 
@@ -842,7 +842,7 @@ namespace stock123.app.chart
             //==========================
             float step = (hi - lo)/5;
             float[] tmp = { lo, lo+step, lo+2*step, lo + 3*step, lo+4*step, hi };
-            short[] yy = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            float[] yy = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             pricesToYs(tmp, 0, yy, 5, lo, hi);
 
             if (mShouldDrawGrid)
@@ -955,7 +955,7 @@ namespace stock123.app.chart
             //==========================
             float step = (hi - lo) / 5;
             float[] tmp = { lo, lo + step, lo + 2 * step, lo + 3 * step, lo + 4 * step, hi };
-            short[] yy = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            float[] yy = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             pricesToYs(tmp, 0, yy, 5, lo, hi);
 
             if (mShouldDrawGrid)
@@ -1585,7 +1585,7 @@ namespace stock123.app.chart
             //==========================
             float step = (hi - lo) / 5;
             float[] tmp = { lo, lo + step, lo + 2 * step, lo + 3 * step, lo + 4 * step, hi };
-            short[] yy = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            float[] yy = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             pricesToYs(tmp, 0, yy, 5, lo, hi);
 
             if (mShouldDrawGrid)
@@ -1664,7 +1664,7 @@ namespace stock123.app.chart
             StringBuilder sb = Utils.getSB();
             //==========================
             float[] tmp = { 150, 100, 0, -100, -150 };
-            short[] yy = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            float[] yy = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             pricesToYs(tmp, 0, yy, 5, lo, hi);
 
             if (mShouldDrawGrid)
@@ -1684,10 +1684,10 @@ namespace stock123.app.chart
             //==============================
             int j = 0;
 
-            int y100 = yy[2 * 1 + 1];
-            int y_100 = yy[2 * 3 + 1];
-            fillColorGreen(g, mChartLineXY, mChartLineLength, (short)y100);
-            fillColorRed(g, mChartLineXY, mChartLineLength, (short)y_100);
+            float y100 = yy[2 * 1 + 1];
+            float y_100 = yy[2 * 3 + 1];
+            fillColorGreen(g, mChartLineXY, mChartLineLength, (float)y100);
+            fillColorRed(g, mChartLineXY, mChartLineLength, (float)y_100);
             //==============================
             g.setColor(C.COLOR_ORANGE);
             g.drawLines(mChartLineXY, mChartLineLength, 1.0f);
@@ -1732,7 +1732,7 @@ namespace stock123.app.chart
             StringBuilder sb = Utils.getSB();
             //==========================
             float[] tmp = { 27, 26.5f };
-            short[] yy = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            float[] yy = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             pricesToYs(tmp, 0, yy, 2, lo, hi);
 
             if (mShouldDrawGrid)

@@ -122,18 +122,18 @@ namespace stock123.app.chart
             {
                 v = (vBlock)mBlocks.elementAt(i);
 
-                int bottomY = priceToY(v.beginPrice);
-                int topY = priceToY(v.endPrice);
+                float bottomY = priceToY(v.beginPrice);
+                float topY = priceToY(v.endPrice);
                 //  green block
                 g.setColor(0x4000ff00);
-                int bw1 = (int)(v.positiveVolume * rx);
+                float bw1 = (float)(v.positiveVolume * rx);
                 g.fillRect(0, topY+1, bw1, bottomY - topY-2);
                 g.setColor(0xa000ff00);
                 //g.drawRect(0, topY + 1, bw1, bottomY - topY - 2);
 
                 //  red block
                 g.setColor(0x40ff0000);
-                int bw2 = (int)(v.negativeVolume * rx);
+                float bw2 = (float)(v.negativeVolume * rx);
                 g.fillRect(bw1, topY+1, bw2, bottomY - topY-2);
                 g.setColor(0xa0ff0000);
                 //g.drawRect(bw1, topY + 1, bw2, bottomY - topY - 2);

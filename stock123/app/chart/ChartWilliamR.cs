@@ -13,9 +13,9 @@ namespace stock123.app.chart
 {
     class ChartWilliamR: ChartBase
     {
-        short[] mChartEMA;
-        short[] mChartEMA2;
-        short[] mPricelines = new short[10];
+        float[] mChartEMA;
+        float[] mChartEMA2;
+        float[] mPricelines = new float[10];
         public ChartWilliamR(Font f)
             : base(f)
         {

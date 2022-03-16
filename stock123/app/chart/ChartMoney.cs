@@ -109,7 +109,7 @@ namespace stock123.app.chart
                 color = mContext.valToColorF(mv.price, ps.getCe(), ps.getRef(), ps.getFloor());
                 g.setColor(color);
                 float w = ((float)mv.volume / biggest) * (w0-10);
-                g.fillRect(2 + x1, y, (int)w, itemH);
+                g.fillRect(2 + x1, y, w, itemH);
                 //  volume
                 s = Utils.formatNumber(mv.volume);
                 sb.Length = 0;

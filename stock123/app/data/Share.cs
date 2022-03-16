@@ -7174,5 +7174,44 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
 
             return j;
         }
+        public void calcAO(int fastPeriod, int slowPeriod, float[] ao)
+        {
+            int cnt = getCandleCnt();
+
+            float[] mediumPrice = pTMP1;
+            float[] sma5 = pTMP2;
+            float[] sma34 = pTMP3;
+
+            stCandle c = new stCandle();
+            for (int i = 0; i < cnt; i++)
+            {
+                getCandle(i, c);
+                mediumPrice[i] = (c.highest + c.lowest) / 2;
+            }
+
+            SMA(mediumPrice, cnt, fastPeriod, sma5);
+            SMA(mediumPrice, cnt, slowPeriod, sma34);
+
+            for (int i = 0; i < cnt; i++)
+            {
+                ao[i] = sma5[i] - sma34[i];
+            }
+        }
+
+        public void calcAC(int fastPeriod, int slowPeriod, int basePeriod, float[] ac)
+        {
+            int cnt = getCandleCnt();
+
+            float[] sma5 = pTMP2;
+
+            calcAO(fastPeriod, slowPeriod, ac);
+
+            //  now AC
+            SMA(ac, cnt, basePeriod, sma5);
+            for (int i = 0; i < cnt; i++)
+            {
+                ac[i] = ac[i] - sma5[i];
+            }
+        }
     }
 }

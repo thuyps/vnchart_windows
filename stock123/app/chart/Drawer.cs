@@ -19,12 +19,12 @@ namespace stock123.app.chart
     public class stTrendLine
     {
         public int type;
-        public int[] x = { 0, 0, 0 };
-        public int[] y = { 0, 0, 0 };
+        public float[] x = { 0, 0, 0 };
+        public float[] y = { 0, 0, 0 };
         public uint color = C.COLOR_BLUE;
         public float thickness = 1.0f;
 
-        public float[] candleIdx = { 0, 0, 0 };
+        public int[] candleIdx = { 0, 0, 0 };
         public float[] price = { 0, 0, 0};
         public object data;
     }
@@ -169,8 +169,8 @@ namespace stock123.app.chart
                 {
                     g.setColor(C.COLOR_MAGENTA);
                     int r = 4;
-                    int cx = (t.x[0] + t.x[1]) / 2;
-                    int cy = (t.y[0] + t.y[1]) / 2;
+                    float cx = (t.x[0] + t.x[1]) / 2;
+                    float cy = (t.y[0] + t.y[1]) / 2;
                     g.drawRect(cx - 2, cy - 2, 4, 4);
                     g.drawRect(cx - 5, cy - 5, 10, 10);
                 }
@@ -234,8 +234,8 @@ namespace stock123.app.chart
             //==================draw finger square
             if (mSelectedTrend != null && mSelVertex != -1)
             {
-                int x = mSelectedTrend.x[0];
-                int y = mSelectedTrend.y[0];
+                float x = mSelectedTrend.x[0];
+                float y = mSelectedTrend.y[0];
                 if (mSelVertex == 1) { x = mSelectedTrend.x[1]; y = mSelectedTrend.y[1]; }
                 else if (mSelVertex == 2) { x = mSelectedTrend.x[2]; y = mSelectedTrend.y[2]; }
 
@@ -256,15 +256,15 @@ namespace stock123.app.chart
             }
         }
 
-        bool isBetween(int x, int pointX, int radiu)
+        bool isBetween(float x, float pointX, float radiu)
         {
-            int d = pointX - x;
+            float d = pointX - x;
             if (d < 0) d = -d;
 
             return (d <= radiu);
         }
 
-        bool isOnA(stTrendLine t, int x, int y)
+        bool isOnA(stTrendLine t, float x, float y)
         {
             if (t != null)
             {
@@ -274,7 +274,7 @@ namespace stock123.app.chart
             return false;
         }
 
-        bool isOnB(stTrendLine t, int x, int y)
+        bool isOnB(stTrendLine t, float x, float y)
         {
             if (t != null)
             {
@@ -284,7 +284,7 @@ namespace stock123.app.chart
             return false;
         }
 
-        bool isOnC(stTrendLine t, int x, int y)
+        bool isOnC(stTrendLine t, float x, float y)
         {
             if (t != null)
             {
@@ -295,12 +295,12 @@ namespace stock123.app.chart
             return false;
         }
 
-        bool isOnMiddleAB(stTrendLine t, int x, int y)
+        bool isOnMiddleAB(stTrendLine t, float x, float y)
         {
             if (t != null)
             {
-                int cx = t.x[0] + (t.x[1] - t.x[0]) / 2;
-                int cy = t.y[0] + (t.y[1] - t.y[0]) / 2;
+                float cx = t.x[0] + (t.x[1] - t.x[0]) / 2;
+                float cy = t.y[0] + (t.y[1] - t.y[0]) / 2;
                 return (isBetween(x, cx, gap)
                         && isBetween(y, cy, gap));
             }
@@ -593,16 +593,16 @@ namespace stock123.app.chart
 
             g.setColor(color);
 
-            int minX = t.x[0] < t.x[1] ? t.x[0] : t.x[1];
-            int maxX = mX + getW() - 40;
+            float minX = t.x[0] < t.x[1] ? t.x[0] : t.x[1];
+            float maxX = mX + getW() - 40;
 
-            int y0 = t.y[0];
-            int maxY = mY + getH();
+            float y0 = t.y[0];
+            float maxY = mY + getH();
 
             float[] percent = { 0, 23.6f, 38.2f, 50.0f, 61.8f, 100f, 161.8f };
             String[] txt = { "0", "23.6", "38.2", "50.0", "61.8", "100", "161.8" };
 
-            int deltaY = t.y[1] - t.y[0];
+            float deltaY = t.y[1] - t.y[0];
             if (deltaY < 0) deltaY = -deltaY;
             int up = 1;
             y0 = t.y[0];
@@ -619,7 +619,7 @@ namespace stock123.app.chart
             String s;
             for (int i = 0; i < 7; i++)
             {
-                int y = (int)(y0 + up * (percent[i] * deltaY) / 100);
+                float y = (float)(y0 + up * (percent[i] * deltaY) / 100);
                 if (y > maxY || y < 0)
                     continue;
 
@@ -653,18 +653,18 @@ namespace stock123.app.chart
             float[] percent = { 0f, 23.6f, 38.2f, 50.0f, 61.8f, 100f, 161.8f };
             String[] txt = { "0", "23.6", "38.2", "50.0", "61.8", "100", "161.8" };
 
-            int minX = t.x[0] < t.x[1] ? t.x[0] : t.x[1];
+            float minX = t.x[0] < t.x[1] ? t.x[0] : t.x[1];
             minX = minX < t.x[2] ? minX : t.x[2];
-            int maxX = t.x[0] > t.x[1] ? t.x[0] : t.x[1] + 30;
+            float maxX = t.x[0] > t.x[1] ? t.x[0] : t.x[1] + 30;
             maxX = mX + getW() - 35;
-            int maxY = mY + getH() - 20;
+            float maxY = mY + getH() - 20;
 
-            int deltaY = t.y[1] - t.y[0];
+            float deltaY = t.y[1] - t.y[0];
             if (deltaY < 0) deltaY = -deltaY;
 
             int up = 1;
 
-            int y0 = t.y[2];
+            float y0 = t.y[2];
 
             if (t.x[0] < t.x[1] && t.y[0] < t.y[1]) up = 1;
             if (t.x[0] < t.x[1] && t.y[0] > t.y[1]) up = -1;
@@ -710,9 +710,9 @@ namespace stock123.app.chart
             {
                 toRight = -1;
             }
-            int x0 = mX + t.x[0];
-            int deltaX = Utils.ABS_INT((t.x[1] - t.x[0]));
-            int maxX = mX + getW();
+            float x0 = mX + t.x[0];
+            float deltaX = Utils.ABS_FLOAT((t.x[1] - t.x[0]));
+            float maxX = mX + getW();
 
             //	int devidedNum = 1000;
             //	char sz[25];
@@ -782,20 +782,20 @@ namespace stock123.app.chart
 
             float[] percent = { 23.6f, 38.2f, 50.0f, 61.8f};//, 100f};
             String[] txt = { "23.6", "38.2", "50", "61.8", "100", "161.8" };
-            int y = 0;
-            int deltaY = t.y[0] - t.y[1];
-            int dx = t.x[1] - t.x[0];
-            int dy = t.y[1] - t.y[0];
+            float y = 0;
+            float deltaY = t.y[0] - t.y[1];
+            float dx = t.x[1] - t.x[0];
+            float dy = t.y[1] - t.y[0];
 
             for (int i = 0; i < percent.Length; i++)
             {
-                y = t.y[0] - (int)(deltaY * percent[i]/100);
-                int x2 = t.x[1] + 2*dx;
-                int dx2 = x2 - t.x[0];
+                y = t.y[0] - (float)(deltaY * percent[i] / 100);
+                float x2 = t.x[1] + 2 * dx;
+                float dx2 = x2 - t.x[0];
                 dy = y - t.y[0];    //  => y = dy + t.y[0]
 
                 //  dx/dx2 = dy/dy2
-                int dy2 = 0;
+                float dy2 = 0;
                 if (dx != 0)
                 {
                     dy2 = dx2 * dy / dx;
@@ -813,8 +813,8 @@ namespace stock123.app.chart
 
             g.setColor(color);
 
-            int w = t.x[1] - t.x[0];
-            int h = t.y[1] - t.y[0];
+            float w = t.x[1] - t.x[0];
+            float h = t.y[1] - t.y[0];
             
             g.drawRect(t.x[0], t.y[0], w, h);
         }
@@ -833,8 +833,8 @@ namespace stock123.app.chart
             uint color = t.color;
 
             g.setColor(color);
-            int w = t.x[1] - t.x[0];
-            int h = t.y[1] - t.y[0];
+            float w = t.x[1] - t.x[0];
+            float h = t.y[1] - t.y[0];
             g.drawEclipse(t.x[0], t.y[0], w, h);
         }
 
@@ -1000,13 +1000,13 @@ namespace stock123.app.chart
             int x02 = - 14;
             int y02 = + 7;
 
-            int x1 = (int)(x01 * cosa - y01 * sina) + t.x[1];
-            int y1 = (int)(x01 * sina + y01 * cosa) + t.y[1];
+            float x1 = (float)(x01 * cosa - y01 * sina) + t.x[1];
+            float y1 = (float)(x01 * sina + y01 * cosa) + t.y[1];
 
-            int x2 = (int)(x02 * cosa - y02 * sina) + t.x[1];
-            int y2 = (int)(x02 * sina + y02 * cosa) + t.y[1];
+            float x2 = (float)(x02 * cosa - y02 * sina) + t.x[1];
+            float y2 = (float)(x02 * sina + y02 * cosa) + t.y[1];
 
-            short[] xy = { (short)x1, (short)y1, (short)x2, (short)y2, (short)t.x[1], (short)t.y[1] };
+            float[] xy = { x1, y1, x2, y2, t.x[1], t.y[1] };
 
             g.setColor(t.color);
             g.fillShapes(xy, 3);
@@ -1162,7 +1162,7 @@ namespace stock123.app.chart
                         t.thickness = di.readFloat();
                         for (int j = 0; j < 3; j++)
                         {
-                            t.candleIdx[j] = di.readFloat();
+                            t.candleIdx[j] = (int)di.readFloat();
                             Utils.trace("=====loadfile: candle=" + t.candleIdx[j]);
                             t.price[j] = di.readFloat();
                         }

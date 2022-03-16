@@ -13,8 +13,8 @@ namespace stock123.app.chart
 {
     public class ChartOBV : ChartBase
     {
-        short[] mPricelines = new short[10];
-        short[] mChartEMA;
+        float[] mPricelines = new float[10];
+        float[] mChartEMA;
         //==============================
 
         public ChartOBV(Font f)

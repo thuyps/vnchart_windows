@@ -14,7 +14,7 @@ namespace stock123.app.table
         public uint textColor;		//	0: white
         public uint textColor2;		//	0: white
         public uint bgColor;
-        public short x;
-        public short w; 
+        public float x;
+        public float w; 
     }
 }

@@ -99,9 +99,9 @@ namespace stock123.app.chart
                     {
                         int idx = mZigzag.elementAt(i);
 
-                        mChartLineXY[2 * mZigzagPointCnt] = (short)candleToX(idx);
+                        mChartLineXY[2 * mZigzagPointCnt] = (float)candleToX(idx);
                         float close = share.getClose(mZigzag.elementAt(i));
-                        mChartLineXY[2 * mZigzagPointCnt + 1] = (short)priceToY(close);
+                        mChartLineXY[2 * mZigzagPointCnt + 1] = (float)priceToY(close);
 
                         mZigzagPointCnt++;
 

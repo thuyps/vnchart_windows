@@ -150,9 +150,9 @@ namespace stock123.app.table
             if (getID() < 0)
                 return;
 
-            int x = 0;
-            int y = 2;
-            int h = getH();
+            float x = 0;
+            float y = 2;
+            float h = getH();
 
             if (mCells.size() == 0)
             {
@@ -173,7 +173,7 @@ namespace stock123.app.table
                 stCell c = (stCell)mCells.elementAt(i);
                 uint color = c.bgColor;
 
-                int w = c.w;
+                float w = c.w;
                 x = c.x;
                 if (color != COLOR_NONE)
                 {

@@ -13,11 +13,11 @@ namespace stock123.app.chart
 {
     public class ChartIchimoku:ChartBase
     {
-        short[] mLineTenkansen;
-        short[] mLineKijunsen;
-        short[] mLineChikou;
-        short[] mLineSpanA;
-        short[] mLineSpanB;
+        float[] mLineTenkansen;
+        float[] mLineKijunsen;
+        float[] mLineChikou;
+        float[] mLineSpanA;
+        float[] mLineSpanB;
         int mLineTenkansenSize;
         int mLineKijunsenSize;
         int mLineSpanASize;
@@ -112,7 +112,7 @@ namespace stock123.app.chart
                 {
                     int b = vinters.elementAt(i - 1);
                     int e = vinters.elementAt(i);
-                    short[] cloud = new short[((e - b + 10) * 4)];
+                    float[] cloud = new float[((e - b + 10) * 4)];
 
                     int j = 0;
                     for (int k = b; k <= e; k++)
@@ -162,7 +162,7 @@ namespace stock123.app.chart
             //  kumo cloud
             for (int i = 0; i < mKumoCloud.size(); i++)
             {
-                short[] p = (short[])mKumoCloud.elementAt(i);
+                float[] p = (float[])mKumoCloud.elementAt(i);
                 if (p != null)
                 {
                     g.setColor(mKumoCloudColor.elementAt(i));
@@ -175,16 +175,16 @@ namespace stock123.app.chart
             StringBuilder sb = Utils.sb;
             sb.Length = 0;
             int cur = share.getCursor();
-            int y = 24;
+            float y = 24;
             if (mShouldDrawValue && cur >= 0 && cur < share.getCandleCount())
             {
                 g.setColor(0x60404040);
                 if (cur - mContext.mOptIchimokuTime2 > 0)
                 {
-                    int x0 = candleToX(cur - mContext.mOptIchimokuTime2);
+                    float x0 = candleToX(cur - mContext.mOptIchimokuTime2);
                     g.drawVerticalLine(x0, 0, getH());
                 }
-                int x1 = candleToX(cur + mContext.mOptIchimokuTime2);
+                float x1 = candleToX(cur + mContext.mOptIchimokuTime2);
                 g.drawVerticalLine(x1, 0, getH());
 
                 //==========draw 2 shadow vertical
@@ -192,7 +192,7 @@ namespace stock123.app.chart
                 sb.AppendFormat("Ichi({0},{1},{2})", (int)mContext.mOptIchimokuTime1, (int)mContext.mOptIchimokuTime2, (int)mContext.mOptIchimokuTime3);
                 sz = sb.ToString();
                 g.drawString(mFont, sz, 130, y, 0);
-                int x = 150 + g.getStringWidth(mFont, sz) + 10;
+                float x = 150 + g.getStringWidth(mFont, sz) + 10;
 
                 String sz1;
                 sz1 = formatPrice(share.pTenkansen[cur]);

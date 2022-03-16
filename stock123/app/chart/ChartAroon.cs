@@ -17,12 +17,12 @@ namespace stock123.app.chart
         float[] mAroonDown = new float[Share.MAX_CANDLE_CHART_COUNT];
         float[] mAroonOscillator = new float[Share.MAX_CANDLE_CHART_COUNT];
 
-        short[] mPricelines = new short[10];
-        short[] mAroonUpXY;
-        short[] mAroonDownXY;
-        short[] mAroonOscillatorXY;
+        float[] mPricelines = new float[10];
+        float[] mAroonUpXY;
+        float[] mAroonDownXY;
+        float[] mAroonOscillatorXY;
         //==================
-        short[] mChartEMA;
+        float[] mChartEMA;
         //===================================
         public ChartAroon(Font f, int aroonType)
             : base(f)

@@ -13,7 +13,7 @@ namespace stock123.app.chart
 {
     public class ChartStochRSI : ChartBase
     {
-        short[] mPricelines = new short[10];
+        float[] mPricelines = new float[10];
         float[] pStochRSI;
         float[] pStochRSISMA;
         //==============================

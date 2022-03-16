@@ -245,8 +245,8 @@ namespace stock123.app.chart
                 if (selCandleIdx >= share.mBeginIdx && selCandleIdx <= share.mEndIdx)
                 {
                     int i = selCandleIdx - share.mBeginIdx;
-                    int x = mChartLineXY[2 * i];
-                    int y = mChartLineXY[2 * i + 1];
+                    float x = mChartLineXY[2 * i];
+                    float y = mChartLineXY[2 * i + 1];
 
                     renderMasterCursor(g, x, y);
                 }
@@ -281,10 +281,10 @@ namespace stock123.app.chart
             //-------draw candles-------------
             //	PriceDistance	- drawingH
             //	price			- ?
-            int candleW = (int)(((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
+            float candleW = (float)(((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
 
             if (candleW % 2 == 0) candleW++;
-            int candleWHalf = candleW / 2 + 1;
+            float candleWHalf = candleW / 2 + 1;
 
             Share s = getShare();
             int b = s.mBeginIdx;
@@ -295,19 +295,19 @@ namespace stock123.app.chart
             uint colorDown = 0xffff0000;
             uint color;
 
-            int x, y;
+            float x, y;
             float low = s.getLowestPrice();
             float ry = (float)getDrawingH() / mPriceDistance;
             float rw = (float)getDrawingW() / mChartLineLength;
 
-            int shadowH = 0;
-            int shadowY = 0;
+            float shadowH = 0;
+            float shadowY = 0;
 
             //	cursor
-            int cursorX = 0, cursorY = 0;
+            float cursorX = 0, cursorY = 0;
             int selCandle = s.mSelectedCandle;
 
-            int maxCandleH = getDrawingH() / 2;
+            float maxCandleH = getDrawingH() / 2;
 
             int j = 0;
             float o, c, h, l;
@@ -329,18 +329,18 @@ namespace stock123.app.chart
                 if (candleBodyH < 0)
                 {
                     color = colorDown; candleBodyH = -candleBodyH;
-                    y = (int)(mY + getMarginY() + getDrawingH() - (o - low) * ry);
+                    y = (float)(mY + getMarginY() + getDrawingH() - (o - low) * ry);
                 }
                 else
-                    y = (int)(mY + getMarginY() + getDrawingH() - (c - low) * ry);
+                    y = (float)(mY + getMarginY() + getDrawingH() - (c - low) * ry);
 
-                x = (int)(mX + CHART_BORDER_SPACING_X + j * rw - candleW / 2 + getStartX());
+                x = (float)(mX + CHART_BORDER_SPACING_X + j * rw - candleW / 2 + getStartX());
                 //x += 1;
 
                 //	candle shadow	
                 float tmp = h - l;
-                shadowH = (int)((float)tmp * ry);
-                shadowY = (int)(mY + getMarginY() + getDrawingH() - (h - low) * ry);
+                shadowH = ((float)tmp * ry);
+                shadowY = (mY + getMarginY() + getDrawingH() - (h - low) * ry);
                 g.setColor(0xffffffff);
                 g.drawLine(x + candleWHalf-1, shadowY, x + candleWHalf-1, shadowY + shadowH);
 
@@ -357,7 +357,7 @@ namespace stock123.app.chart
                 //else
                 if (candleBodyH < 1)
                     candleBodyH = 1;
-                g.fillRect(x, y, candleW, (int)candleBodyH);
+                g.fillRect(x, y, candleW, (float)candleBodyH);
                 j++;
             }
 
@@ -418,10 +418,10 @@ namespace stock123.app.chart
             //-------draw candles-------------
             //	PriceDistance	- drawingH
             //	price			- ?
-            int candleW = (int)(((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
+            float candleW = (float)(((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
 
             if (candleW % 2 == 0) candleW++;
-            int candleWHalf = candleW / 2 + 1;
+            float candleWHalf = candleW / 2 + 1;
 
             Share s = getShare();
             int b = s.mBeginIdx;
@@ -432,19 +432,19 @@ namespace stock123.app.chart
             uint colorDown = 0xffff0000;
             uint color;
 
-            int x, y;
+            float x, y;
             float low = s.getLowestPrice();
             float ry = (float)getDrawingH() / mPriceDistance;
             float rw = (float)getDrawingW() / mChartLineLength;
 
-            int shadowH = 0;
-            int shadowY = 0;
+            float shadowH = 0;
+            float shadowY = 0;
 
             //	cursor
-            int cursorX = 0, cursorY = 0;
+            float cursorX = 0, cursorY = 0;
             int selCandle = s.mSelectedCandle;
 
-            int maxCandleH = getDrawingH() / 2;
+            float maxCandleH = getDrawingH() / 2;
 
             int j = 0;
             float o, c, h, l;
@@ -496,18 +496,18 @@ namespace stock123.app.chart
                 if (candleBodyH < 0)
                 {
                     color = colorDown; candleBodyH = -candleBodyH;
-                    y = (int)(mY + getMarginY() + getDrawingH() - (ho - low) * ry);
+                    y = (float)(mY + getMarginY() + getDrawingH() - (ho - low) * ry);
                 }
                 else
-                    y = (int)(mY + getMarginY() + getDrawingH() - (hc - low) * ry);
+                    y = (float)(mY + getMarginY() + getDrawingH() - (hc - low) * ry);
 
-                x = (int)(mX + CHART_BORDER_SPACING_X + j * rw - candleW / 2 + getStartX());
+                x = (float)(mX + CHART_BORDER_SPACING_X + j * rw - candleW / 2 + getStartX());
                 //x += 1;
 
                 //	candle shadow	
                 float tmp = hh - l;
-                shadowH = (int)((float)tmp * ry);
-                shadowY = (int)(mY + getMarginY() + getDrawingH() - (hh - low) * ry);
+                shadowH = ((float)tmp * ry);
+                shadowY = (mY + getMarginY() + getDrawingH() - (hh - low) * ry);
                 g.setColor(0xffffffff);
                 g.drawLine(x + candleWHalf - 1, shadowY, x + candleWHalf - 1, shadowY + shadowH);
 
@@ -522,7 +522,7 @@ namespace stock123.app.chart
                 //if (candleBodyH == 0)
                 //	g.drawLine(x, y, x+candleW, y);
                 //else
-                g.fillRect(x, y, candleW, (int)candleBodyH);
+                g.fillRect(x, y, candleW, (float)candleBodyH);
                 j++;
             }
 
@@ -583,10 +583,10 @@ namespace stock123.app.chart
             //-------draw candles-------------
             //	PriceDistance	- drawingH
             //	price			- ?
-            int candleW = (int)(((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
+            float candleW = (float)(((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
 
             if (candleW % 2 == 0) candleW++;
-            int candleWHalf = candleW / 2 + 1;
+            float candleWHalf = candleW / 2 + 1;
 
             Share s = getShare();
             int b = s.mBeginIdx;
@@ -596,19 +596,19 @@ namespace stock123.app.chart
             uint colorDown = 0xffff0000;
             uint color;
 
-            int x, y;
+            float x, y;
             float low = s.getLowestPrice();
             float ry = (float)getDrawingH() / mPriceDistance;
             float rw = (float)getDrawingW() / mChartLineLength;
 
-            int shadowH = 0;
-            int shadowY = 0;
+            float shadowH = 0;
+            float shadowY = 0;
 
             //	cursor
-            int cursorX = 0, cursorY = 0;
+            float cursorX = 0, cursorY = 0;
             int selCandle = s.mSelectedCandle;
 
-            int maxCandleH = getDrawingH() / 2;
+            float maxCandleH = getDrawingH() / 2;
 
             int j = 0;
             float o, c, h, l;
@@ -631,12 +631,12 @@ namespace stock123.app.chart
 
                 //y = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (o - low) * ry);
 
-                x = (int)(mX + CHART_BORDER_SPACING_X + j * rw - rw / 2 + getStartX());
+                x = (float)(mX + CHART_BORDER_SPACING_X + j * rw - rw / 2 + getStartX());
 
                 //	H-L vertical line
                 float tmp = h - l;
-                shadowH = (int)((float)tmp * ry);
-                shadowY = (int)(mY + getMarginY() + getDrawingH() - (h - low) * ry);
+                shadowH = ((float)tmp * ry);
+                shadowY = (mY + getMarginY() + getDrawingH() - (h - low) * ry);
                 g.setColor(color);
 
                 g.drawLine(x + candleWHalf, shadowY, x + candleWHalf, shadowY + shadowH);
@@ -648,10 +648,10 @@ namespace stock123.app.chart
                 }
 
                 //  open
-                y = (int)(mY + getMarginY() + getDrawingH() - (o - low) * ry);
+                y = (mY + getMarginY() + getDrawingH() - (o - low) * ry);
                 g.drawHorizontalLine(x, y, candleWHalf);
                 //  close
-                y = (int)(mY + getMarginY() + getDrawingH() - (c - low) * ry);
+                y = (mY + getMarginY() + getDrawingH() - (c - low) * ry);
                 g.drawHorizontalLine(x+candleWHalf+1, y, candleWHalf);
 
                 j++;
@@ -713,10 +713,10 @@ namespace stock123.app.chart
             //-------draw candles-------------
             //	PriceDistance	- drawingH
             //	price			- ?
-            int candleW = (int)(((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
+            float candleW = (((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
 
             if (candleW % 2 == 0) candleW++;
-            int candleWHalf = candleW / 2 + 1;
+            float candleWHalf = candleW / 2 + 1;
 
             Share s = getShare();
             int b = s.mBeginIdx;
@@ -726,19 +726,19 @@ namespace stock123.app.chart
             uint colorDown = 0xffff0000;
             uint color;
 
-            int x, y;
+            float x, y;
             float low = s.getLowestPrice();
             float ry = (float)getDrawingH() / mPriceDistance;
             float rw = (float)getDrawingW() / mChartLineLength;
 
-            int shadowH = 0;
-            int shadowY = 0;
+            float shadowH = 0;
+            float shadowY = 0;
 
             //	cursor
-            int cursorX = 0, cursorY = 0;
+            float cursorX = 0, cursorY = 0;
             int selCandle = s.mSelectedCandle;
 
-            int maxCandleH = getDrawingH() / 2;
+            float maxCandleH = getDrawingH() / 2;
 
             int j = 0;
             float o, c, h, l;
@@ -761,12 +761,12 @@ namespace stock123.app.chart
 
                 //y = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (o - low) * ry);
 
-                x = (int)(mX + CHART_BORDER_SPACING_X + j * rw - rw / 2 + getStartX());
+                x = (mX + CHART_BORDER_SPACING_X + j * rw - rw / 2 + getStartX());
 
                 //	H-L vertical line
                 float tmp = h - l;
-                shadowH = (int)((float)tmp * ry);
-                shadowY = (int)(mY + getMarginY() + getDrawingH() - (h - low) * ry);
+                shadowH = (tmp * ry);
+                shadowY = (mY + getMarginY() + getDrawingH() - (h - low) * ry);
                 g.setColor(color);
 
                 g.drawLine(x + candleWHalf, shadowY, x + candleWHalf, shadowY + shadowH);
@@ -781,7 +781,7 @@ namespace stock123.app.chart
                 //==========y = (int)(mY + CHART_BORDER_SPACING_Y + mDrawingH - (o - low) * ry);
                 //==========g.drawHorizontalLine(x, y, candleWHalf);
                 //  close
-                y = (int)(mY + getMarginY() + getDrawingH() - (c - low) * ry);
+                y = (mY + getMarginY() + getDrawingH() - (c - low) * ry);
                 g.drawHorizontalLine(x+1, y, 2*candleWHalf-1);
 
                 j++;
@@ -815,7 +815,7 @@ namespace stock123.app.chart
             }
         }
 
-        virtual protected void renderMasterCursor(xGraphics g, int cx, int cy)
+        virtual protected void renderMasterCursor(xGraphics g, float cx, float cy)
         {
             if (!mRenderCursor)
                 return;
@@ -1375,7 +1375,7 @@ namespace stock123.app.chart
             //g.drawVerticalLine(mMouseX, 0, getH());
             //  vertical line
             int sel = share.getCursor();
-            int x = candleToX(sel);
+            float x = candleToX(sel);
             g.drawLine(x, 0, x, getH());
             //  horizon line
             g.drawHorizontalLine(0, mMouseY, getW());

@@ -16,9 +16,9 @@ namespace stock123.app.chart
         float[] priceValues = { 0, 0, 0, 0, 0};
         int priceValuesCnt = 0;
 
-        short[] mPricelines = new short[10];
-        short[] mChartEMA1;
-        short[] mChartEMA2;
+        float[] mPricelines = new float[10];
+        float[] mChartEMA1;
+        float[] mChartEMA2;
 
         int baseMAPeriod1;
         int baseMAPeriod2;

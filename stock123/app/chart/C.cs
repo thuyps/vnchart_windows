@@ -88,6 +88,34 @@ namespace stock123.app
 
         public const uint COLOR_BUTTON_SEL = 0xff2050a0;
 
+        public const uint COLOR_TD_UP         = 0xff00ff00;
+    public const uint COLOR_TL_UP         = 0xff00b020;//0xff1f2dce;//0xffd924b1//0xff00a020
+    public const uint COLOR_TL_UP_TEXT         = 0xff004000;
+    public const uint COLOR_TL_UP2        = 0xff1f2dce;//0xffd924b1// 0xff006000
+//#define COLOR_TD_DOWN       0xffff0000
+public const uint COLOR_TD_DOWN       = 0xffff1212;
+    public const uint COLOR_TL_DOWN       = 0xffff0020;//0xff1f2dce//0xffff0020
+    public const uint COLOR_TL_DOWN_TEXT       = 0xff800000;
+    public const uint COLOR_TL_DOWN2      = 0xffff0020;//0xff1f2dce//0xffff0020// 0xffa00000
+
+    public const uint COLOR_TD_GREEN      = 0xff00b000;
+    public const uint COLOR_TL_GREEN      = 0xff28c78d;//0xff008000
+    public const uint COLOR_TD_RED        = 0xffb00000;
+    public const uint COLOR_TL_RED        = 0xffff0034;//0xff800000
+
+    public const uint COLOR_TD_RED2        = 0x80ff0000;
+    public const uint COLOR_TL_RED2        = 0x50ff0000;
+
+    public const uint COLOR_TD_PRICELINE  = 0x40e0e0e0;
+    public const uint COLOR_TL_PRICELINE  = 0x70101010;
+
+    public const uint COLOR_TD_PRICELABEL  = 0x80e0e0e0;
+    public const uint COLOR_TL_PRICELABEL  = 0xf05050e0;
+
+    public const uint COLOR_TD_LINE  = 0xf0a0a0a0;
+    public const uint COLOR_TL_LINE = 0xf0010101;
+
+
         //================================
         //  BaseControl's types < 100
         //  app's control types > 100

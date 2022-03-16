@@ -89,6 +89,9 @@ namespace stock123.app.chart
         public const int CHART_CRS_PERCENT = 45;
 
         public const int CHART_MCDX = 52;
+        public const int CHART_AWESOME = 53;
+        public const int CHART_BW_ALLIGATOR = 54;
+        public const int CHART_BW_Accelerator = 55;
         //--------------------------------------------
 
         //public int CHART_BORDER_SPACING_Y = 5;
@@ -120,9 +123,9 @@ namespace stock123.app.chart
         protected int mLastScope;
 
         protected float[] mPrices = new float[5];
-        protected int[] mPricesY = new int[5];
-        protected short[] mChartLineXY;
-        protected short[] mChartLineXY2;
+        protected float[] mPricesY = new float[5];
+        protected float[] mChartLineXY;
+        protected float[] mChartLineXY2;
         protected int mChartLineXYSize;
 
         protected float mVolumeBarW;
@@ -130,7 +133,7 @@ namespace stock123.app.chart
         protected float mPriceDistance;
         protected int mChartLineLength;
 
-        protected short[] mChartLineColorArea;
+        protected float[] mChartLineColorArea;
 
         protected Font mFont;
         //	====================mouse/keyboard================
@@ -155,7 +158,7 @@ namespace stock123.app.chart
         public bool mShouldDrawTitle = true;
         public bool mShouldDrawPriceLabelOnRight = true;
         protected Share mShare;
-        protected int mStartX;
+        protected float mStartX;
         ChartBase mRefChart;
         ChartBase mRefChartForSize;
         //=================================================================
@@ -189,7 +192,7 @@ namespace stock123.app.chart
             g.setColor(C.COLOR_GREEN);
             g.drawString(mContext.getFontText(), "This is a realtime chart", 100, 10, 0);
 
-            short[] path = { 10, 20, 35, 20, 48, 30, 35, 35 };
+            float[] path = { 10, 20, 35, 20, 48, 30, 35, 35 };
             g.setColor(C.COLOR_BLUE);
             g.fillShapes(path, 4);
             g.drawLines(path, 4);
@@ -246,7 +249,7 @@ namespace stock123.app.chart
             for (int i = 0; i < 5; i++)
             {
                 mPrices[i] = lo + i * priceStep + priceStep / 2;
-                mPricesY[i] = mY + (mH - getMarginY()) - (int)((mPrices[i] - lo) * rY);
+                mPricesY[i] = mY + (mH - getMarginY()) - (float)((mPrices[i] - lo) * rY);
             }
             //===================================
             for (int i = 0; i < 5; i++)
@@ -370,7 +373,7 @@ namespace stock123.app.chart
                     sb.AppendFormat("{0:D2}/{1:D2}", d, m + 1);
                 }
                 sz = sb.ToString();
-                int x = candleToX(i);
+                float x = candleToX(i);
 
                 //g.setColor(C.GREY_LINE_COLOR);
                 g.setColor(0x70454545);
@@ -396,12 +399,12 @@ namespace stock123.app.chart
             mCurrentKey = 0x0fffffff;
         }
 
-        public int internalW()
+        public float internalW()
         {
             return getW() - 40;
         }
 
-        public int getDrawingH()
+        public float getDrawingH()
         {
             if (mRefChartForSize != null)
             {
@@ -409,10 +412,10 @@ namespace stock123.app.chart
             }
             int h = getH() - 6;// 2 * getMarginY();
 
-            return (int)(h * getScaleY());
+            return (float)(h * getScaleY());
         }
 
-        public int getDrawingW()
+        public float getDrawingW()
         {
             return internalW() - 2 * CHART_BORDER_SPACING_X;
         }
@@ -447,28 +450,28 @@ namespace stock123.app.chart
 
         protected bool isHiding() { return isShow() == false; }
 
-        protected int getInternalW() { return internalW(); }
+        protected float getInternalW() { return internalW(); }
 
         public void setRenderCursor(bool render) { mRenderCursor = render; }
 
         float getCandleW()
         {
-            int w = internalW() - 2 * CHART_BORDER_SPACING_X;
+            float w = internalW() - 2 * CHART_BORDER_SPACING_X;
             if (mChartLineLength == 0)
                 return 0;
             return (float)w / mChartLineLength;
         }
 
-        public int dxToCandles(int dx)
+        public int dxToCandles(float dx)
         {
-            int w = internalW() - 2 * CHART_BORDER_SPACING_X;
+            float w = internalW() - 2 * CHART_BORDER_SPACING_X;
 
-            int candles = (dx * mChartLineLength) / w;
+            float candles = (dx * mChartLineLength) / w;
 
-            return candles;
+            return (int)candles;
         }
 
-        public int candlesToDx(int candles)
+        public float candlesToDx(int candles)
         {
             if (mChartLineLength == 0)
             {
@@ -476,13 +479,13 @@ namespace stock123.app.chart
                 if (share != null)
                     mChartLineLength = share.mEndIdx - share.mBeginIdx + 1;
             }
-            int w = internalW() - 2 * CHART_BORDER_SPACING_X;
+            float w = internalW() - 2 * CHART_BORDER_SPACING_X;
             float rX = (float)w / mChartLineLength;
 
-            return (int)(candles * rX);
+            return (float)(candles * rX);
         }
 
-        protected int candlesToDx(float candles)
+        protected float candlesToDx(float candles)
         {
             if (mChartLineLength == 0)
             {
@@ -490,21 +493,21 @@ namespace stock123.app.chart
                 if (share != null)
                     mChartLineLength = share.mEndIdx - share.mBeginIdx + 1;
             }
-            int w = internalW() - 2 * CHART_BORDER_SPACING_X;
+            float w = internalW() - 2 * CHART_BORDER_SPACING_X;
             float rX = (float)w / mChartLineLength;
 
-            return (int)(candles * rX);
+            return (float)(candles * rX);
         }
 
-        protected int candleToX(int candle)
+        protected float candleToX(int candle)
         {
-            int mX = 0;
-            int mY = 0;
-            int mH = getH();
+            float mX = 0;
+            float mY = 0;
+            float mH = getH();
             if (getShare() == null)
                 return 0;
             int deltaC = candle - getShare().mBeginIdx;
-            int dx = candlesToDx(deltaC);
+            float dx = candlesToDx(deltaC);
 
             return (mX + CHART_BORDER_SPACING_X + dx + getStartX());
         }
@@ -574,15 +577,16 @@ namespace stock123.app.chart
             }
             return p;
         }
-
-        protected short[] allocMem(short[] p, int items)
+        /*
+        protected float[] allocMem(float[] p, int items)
         {
             if (p == null || p.Length < items)
             {
-                return new short[items];
+                return new float[items];
             }
             return p;
         }
+         */
         protected Share mCurrentShare;
         virtual protected bool detectShareCursorChanged()
         {
@@ -742,7 +746,7 @@ namespace stock123.app.chart
         }
 
         //=============================================
-        protected void pricesToYs(float[] price, int offset, short[] xy, int len, bool detectLowHi)
+        protected void pricesToYs(float[] price, int offset, float[] xy, int len, bool detectLowHi)
         {
             Share share = getShare();
             if (share == null)
@@ -774,18 +778,18 @@ namespace stock123.app.chart
 
             float rX = (float)getDrawingW() / (share.mEndIdx - share.mBeginIdx + 1);
 
-            int mX = 0;
-            int mY = 0;
-            int mH = getH();
+            float mX = 0;
+            float mY = 0;
+            float mH = getH();
 
             //	int begin = share.mBeginIdx;
             for (int i = 0; i < len; i++)
             {
-                xy[2 * i] = (short)(mX + CHART_BORDER_SPACING_X + (int)(i * rX) + getStartX());
-                xy[2 * i + 1] = (short)(mY + getMarginY() + getDrawingH() - (int)((price[i + offset] - low) * rY));
+                xy[2 * i] = (float)(mX + CHART_BORDER_SPACING_X + (float)(i * rX) + getStartX());
+                xy[2 * i + 1] = (float)(mY + getMarginY() + getDrawingH() - (float)((price[i + offset] - low) * rY));
             }
         }
-        protected void pricesToYs(float[] price, int offset, short[] xy, int len, float price_low, float price_hi)
+        protected void pricesToYs(float[] price, int offset, float[] xy, int len, float price_low, float price_hi)
         {
             Share share = getShare();
             if (share == null)
@@ -807,8 +811,8 @@ namespace stock123.app.chart
             //	int begin = share.mBeginIdx;
             for (int i = 0; i < len; i++)
             {
-                xy[2 * i] = (short)(mX + CHART_BORDER_SPACING_X + i * rX + getStartX());
-                xy[2 * i + 1] = (short)(mY + getMarginY() + getDrawingH() - (price[i + offset] - low) * rY);
+                xy[2 * i] = (float)(mX + CHART_BORDER_SPACING_X + i * rX + getStartX());
+                xy[2 * i + 1] = (float)(mY + getMarginY() + getDrawingH() - (price[i + offset] - low) * rY);
             }
         }
 
@@ -821,7 +825,7 @@ namespace stock123.app.chart
                 return;
 
             int sel = share.getCursor();
-            int x = candleToX(sel);
+            float x = candleToX(sel);
             g.setColor(C.COLOR_GRAY);
             g.drawLine(x, 0, x, getH());
 
@@ -831,7 +835,7 @@ namespace stock123.app.chart
 
             if (mMouseTitle != null && mLastY != 0 & mLastY != 0)
             {
-                int y = mLastY;
+                float y = mLastY;
                 x = mLastX;
                 if (y < 12)
                 {
@@ -1095,7 +1099,7 @@ namespace stock123.app.chart
         }
 
         //=======================FIBONACCIE=====================
-        public int getMarginY()
+        public float getMarginY()
         {
             if (mRefChartForSize != null)
             {
@@ -1107,23 +1111,23 @@ namespace stock123.app.chart
             //return xDevice.point2Pixels(4);
         }
 
-        public float xToCandleIdx(int x)
+        public int xToCandleIdx(float x)
         {
-            int mX = 0;
-            int mY = 0;
-            int mH = getH();
+            float mX = 0;
+            float mY = 0;
+            float mH = getH();
             if (getShare() == null)
                 return 0;
 
-            int dx = x - getStartX() - mX - CHART_BORDER_SPACING_X;
+            float dx = x - getStartX() - mX - CHART_BORDER_SPACING_X;
 
             float candle = getShare().mBeginIdx;
             candle += ((float)dx / getCandleW());
 
-            return candle;
+            return (int)candle;
         }
 
-        public float yToPrice(int y)
+        public float yToPrice(float y)
         {
             int mX = 0;
             int mY = 0;
@@ -1134,33 +1138,33 @@ namespace stock123.app.chart
 
             float priceDistance = share.getHighestPrice() - share.getLowestPrice();
 
-            int dy = mY + getDrawingH() + getMarginY() - y;
+            float dy = mY + getDrawingH() + getMarginY() - y;
 
             return share.getLowestPrice() + (float)((dy * priceDistance)) / getDrawingH();
         }
 
-        public double yToPrice(int y, double min, double max)
+        public double yToPrice(float y, double min, double max)
         {
             double priceDistance = max - min;
 
-            int dy = getDrawingH() + getMarginY() - y;
+            float dy = getDrawingH() + getMarginY() - y;
 
             return min + (float)((dy * priceDistance)) / getDrawingH();
         }
 
-        public int candleToX(float candle)
+        public float candleToX(float candle)
         {
-            int mX = 0;
-            int mY = 0;
-            int mH = getH();
+            float mX = 0;
+            float mY = 0;
+            float mH = getH();
             if (getShare() == null)
                 return 0;
             float deltaC = candle - getShare().mBeginIdx;
-            int dx = candlesToDx(deltaC);
+            float dx = candlesToDx(deltaC);
 
             return (mX + CHART_BORDER_SPACING_X + dx + getStartX());
         }
-        public int priceToY(float price)
+        public float priceToY(float price)
         {
             int mX = 0;
             int mY = 0;
@@ -1174,15 +1178,36 @@ namespace stock123.app.chart
             if (priceDistance <= 0)
                 return 0;
 
-            int dy = (int)((price - share.getLowestPrice()) * getDrawingH() / priceDistance);
+            float dy = (float)((price - share.getLowestPrice()) * getDrawingH() / priceDistance);
 
             return mY + getMarginY() + getDrawingH() - dy;//y + mY + CHART_BORDER_SPACING_Y;
+        }
+
+        public float priceToY(float price, float minPrice, float maxPrice)
+        {
+            float mX = 0;
+            float mY = 0;
+            float mH = getH();
+
+
+            float priceDistance = maxPrice - minPrice;
+            if (priceDistance <= 0)
+                return 0;
+
+            float dy = (float)((price - minPrice) * getDrawingH() / priceDistance);
+
+            return mY + getMarginY() + getDrawingH() - dy;//y + mY + CHART_BORDER_SPACING_Y;
+        }
+
+        public uint colorPriceline()
+        {
+            return C.COLOR_FADE_YELLOW;
         }
         //=============================END FIBONACCIE========================
 
         //=====================default mouse=================
-        protected int mLastX;
-        protected int mLastY;
+        protected float mLastX;
+        protected float mLastY;
         bool mIsHoldingMouse = false;
         public override void onMouseDown(int x, int y)
         {
@@ -1213,11 +1238,11 @@ namespace stock123.app.chart
                 }
             }
 
-            int dx = x - mLastX;
+            float dx = x - mLastX;
             //		int dy = y - mLastY;
 
             int movedCandles = this.dxToCandles(dx);
-            int remainX = dx - this.candlesToDx(movedCandles);
+            float remainX = dx - this.candlesToDx(movedCandles);
 
             mLastX = x - remainX;
 
@@ -1409,24 +1434,24 @@ namespace stock123.app.chart
             return x;
         }
 
-        public void fillColorGreen(xGraphics g, short[] line, int pointCount, short baseline)
+        public void fillColorGreen(xGraphics g, float[] line, int pointCount, float baseline)
         {
             mChartLineColorArea = allocMem(mChartLineColorArea, pointCount * 2 + 20);
 
-            short x = 0;
-            short x0 = line[0];
+            float x = 0;
+            float x0 = line[0];
             int j = 0;
             g.setColor(0x6000ff00);
             for (int i = 1; i < pointCount; i++)
             {
-                int y = line[2 * i + 1];
+                float y = line[2 * i + 1];
                 x = line[2 * i];
                 if (y <= baseline)
                 {
                     if (j == 0)
                     {
-                        mChartLineColorArea[2 * j] = (short)(x0 + (x - x0) / 2);
-                        mChartLineColorArea[2 * j + 1] = (short)baseline;
+                        mChartLineColorArea[2 * j] = (x0 + (x - x0) / 2);
+                        mChartLineColorArea[2 * j + 1] = baseline;
                         j++;
                     }
                     {
@@ -1439,8 +1464,8 @@ namespace stock123.app.chart
                 {
                     if (j >= 2)
                     {
-                        mChartLineColorArea[2 * j] = (short)(x0 + (x - x0) / 2);
-                        mChartLineColorArea[2 * j + 1] = (short)baseline;
+                        mChartLineColorArea[2 * j] = (x0 + (x - x0) / 2);
+                        mChartLineColorArea[2 * j + 1] = baseline;
                         j++;
 
                         g.fillShapes(mChartLineColorArea, j);
@@ -1453,31 +1478,31 @@ namespace stock123.app.chart
             {
                 x = line[2 * (pointCount - 1)];
                 mChartLineColorArea[2 * j] = x;
-                mChartLineColorArea[2 * j + 1] = (short)baseline;
+                mChartLineColorArea[2 * j + 1] = baseline;
                 j++;
 
                 g.fillShapes(mChartLineColorArea, j);
             }
         }
 
-        public void fillColorRed(xGraphics g, short[] line, int pointCount, short baseline)
+        public void fillColorRed(xGraphics g, float[] line, int pointCount, float baseline)
         {
             mChartLineColorArea = allocMem(mChartLineColorArea, pointCount * 2 + 20);
             //========red area
             int j = 0;
             g.setColor(0x80ff0000);
-            short x = 0;
-            int x0 = line[0];
+            float x = 0;
+            float x0 = line[0];
             for (int i = 1; i < pointCount; i++)
             {
                 x = line[2 * i];
-                int y = line[2 * i + 1];
+                float y = line[2 * i + 1];
                 if (y >= baseline)
                 {
                     if (j == 0)
                     {
-                        mChartLineColorArea[2 * j] = (short)(x0 + ((x - x0) / 2));
-                        mChartLineColorArea[2 * j + 1] = (short)baseline;
+                        mChartLineColorArea[2 * j] = (float)(x0 + ((x - x0) / 2));
+                        mChartLineColorArea[2 * j + 1] = (float)baseline;
                         j++;
                     }
                     {
@@ -1490,8 +1515,8 @@ namespace stock123.app.chart
                 {
                     if (j >= 2)
                     {
-                        mChartLineColorArea[2 * j] = (short)(x0 + ((x - x0) / 2));
-                        mChartLineColorArea[2 * j + 1] = (short)baseline;
+                        mChartLineColorArea[2 * j] = (float)(x0 + ((x - x0) / 2));
+                        mChartLineColorArea[2 * j + 1] = (float)baseline;
                         j++;
 
                         g.fillShapes(mChartLineColorArea, j);
@@ -1505,7 +1530,7 @@ namespace stock123.app.chart
                 x = line[2 * (pointCount - 1)];
 
                 mChartLineColorArea[2 * j] = x;
-                mChartLineColorArea[2 * j + 1] = (short)baseline;
+                mChartLineColorArea[2 * j + 1] = (float)baseline;
                 j++;
 
                 g.fillShapes(mChartLineColorArea, j);
@@ -1561,7 +1586,7 @@ namespace stock123.app.chart
             mRefChartForSize = refChart;
         }
 
-        public void setStartX(int x)
+        public void setStartX(float x)
         {
             mStartX = x;
             if (mRefChart != null)
@@ -1570,7 +1595,7 @@ namespace stock123.app.chart
             }
         }
 
-        public int getStartX()
+        public float getStartX()
         {
             if (mRefChart != null)
             {

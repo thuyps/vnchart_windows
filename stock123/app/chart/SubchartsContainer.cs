@@ -104,6 +104,8 @@ namespace stock123.app.chart
                     ChartBase.CHART_ATR,
                 ChartBase.CHART_ADL,
                 ChartBase.CHART_ADX,
+                ChartBase.CHART_BW_Accelerator,
+                ChartBase.CHART_AWESOME,
                 ChartBase.CHART_CCI,
                     ChartBase.CHART_CFM,
                 ChartBase.CHART_CHAIKIN,
@@ -135,6 +137,8 @@ namespace stock123.app.chart
                             "ATR - Average true range",
                             "ADL - Accumulation Distribution Line",
                             "ADX - Average Directional Index",
+                            "BW - Accelerator",
+                            "BW - Awesome",
                             "CCI - Commodity Channel Index",
                             "CMF - Chaikin Money Flow",
                             "Chaikin Oscillator",
@@ -436,6 +440,16 @@ namespace stock123.app.chart
             if (chartID == ChartBase.CHART_MCDX)
             {
                 c = new ChartMCDX(f);
+                c.mShouldDrawCursor = true;
+            }
+            if (chartID == ChartBase.CHART_BW_Accelerator)
+            {
+                c = new ChartBWAccelerator(f);
+                c.mShouldDrawCursor = true;
+            }
+            if (chartID == ChartBase.CHART_AWESOME)
+            {
+                c = new ChartBWAwesome(f);
                 c.mShouldDrawCursor = true;
             }
             if (chartID == ChartBase.CHART_MFI)

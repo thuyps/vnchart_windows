@@ -231,7 +231,7 @@ namespace stock123.app.chart
 
         }
 
-        override protected void renderMasterCursor(xGraphics g, int cx, int cy)
+        override protected void renderMasterCursor(xGraphics g, float cx, float cy)
         {
             
         }

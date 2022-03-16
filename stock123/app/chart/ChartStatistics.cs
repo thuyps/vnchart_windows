@@ -13,11 +13,11 @@ namespace stock123.app.chart
 {
     public class stStatisticsBlock
     {
-        public short x, y;
+        public float x, y;
         public float w, h;
         public string code;
         public uint color;
-        public short point;    //  for sort
+        public float point;    //  for sort
         public string inf;
         public string changed;
         public double inf2;
@@ -333,7 +333,7 @@ namespace stock123.app.chart
                             }
                             block.color = color;
                             //  point
-                            block.point = (short)(percent * 1000);//(priceboard.current_price_1 - priceboard.ref)*1000/priceboard.ref;
+                            block.point = (float)(percent * 1000);//(priceboard.current_price_1 - priceboard.ref)*1000/priceboard.ref;
                             //  x & y
                             //setBlockPosition(block);
 
@@ -478,8 +478,8 @@ namespace stock123.app.chart
                 }
 
                 stStatisticsBlock b = (stStatisticsBlock)mUsedBlocks.elementAt(i);
-                b.x = (short)x1;
-                b.y = (short)(y0 + (k * itemH));
+                b.x = (float)x1;
+                b.y = (float)(y0 + (k * itemH));
                 b.w = (float)(w*b.point) / biggestValue;
                 b.h = itemH;
 
@@ -518,12 +518,12 @@ namespace stock123.app.chart
 
         Rectangle getBlockRect(stStatisticsBlock block)
         {
-            int x = block.x;
-            int y = block.y;
-            int w = (int)block.w;
-            int h = (int)block.h;
+            float x = block.x;
+            float y = block.y;
+            float w = (int)block.w;
+            float h = (int)block.h;
 
-            Rectangle rc = new Rectangle(x, y, w, h);
+            Rectangle rc = new Rectangle((int)x, (int)y, (int)w, (int)h);
 
             return rc;
         }

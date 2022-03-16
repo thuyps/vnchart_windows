@@ -28,6 +28,13 @@ namespace stock123.app.data
         public const String kBankerPeriod_Base_Sens = "banker_b_p_s";
         public const String kHotmoneyPeriod_Base_Sens = "hotmoney_b_p_s";
 
+        public const String kBWAwesomeShortPeriod   = "bwawesome_period1";
+        public const String kBWAwesomeLongPeriod   = "bwawesome_period2";
+        public const String kBWAC_baseSMAOfAO   = "bwaac_period3";
+
+        public const String kBW_ACShortPeriod   = "bw_ac_period1";
+        public const String kBW_ACLongPeriod = "bw_ac_period2";
+
         static VTDictionary data = new VTDictionary();
         static VTDictionary dataPriceboard = new VTDictionary();
         static VTDictionary _vars = new VTDictionary();

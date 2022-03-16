@@ -11,11 +11,11 @@ using stock123.app.data;
 namespace stock123.app.chart
 {
     public class ChartBollinger: ChartBase
-    {	
-	    short[] mBBUpperXY;	//	bollinger band
-	    short[] mBBLowerXY;
-        short[] mCenterXY;
-	    short[] mBBLine;
+    {
+        float[] mBBUpperXY;	//	bollinger band
+        float[] mBBLowerXY;
+        float[] mCenterXY;
+        float[] mBBLine;
 	    uint mBBColorBG;
         int mPointCnt;
         //====================================
@@ -65,7 +65,7 @@ namespace stock123.app.chart
                     mBBLine[j++] = mBBUpperXY[2 * i + 1];
 
                     mCenterXY[2 * i] = mBBLowerXY[2 * i];
-                    mCenterXY[2*i+1] = (short)((mBBUpperXY[2*i+1] + mBBLowerXY[2*i+1])/2);
+                    mCenterXY[2 * i + 1] = (float)((mBBUpperXY[2 * i + 1] + mBBLowerXY[2 * i + 1]) / 2);
                 }
                 mBBLine[j++] = mBBUpperXY[2 * (mChartLineLength - 1)];      //  x
                 mBBLine[j++] = mBBLowerXY[2 * (mChartLineLength - 1) + 1];    //  y

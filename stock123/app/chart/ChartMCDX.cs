@@ -17,13 +17,13 @@ namespace stock123.app.chart
         float[] rsiBankerSMA = new float[Share.MAX_CANDLE_CHART_COUNT];
         float[] rsiHotmoney = new float[Share.MAX_CANDLE_CHART_COUNT];
 
-        short[] bankerXY;
-        short[] bankerXYSMA;
-        short[] hotmoneyXY;
+        float[] bankerXY;
+        float[] bankerXYSMA;
+        float[] hotmoneyXY;
 
-        short[] mPricelines = new short[10];
+        float[] mPricelines = new float[10];
         //==================
-        short[] mChartEMA;
+        float[] mChartEMA;
         int checkSum = 0;
         //===================================
         public ChartMCDX(Font f)

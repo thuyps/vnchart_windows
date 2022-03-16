@@ -128,11 +128,11 @@ namespace stock123.app.table
             }
             //--------------------------------
             i = 0;
-            short x = 0;
-            short columnW = 0;
+            float x = 0;
+            float columnW = 0;
             while (columnPercents[i] != -1)
             {
-                columnW = (short)(w * columnPercents[i] / 100);
+                columnW = (float)(w * columnPercents[i] / 100);
                 stCell c = getCellAt(i);
                 c.text = "";
                 c.bgColor = bgcolors[i];
@@ -262,9 +262,9 @@ namespace stock123.app.table
             if (getID() < 0)
                 return;
 
-            int x = 0;
-            int y = 2;
-            int h = getH();
+            float x = 0;
+            float y = 2;
+            float h = getH();
 
             if (mCells.size() == 0)
                 return;
@@ -283,7 +283,7 @@ namespace stock123.app.table
                 stCell c = (stCell)mCells.elementAt(i);
                 uint color = c.bgColor;
 
-                int w = c.w;
+                float w = c.w;
                 x = c.x;
                 if (color != COLOR_NONE)
                 {
@@ -595,7 +595,7 @@ namespace stock123.app.table
 
         protected void renderCandle(xGraphics g, stCell c)
         {
-            int x, y;
+            float x, y;
 
             x = c.x;
             y = 0;
@@ -680,7 +680,7 @@ namespace stock123.app.table
             float ry = (float)(getH() - 2 * y0) / totalPrice;
 
             int totalH = (int)(ry * totalPrice);
-            int bodyW = c.w / 2;
+            float bodyW = c.w / 2;
 
             //================frame=============================
             //  line _ref
@@ -705,7 +705,7 @@ namespace stock123.app.table
 
                 g.drawLine(x, maxY, x, minY);
             }
-            int centerX = x + bodyW / 2;
+            float centerX = x + bodyW / 2;
             //  candle's body
             int oY = (int)(y0 + totalH - (open - min) * ry);
             int cY = (int)(y0 + totalH - (price - min) * ry);
@@ -892,9 +892,9 @@ namespace stock123.app.table
                 {
                     rcSnapshot = new Rectangle();
                 }
-                rcSnapshot.X = cell.x;
+                rcSnapshot.X = (int)cell.x;
                 rcSnapshot.Y = 0;
-                rcSnapshot.Width = cell.w;
+                rcSnapshot.Width = (int)cell.w;
                 rcSnapshot.Height = getH();
 
                 sharethumb.DrawAChartDelegator.renderToView(item.code, g, rcSnapshot);

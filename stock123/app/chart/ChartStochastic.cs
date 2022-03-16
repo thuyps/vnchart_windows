@@ -18,9 +18,9 @@ namespace stock123.app.chart
         int mStochasticLengthK;
         int mStochasticLengthD;
 
-        short[] mK;
-        short[] mD;
-        short[] mPricelines = new short[6];
+        float[] mK;
+        float[] mD;
+        float[] mPricelines = new float[6];
         //==============================
 
         public ChartStochastic(Font f, bool isFast)

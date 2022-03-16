@@ -57,7 +57,7 @@ namespace xlib.ui
             mGraphics.SmoothingMode = oldSmoothMode;
         }
 
-        public void drawLineDot(int x1, int y1, int x2, int y2, float thickness)
+        public void drawLineDot(float x1, float y1, float x2, float y2, float thickness)
         {
             float oldThick = mPen.Width;
             mPen.Width = thickness;
@@ -78,7 +78,7 @@ namespace xlib.ui
             mPen.DashStyle = old;
         }
 
-        public void drawLine(int x1, int y1, int x2, int y2)
+        public void drawLine(float x1, float y1, float x2, float y2)
         {
             if (y1 < -10000)
                 return;
@@ -100,7 +100,7 @@ namespace xlib.ui
                 mGraphics.FillRectangle(mPen.Brush, x, y, w, h);
             }
         }
-        public void fillRect(int x, int y, int w, int h)
+        public void fillRect(float x, float y, float w, float h)
         {
             if (h < 0)
             {
@@ -117,7 +117,7 @@ namespace xlib.ui
             drawRect((int)x, (int)y, (int)w, (int)h);
         }
 
-        public void drawRect(int x, int y, int w, int h)
+        public void drawRect(float x, float y, float w, float h)
         {
             if (h < 0)
             {
@@ -132,7 +132,7 @@ namespace xlib.ui
             mGraphics.DrawRectangle(mPen, x, y, w, h);
         }
 
-        public void fillShapes(short[] xy, int pointCnt)
+        public void fillShapes(float[] xy, int pointCnt)
         {
             System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath(System.Drawing.Drawing2D.FillMode.Winding);
 
@@ -143,7 +143,7 @@ namespace xlib.ui
                 pointCnt = xy.Length / 2;
 
             int i = 0;
-            int x0, y0, x, y;
+            float x0, y0, x, y;
             path.StartFigure();
             x0 = xy[0];
             y0 = xy[1];
@@ -161,7 +161,7 @@ namespace xlib.ui
             mGraphics.SmoothingMode = oldSmoothMode;
         }
 
-        public void drawLines(short[] xy, int pointCnt, float lineThick)
+        public void drawLines(float[] xy, int pointCnt, float lineThick)
         {
             float oldThick = mPen.Width;
             mPen.Width = lineThick;
@@ -171,7 +171,7 @@ namespace xlib.ui
             mPen.Width = oldThick;
         }
 
-        public void drawLines(short[] xy, int pointCnt)
+        public void drawLines(float[] xy, int pointCnt)
         {
             System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath(System.Drawing.Drawing2D.FillMode.Winding);
             
@@ -182,7 +182,7 @@ namespace xlib.ui
                 pointCnt = xy.Length / 2;
 
             int i = 0;
-            int x0, y0, x, y;
+            float x0, y0, x, y;
             //path.StartFigure();
             x0 = xy[0];
             y0 = xy[1];
@@ -200,7 +200,7 @@ namespace xlib.ui
             mGraphics.SmoothingMode = oldSmoothMode;
         }
 
-        public void drawLinesDot(short[] xy, int pointCnt)
+        public void drawLinesDot(float[] xy, int pointCnt)
         {
             System.Drawing.Drawing2D.DashStyle old = mPen.DashStyle;
             mPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
@@ -215,7 +215,7 @@ namespace xlib.ui
                 pointCnt = xy.Length / 2;
 
             int i = 0;
-            int x0, y0, x, y;
+            float x0, y0, x, y;
             //path.StartFigure();
             x0 = xy[0];
             y0 = xy[1];
@@ -235,15 +235,15 @@ namespace xlib.ui
             mGraphics.SmoothingMode = oldSmoothMode;
         }
 
-        public void drawString(Font f, String s, int x, int y)
+        public void drawString(Font f, String s, float x, float y)
         {
             drawString(f, s, x, y, LEFT | TOP);
         }
         public void drawStringF(Font f, String s, float x, float y, int align)
         {
-            drawString(f, s, (int)x, (int)y, align);
+            drawString(f, s, x, y, align);
         }
-        public void drawString(Font f, String s, int x, int y, int align)
+        public void drawString(Font f, String s, float x, float y, int align)
         {
             if (((align & LEFT) != 0) && ((align & TOP) != 0)
                 || align == 0)
@@ -273,7 +273,7 @@ namespace xlib.ui
             mGraphics.DrawString(s, f, mPen.Brush, x, y);
         }
 
-        public void drawStringInRect(Font f, String s, int x, int y, int w, int h, int align)
+        public void drawStringInRect(Font f, String s, float x, float y, float w, float h, int align)
         {
             RectangleF rc = new RectangleF(x, y, w, h);
             SizeF size = mGraphics.MeasureString(s, f);
@@ -292,7 +292,7 @@ namespace xlib.ui
             }
         }
 
-        public void drawLineDotHorizontal(int x1, int y1, int x2, int y2)
+        public void drawLineDotHorizontal(float x1, float y1, float x2, float y2)
         {
             System.Drawing.Drawing2D.DashStyle old = mPen.DashStyle;
             mPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
@@ -308,17 +308,17 @@ namespace xlib.ui
             mGraphics.SmoothingMode = oldSmoothMode;
         }
 
-        public void drawLineDotHorizontal(int x, int y, int w)
+        public void drawLineDotHorizontal(float x, float y, float w)
         {
             drawLineDotHorizontal(x, y, x + w, y);
         }
 
-        public void drawVerticalLine(int x, int y, int h)
+        public void drawVerticalLine(float x, float y, float h)
         {
             drawLine(x, y, x, y + h);
         }
 
-        public void drawHorizontalLine(int x, int y, int w)
+        public void drawHorizontalLine(float x, float y, float w)
         {
             drawLine(x, y, x + w, y);
         }
@@ -333,28 +333,28 @@ namespace xlib.ui
             return (int)mGraphics.MeasureString(s, f).Width;
         }
 
-        public void drawPoint(int x, int y, int radiu)
+        public void drawPoint(float x, float y, float radiu)
         {
             x -= radiu/2;
             y -= radiu/2;
             mGraphics.FillEllipse(mPen.Brush, x, y, radiu, radiu);
         }
 
-        public void drawTriangle(int x0, int y0, int x1, int y1, int x2, int y2)
+        public void drawTriangle(float x0, float y0, float x1, float y1, float x2, float y2)
         {
             drawLine(x0, y0, x1, y1);
             drawLine(x1, y1, x2, y2);
             drawLine(x2, y2, x0, y0);
         }
 
-        public void drawTriangleDot(int x0, int y0, int x1, int y1, int x2, int y2)
+        public void drawTriangleDot(float x0, float y0, float x1, float y1, float x2, float y2)
         {
             drawLineDot(x0, y0, x1, y1, 1);
             drawLineDot(x1, y1, x2, y2, 1);
             drawLineDot(x2, y2, x0, y0, 1);
         }
 
-        public void drawEclipse(int x, int y, int w, int h)
+        public void drawEclipse(float x, float y, float w, float h)
         {
             if (h < 0)
             {
@@ -369,16 +369,16 @@ namespace xlib.ui
             mGraphics.DrawEllipse(mPen, x, y, w, h);
         }
 
-        public void drawArc(int ox, int oy, int r, float startAngle, float sweepAngle)
+        public void drawArc(float ox, float oy, float r, float startAngle, float sweepAngle)
         {
-            int x = ox - r;
-            int y = oy - r;
-            int w = 2 * r;
-            int h = 2 * r;
+            float x = ox - r;
+            float y = oy - r;
+            float w = 2 * r;
+            float h = 2 * r;
             mGraphics.DrawArc(mPen, x, y, w, h, startAngle, sweepAngle);
         }
 
-        public void drawArcDot(int ox, int oy, int r, float startAngle, float sweepAngle)
+        public void drawArcDot(float ox, float oy, float r, float startAngle, float sweepAngle)
         {
             System.Drawing.Drawing2D.DashStyle old = mPen.DashStyle;
             mPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
@@ -387,10 +387,10 @@ namespace xlib.ui
             //System.Drawing.Drawing2D.SmoothingMode oldSmoothMode = mGraphics.SmoothingMode;
             //mGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-            int x = ox - r;
-            int y = oy - r;
-            int w = 2 * r;
-            int h = 2 * r;
+            float x = ox - r;
+            float y = oy - r;
+            float w = 2 * r;
+            float h = 2 * r;
             mGraphics.DrawArc(mPen, x, y, w, h, startAngle, sweepAngle);
 
             //  restore old state

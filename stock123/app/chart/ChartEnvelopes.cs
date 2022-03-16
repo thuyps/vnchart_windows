@@ -12,7 +12,7 @@ namespace stock123.app.chart
 {
     public class ChartEnvelopes: ChartBase
     {
-        short[][] mLines = { null, null, null, null, null, null, null};
+        float[][] mLines = { null, null, null, null, null, null, null };
 
         //====================================
         public ChartEnvelopes(Font f)

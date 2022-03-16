@@ -15,7 +15,7 @@ namespace stock123.app.chart
     {
         float[] mCFM = new float[Share.MAX_CANDLE_CHART_COUNT];
 
-        short[] mPricelines = new short[10];
+        float[] mPricelines = new float[10];
         //==================
         short[] mChartEMA;
         float mHi = -1000000;

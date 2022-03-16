@@ -13,11 +13,11 @@ namespace stock123.app.chart
 {
     public class stBubbleBlock
     {
-        public short x, y;
-        public float w, h;
+        public int x, y;
+        public int w, h;
         public string code;
         public uint color;
-        public short point;    //  for sort
+        public int point;    //  for sort
         public string inf;
         public string changed;
         public double inf2;
@@ -259,7 +259,7 @@ namespace stock123.app.chart
                             stBubbleBlock block = (stBubbleBlock)mFreeBlocks.pop();
                             block.code = mContext.mShareManager.getShareCode(inf.shareID);;
                             //  w & h
-                            block.w = (short)Math.Sqrt(cells);
+                            block.w = (int)Math.Sqrt(cells);
                             block.h = block.w;
                             if (block.h * block.w < cells) block.w++;
 
@@ -300,7 +300,7 @@ namespace stock123.app.chart
                             }
                             block.color = color;
                             //  point
-                            block.point = (short)(percent * 1000);//(priceboard.current_price_1 - priceboard.ref)*1000/priceboard.ref;
+                            block.point = (int)(percent * 1000);//(priceboard.current_price_1 - priceboard.ref)*1000/priceboard.ref;
                             //  x & y
                             //setBlockPosition(block);
 
@@ -394,8 +394,8 @@ namespace stock123.app.chart
                     }
                 }
             }
-            block.x = (short)pos[1];
-            block.y = (short)pos[0];
+            block.x = (int)pos[1];
+            block.y = (int)pos[0];
 
             for (int i = 0; i < block.h; i++)
             {

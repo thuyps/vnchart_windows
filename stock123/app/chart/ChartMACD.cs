@@ -13,16 +13,16 @@ namespace stock123.app.chart
 {
     public class ChartMACD: ChartBase
     {
-        short[] mLineMACD;
+        float[] mLineMACD;
         int mLineMACDSize;
-        short[] mLineSignal9;
+        float[] mLineSignal9;
         int mLineSignal9Size;
-        short[] mHistogramXY;
+        float[] mHistogramXY;
         int mHistogramXYSize;
-        short[] mHistogramH;
+        float[] mHistogramH;
         int mHistogramHSize;
 
-        int mOY;
+        float mOY;
         float ry = 0;
         public ChartMACD(Font f)
             : base(f)
@@ -145,9 +145,9 @@ namespace stock123.app.chart
             float double_hi = Utils.ABS_FLOAT(hi) > Utils.ABS_FLOAT(lo) ? hi : lo;// hi + lo;
             double_hi = 2 * Utils.ABS_FLOAT(double_hi);
 
-            int minHistoH = 9;
-            int signalDrawH = getDrawingH() - 2 * minHistoH;
-            int OY = getH() / 2;// 0 + CHART_BORDER_SPACING_Y + minHistoH;
+            float minHistoH = 9;
+            float signalDrawH = getDrawingH() - 2 * minHistoH;
+            float OY = getH() / 2;// 0 + CHART_BORDER_SPACING_Y + minHistoH;
             //float ry = 0;
             if (double_hi != 0)
             {
@@ -166,15 +166,15 @@ namespace stock123.app.chart
                 tmp_signal = signal[i+s.mBeginIdx];// + hi;
                 //if (hi != 0)
                 {
-                    mLineMACD[2 * i + 1] = (short)(OY - tmp_macd * ry);
-                    mLineSignal9[2 * i + 1] = (short)(OY - tmp_signal * ry);
+                    mLineMACD[2 * i + 1] = (float)(OY - tmp_macd * ry);
+                    mLineSignal9[2 * i + 1] = (float)(OY - tmp_signal * ry);
                 }
             }
 
             //	cnt == CHART_W
             for (i = 0; i < cnt; i++)
             {
-                mLineMACD[2 * i] = (short)(0 + CHART_BORDER_SPACING_X + i * rx + getStartX());
+                mLineMACD[2 * i] = (float)(0 + CHART_BORDER_SPACING_X + i * rx + getStartX());
                 mLineSignal9[2 * i] = mLineMACD[2 * i];
             }
 
@@ -188,7 +188,7 @@ namespace stock123.app.chart
             //	int deltaY = 0;//deltaLoHi*mDrawingH/double_hi;
             double_hi = 2 * hi;
             //	double_hi	==	100 pixels
-            int halfH = getDrawingH() / 2;
+            float halfH = getDrawingH() / 2;
             float hry = 0;
             if (hi != 0)
                 hry = (float)halfH / hi;//double_hi;
@@ -196,7 +196,7 @@ namespace stock123.app.chart
             for (i = 0; i < cnt; i++)
             {
                 if (double_hi != 0)
-                    mHistogramH[i] = (short)(-his[i + s.mBeginIdx] * ry);
+                    mHistogramH[i] = (float)(-his[i + s.mBeginIdx] * ry);
                 else
                     mHistogramH[i] = 0;
 
@@ -205,8 +205,8 @@ namespace stock123.app.chart
                     if (his[i + s.mBeginIdx] > 0) mHistogramH[i] = -1;
                     else mHistogramH[i] = 1;
                 }
-                mHistogramXY[2 * i] = (short)(0 + CHART_BORDER_SPACING_X + i * rx + getStartX());
-                mHistogramXY[2 * i + 1] = (short)OY;//mY + CHART_BORDER_SPACING_Y + halfH - deltaY;
+                mHistogramXY[2 * i] = (float)(0 + CHART_BORDER_SPACING_X + i * rx + getStartX());
+                mHistogramXY[2 * i + 1] = (float)OY;//mY + CHART_BORDER_SPACING_Y + halfH - deltaY;
             }
         }
 

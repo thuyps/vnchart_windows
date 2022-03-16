@@ -202,9 +202,9 @@ namespace stock123.app.table
                 {
                     rcSnapshot = new Rectangle();
                 }
-                rcSnapshot.X = cell.x;
+                rcSnapshot.X = (int)cell.x;
                 rcSnapshot.Y = 0;
-                rcSnapshot.Width = cell.w;
+                rcSnapshot.Width = (int)cell.w;
                 rcSnapshot.Height = getH();
 
                 sharethumb.DrawAChartDelegator.renderToView(item.code, g, rcSnapshot);
