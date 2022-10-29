@@ -930,8 +930,8 @@ namespace stock123.app.data
             int old_candle_cnt = Utils.readShort(mCommonData, p0);
 
             //--du lieu moi se ghi de du lieu cu
-            int firstDateOff = 8 * 4;
-            int newFirstDate = Utils.readInt(data, off + firstDateOff);
+            int firstDateOff = 14;
+            int newFirstDate = readDate(data, off + firstDateOff);
             int pos = p1 + 6*4;
             //  find the newFirstDate in current data
             for (int i = 0; i < old_candle_cnt; i++)
@@ -1008,15 +1008,15 @@ namespace stock123.app.data
 
                 open = Utils.readInt(data, j);
                 j += 4;
-                close = Utils.readInt(data, j);
-                j += 4;
-                highest = Utils.readInt(data, j);
-                j += 4;
-                lowest = Utils.readInt(data, j);
-                j += 4;
+                close = open + 10*Utils.readShort(data, j);
+                j += 2;
+                highest = open + 10*Utils.readShort(data, j);
+                j += 2;
+                lowest = open + 10*Utils.readShort(data, j);
+                j += 2;
                 //j += 4;//c.floor = di.readInt()/100;		j += 4;
-                reference = Utils.readInt(data, j);
-                j += 4;
+                reference = open;
+                //j += 4;
 
                 //ce = Utils.readInt(data, j) / 100;
                 //j += 4;
@@ -1024,18 +1024,13 @@ namespace stock123.app.data
                 volume = Utils.readInt(data, j);
                 j += 4;
 
-                int foreignBuy = Utils.readInt(data, j);
-                j += 4;
-                int foreignShell = Utils.readInt(data, j);
-                j += 4;
+                int foreignBuy = 0;// Utils.readInt(data, j);
+                //j += 4;
+                int foreignShell = 0;// Utils.readInt(data, j);
+                //j += 4;
 
-                date = Utils.readInt(data, j);
-                //if (date >= t)  //  DEBUG
-                //{
-                  //  old_candle_cnt--;
-                    //break;
-                //}
-                j += 4;
+                date = readDate(data, j);
+                j += 2;
                 //	correct data:
                 if (open != 0)
                 {
@@ -1131,6 +1126,16 @@ namespace stock123.app.data
 
             Utils.writeshort(mCommonData, p0, old_candle_cnt);
             Utils.writeshort(mCommonData, p0 + 2, marketID);
+        }
+
+        int readDate(byte[] data, int j)
+        {
+            int dateCompaq = Utils.readShort(data, j);
+            int yy = 2000 + ((dateCompaq >> 9) & 0x7f);
+            int mm = (dateCompaq >> 5) & 0xf;
+            int dd = (dateCompaq & 0x1f);
+
+            return (yy << 16) | (mm << 8) | dd;
         }
 
 

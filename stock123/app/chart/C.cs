@@ -176,11 +176,14 @@ public const uint COLOR_TD_DOWN       = 0xffff1212;
         public const int ID_REMOVE_SHARE = 1202;
         public const int ID_ADD_GROUP = 1203;
         public const int ID_REMOVE_GROUP = 1204;
+        public const int ID_RENAME_GROUP = 1209;
 
         public const int ID_MARKET_INDEX = 1205;
 
         public const int ID_SET_ALARM = 1206;
         public const int ID_EXPORT_TO_EXCEL = 1207;
+
+        public const int ID_CANDLE_TYE_BUTTON = 1208;
 
         public const int ID_ADD_SHARE_GAINLOSS = 1210;
         public const int ID_REMOVE_SHARE_GAINLOSS = 1211;
@@ -216,6 +219,14 @@ public const uint COLOR_TD_DOWN       = 0xffff1212;
 
         public const int ID_SHOW_FILTER_PARAMETER_FORM = 1241;
 
+        public const int ID_CANDLETYPE_M1 = 1250;
+        public const int ID_CANDLETYPE_M30 = 1251;
+        public const int ID_CANDLETYPE_H1 = 1252;
+        public const int ID_CANDLETYPE_H2 = 1253;
+        public const int ID_CANDLETYPE_H4 = 1254;
+        public const int ID_CANDLETYPE_DAILY = 1255;
+        public const int ID_CANDLETYPE_WEEKLY = 1256;
+        public const int ID_CANDLETYPE_MONTH = 1257;
         //==============sort================
         public const int ID_SORT_BASE = 1242;
         public const int SORT_MOST_INCREASE = 0;

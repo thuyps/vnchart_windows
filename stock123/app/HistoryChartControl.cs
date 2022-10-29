@@ -622,6 +622,48 @@ namespace stock123.app
 
             netRefreshShareData.flushRequest();
         }
+        
+        void reload30mData()
+        {
+
+            netRefreshShareData = mContext.createNetProtocol();
+            VTDictionary dict = new VTDictionary();
+            dict.setValueInt(JSONHandler.kMessageID, JSONHandler.JMSG_LIST_INDICES);
+
+    
+            xDataOutput requestData = new xDataOutput(1024);
+            requestData.writeUTF(mShare.getCode());
+    
+            netRefreshShareData.requestGeneralMessage(NetProtocol.SUBMSG_DATA_CHART_30m, requestData);
+
+            netRefreshShareData.onDoneDelegate = (sender, ok) =>
+            {
+                GlobalData.vars().setValueInt("share_refreshing", 0);
+
+                reloadShare(mShare, true);
+            };
+
+            netRefreshShareData.flushRequest();
+        }
+
+        long _timeload30m = 0;
+        void reload30mDataIfNeed()
+        {
+            if (mShare == null){
+                return;
+            }
+    
+            mShare.setDataType(Share.DATATYPE_30m);
+            mShare.loadShareFromFile(false);
+    
+            long now = Utils.currentTimeMillis();
+            float elapsed = (now - _timeload30m)/1000;
+            if (mShare.getCandleCnt() == 0 || elapsed > 30)
+            {
+                _timeload30m = now;
+                this.reload30mData();
+            }
+        }
 
         public void reloadShare(Share share, bool applyTodayCandle)
         {
@@ -634,17 +676,9 @@ namespace stock123.app
                 share.loadShareFromCommonData(true);
             */
 
-            if (mContext.isQuoteFavorite(share)
-                    || share.isIndex())
+            if (!share.loadShareFromFile(applyTodayCandle))
             {
-                if (!share.loadShareFromFile(applyTodayCandle))
-                {
 
-                    share.loadShareFromCommonData(true);
-                }
-            }
-            else
-            {
                 share.loadShareFromCommonData(true);
             }
 
@@ -745,6 +779,7 @@ namespace stock123.app
             }
 
             c.removeAllControls();
+            c.setBackgroundColor(0xff000000);
 
             xLabel l;
             //  5 days, 1 month, 3 month, 6 month, 1 year, 2 year
@@ -798,6 +833,7 @@ namespace stock123.app
                 i++;
             }
             //=======weekly button=======
+            /*
             string charttype = "daily";
             if (mChartType == Share.CANDLE_DAILY)
                 charttype = "daily";
@@ -814,7 +850,35 @@ namespace stock123.app
             l.setBackgroundColor(C.COLOR_GRAY_DARK);
             l.setTextColor(C.COLOR_ORANGE);
             c.addControl(l);
+            */
             //===========================
+            //  30m/H1/H2/H4
+            string[] candleTypes = {"M1","M30", "H1", "H2", "H4", "Ng", "Tu", "Th"};
+            int[] candleTypeIDs = {C.ID_CANDLETYPE_M1, 
+                                      C.ID_CANDLETYPE_M30,
+                                      C.ID_CANDLETYPE_H1,
+                                      C.ID_CANDLETYPE_H2,
+                                      C.ID_CANDLETYPE_H4,
+                                      C.ID_CANDLETYPE_DAILY,
+                                      C.ID_CANDLETYPE_WEEKLY,
+                                      C.ID_CANDLETYPE_MONTH
+                                  };
+            x += 4;
+            for (i = 0; i < candleTypes.Length; i++)
+            {
+                l = xLabel.createSingleLabel(candleTypes[i], mContext.getFontSmallest(), 25);
+                l.setPosition(x, 0);
+                l.setAlign(xGraphics.HCENTER);
+                l.enableClick(candleTypeIDs[i], this);
+
+                x += l.getW();
+                x += 1;
+                l.setBackgroundColor(C.COLOR_GRAY_DARK);
+                l.setTextColor(C.COLOR_ORANGE);
+                c.addControl(l);
+            }
+            //-----------------------------------
+
             w = x;
             c.setSize(w, h);
             c.setOpaque(0.7f);

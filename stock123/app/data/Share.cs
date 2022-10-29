@@ -40,6 +40,12 @@ namespace stock123.app.data
         public static int SHARE_CODE_LENGTH = 8;
         //static  int FILE_VERSION = 0x02;
 
+        //  0: history, 1: realtime; 2: 30m
+        public static int  DATATYPE_DAILY        = 0;
+        public static int  DATATYPE_TICK         = 1;
+        public static int DATATYPE_30m = 2;
+        int dataType;
+
         static int CANDLE_SIZE = 28;
         static int CANDLE_SIZE_NETWORK = 28;
         //===============for drawing chart: 52K===============
@@ -235,7 +241,7 @@ namespace stock123.app.data
         bool mShouldSaveData = false;
 
         public int mID = -1;
-        public bool mIsRealtime = false;
+        //public bool mIsRealtime = false;
         public bool mIsGroupIndex = false;
 
         public bool mIs1YearChartOn = false;
@@ -264,9 +270,45 @@ namespace stock123.app.data
             allocPrivateMemory(candleCnt);
         }
 
+        public bool isHistorical()
+        {
+            return dataType == DATATYPE_DAILY;
+        }
         public bool isRealtime()
         {
-            return mIsRealtime;
+            return dataType == DATATYPE_TICK;
+        }
+        public bool is30mData()
+        {
+            return dataType == DATATYPE_30m;
+        }
+
+        public void setDataType(int dt)
+        {
+            dataType = dt;
+        }
+        public int getDataType()
+        {
+            return dataType;
+        }
+        public String getFilename()
+        {
+            return Share.getFilename(mCode, dataType);
+        }
+
+        static public String getFilename(String code, int dataType)
+        {
+            code = Utils.MD5String(code);
+
+            if (dataType == DATATYPE_TICK)
+            {
+                return code + ".rt";
+            }
+            else if (dataType == DATATYPE_30m)
+            {
+                return code + ".30m";
+            }
+            return code + ".his";
         }
 
         public void setCode(String code, int marketID)
@@ -597,7 +639,7 @@ namespace stock123.app.data
             removeAllCandles();
             try
             {
-                xDataInput di = xFileManager.readFile("data\\" + getShareName(), false);
+                xDataInput di = xFileManager.readFile("data\\" + getFilename(), false);
                 if (di != null)
                 {
                     int ver = di.readShort();
@@ -615,11 +657,7 @@ namespace stock123.app.data
                     }
 
                     loadShare(di);
-                    //=====Thay cac data voi common data============
-                    if (isIndex() == false && getID() != 100000 && !mIsRealtime)
-                    {
-                        Context.getInstance().mShareManager.replace1ShareDataToCommon(this);
-                    }
+
                     if (mEndIdx >= mCandleCnt)
                     {
                         mEndIdx = mCandleCnt - 1;
@@ -1315,9 +1353,10 @@ namespace stock123.app.data
                 o.writeInt(mCDate[i]);
             }
 
-            xFileManager.saveFile(o, "data\\" + getShareName());
+            xFileManager.saveFile(o, "data\\" + getFilename());
         }
 
+        //  used for share of group index
         static public void saveShare(String code,
                                  float[] open,
                                  float[] close,
@@ -1350,44 +1389,15 @@ namespace stock123.app.data
                 o.writeInt(date[i]);
             }
 
-            xFileManager.saveFile(o, "data\\" + getShareName(code, false));
-        }
-
-        public String getShareName()
-        {
-            String md5 = Utils.MD5String(mCode);
-            if (isRealtime())
-            {
-                return String.Format("{0}.rt", md5);
-            }
-            else
-            {
-                return md5;
-            }
-        }
-
-        static public String getShareName(String code, bool isRealtime)
-        {
-            String md5 = Utils.MD5String(code);
-            if (isRealtime)
-            {
-                return String.Format("{0}.rt", md5);
-            }
-            else
-            {
-                return md5;
-            }
+            xFileManager.saveFile(o, "data\\" + getFilename(code, DATATYPE_DAILY));
         }
 
         static public void deleteSavedFile(string code)
         {
-            code = Utils.MD5String(code);
-
-            xFileManager.removeFile("data\\" + code);
+            xFileManager.removeFile("data\\" + Share.getFilename(code, DATATYPE_TICK));
+            xFileManager.removeFile("data\\" + Share.getFilename(code, DATATYPE_30m));
+            xFileManager.removeFile("data\\" + Share.getFilename(code, DATATYPE_DAILY));
             xFileManager.removeFile("data\\draw_" + code);
-
-            code = String.Format("{0}.rt", code);
-            code = Utils.MD5String(code);
         }
         /*
             public void addMoreCandle(byte[] data, int offset, int len) {

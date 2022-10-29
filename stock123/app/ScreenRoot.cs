@@ -131,14 +131,13 @@ namespace stock123.app
                 return;
             }
             //--------------------
-
             Share share = oriShare;
             if (share != null && share.getShareID() > 0)
             {
                 share = new Share(Share.MAX_CANDLE_CHART_COUNT);
                 share.setCode(oriShare.getCode(), 0);
                 share.setID(oriShare.getShareID());
-                share.mIsRealtime = oriShare.mIsRealtime;
+                share.setDataType(oriShare.getDataType());
                 share.mIsGroupIndex = oriShare.mIsGroupIndex;
             }
 

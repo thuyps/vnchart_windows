@@ -80,7 +80,7 @@
             this.label3.Size = new System.Drawing.Size(230, 39);
             this.label3.TabIndex = 5;
             this.label3.Text = "(Để thêm cổ phiếu vào nhóm, nhấn chuột phải \r\nvào bảng giá và chọn \"Thêm mã\" từ c" +
-                "ontext \r\nmenu.)";
+    "ontext \r\nmenu.)";
             // 
             // DlgAddShareGroup
             // 
@@ -99,7 +99,7 @@
             this.MaximizeBox = false;
             this.Name = "DlgAddShareGroup";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Thêm nhóm CP";
+            this.Text = "Nhập tên";
             this.ResumeLayout(false);
             this.PerformLayout();
 

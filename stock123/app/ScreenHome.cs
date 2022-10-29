@@ -465,8 +465,8 @@ namespace stock123.app
 
             addToolbarButton(C.ID_GOTO_SETTING, 2, "Cấu hình");
             addToolbarSeparator();
-            mAlarmButton = addToolbarButton(C.ID_ALARM_MANAGER, 10, "Alarm");
-            addToolbarSeparator();
+            //mAlarmButton = addToolbarButton(C.ID_ALARM_MANAGER, 10, "Alarm");
+            //addToolbarSeparator();
             //addToolbarButton(C.ID_GOTO_MINI_SCREEN, 4, "Minimize");
             addToolbarSeparator();
             addToolbarButton(C.ID_PREVIEW_HISTORY_CHART, 13, "Đồ thị lsử");
@@ -576,10 +576,10 @@ namespace stock123.app
             {
                 /*
                 xHttp http = new xHttp(this);
-                http.get(mContext.configJson.url_all_share3, null);
+                http.get(mContext.configJson.url_all_share_compaq_small, null);
                  */
                 downloadGroupsFile("http://soft123.com.vn/web/groups2.txt");
-                downloadDatabaseFile(mContext.configJson.url_all_share3);
+                downloadDatabaseFile(mContext.configJson.url_all_share_compaq_small);
                 mNetState = STATE_DOWNLOAD_ALL_SHARE;
             }
 
@@ -1380,8 +1380,12 @@ namespace stock123.app
                 int[] ids = new int[cnt];
                 String[] texts = new String[cnt];
                 //==================
-                int[] ids0 = { C.ID_BUY_MORE, C.ID_SELL_MORE, -1, C.ID_ADD_SHARE_GAINLOSS, C.ID_REMOVE_SHARE_GAINLOSS, -1, C.ID_ADD_GROUP, C.ID_REMOVE_GROUP, -1, C.ID_SET_ALARM };
-                String[] texts0 = { "Sửa: mua thêm cổ phiếu", "Sửa: bán bớt cổ phiếu", "-", "Thêm cổ phiếu (Lãi-Lỗ)", "Xóa CP khỏi d/s (Lãi-Lỗ)", "", "Thêm nhóm yêu thích", "Xóa nhóm", "", "Cài đặt Cảnh báo"};
+                int[] ids0 = { C.ID_BUY_MORE, C.ID_SELL_MORE, 
+                                 -1, C.ID_ADD_SHARE_GAINLOSS, C.ID_REMOVE_SHARE_GAINLOSS};
+                String[] texts0 = { "Sửa: mua thêm cổ phiếu", "Sửa: bán bớt cổ phiếu", "-", 
+                                      "Thêm cổ phiếu (Lãi-Lỗ)", 
+                                      "Xóa CP khỏi d/s (Lãi-Lỗ)"
+                                      };
 
                 int i;
                 for (i = 0; i < ids0.Length; i++)
@@ -1542,12 +1546,12 @@ namespace stock123.app
                 String[] texts = new String[cnt];
                 //==================
                 int[] ids0 = { C.ID_ADD_SHARE, C.ID_REMOVE_SHARE, -1, 
-                                 C.ID_ADD_GROUP, C.ID_REMOVE_GROUP, -1, 
-                                 C.ID_SET_ALARM , -1, 
+                                 C.ID_ADD_GROUP, C.ID_RENAME_GROUP, C.ID_REMOVE_GROUP, -1, 
+                                 //C.ID_SET_ALARM , -1, 
                                  C.ID_EXPORT_TO_EXCEL};
                 String[] texts0 = { "Thêm cổ phiếu", "Xóa CP khỏi d/s", "", 
-                                      "Thêm nhóm yêu thích", "Xóa nhóm", "", 
-                                      "Cài đặt cảnh báo", "", 
+                                      "Thêm nhóm yêu thích", "Đổi tên nhóm", "Xóa nhóm", "", 
+                                      //"Cài đặt cảnh báo", "", 
                                       "Xuất danh sách mã ra file excel(csv)"};
 
                 int i;
@@ -1994,6 +1998,36 @@ namespace stock123.app
                     }
                 }
             }
+            if (idx == C.ID_RENAME_GROUP)
+            {
+                stShareGroup g = mContext.getCurrentShareGroup();
+                if (g == null)
+                {
+                    return;
+                }
+                DlgAddShareGroup dlg = new DlgAddShareGroup();
+                dlg.ShowDialog();
+                if (dlg.getResultID() == C.ID_DLG_BUTTON_OK)
+                {
+                    String group = dlg.getText();
+                    if (group != null)
+                    {
+                        group = group.Trim();
+                        if (group.Length == 0)
+                            return;
+
+                        stShareGroup currentGroup = mContext.getCurrentShareGroup();
+                        if (currentGroup != null)
+                        {
+                            currentGroup.setName(group);
+                        }
+
+                        Context.userDataManager().flushUserData();
+
+                        updateUI();
+                    }
+                }
+            }
             if (idx == C.ID_REMOVE_GROUP)
             {
                 stShareGroup g = mContext.getCurrentShareGroup();
@@ -2163,7 +2197,7 @@ namespace stock123.app
             goNextScreen(MainApplication.SCREEN_SEARCH);
              * */
             Share share = mContext.mShareManager.getShare(shareID);
-            share.mIsRealtime = !historyChart;
+            share.setDataType(historyChart?Share.DATATYPE_DAILY:Share.DATATYPE_TICK);
             ScreenRoot.instance().createNewHistory(share);
         }
 
@@ -2789,7 +2823,7 @@ namespace stock123.app
             long delta2 = Utils.dateToNumber(today) - Utils.dateToNumber(mContext.mLastDayOfShareUpdate);
             if (deltaAllshare > 2 || delta2 > 7)
             {
-                String url = Context.getInstance().configJson.url_all_share3;
+                String url = Context.getInstance().configJson.url_all_share_compaq_small;
                 if (url != null && url.Length > 0)
                 {
                     return true;

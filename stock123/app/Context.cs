@@ -2472,7 +2472,7 @@ namespace stock123.app
         public class ConfigJson
         {
             public int version;
-            public string url_all_share3;
+            public string url_all_share_compaq_small;
         };
 
         public ConfigJson configJson = new ConfigJson();
@@ -2539,7 +2539,7 @@ namespace stock123.app
                     }, null);
                 }
 
-                Utils.trace("config: version=" + configJson.version + " url=" + configJson.url_all_share3);
+                Utils.trace("config: version=" + configJson.version + " url=" + configJson.url_all_share_compaq_small);
             }
             catch (Exception e)
             {

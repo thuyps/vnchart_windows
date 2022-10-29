@@ -120,10 +120,14 @@ namespace stock123.app
                 {
                     mShare = mContext.mShareManager.getVnindexShareAt(0);
                 }
+                else
+                {
+                    mNetState = NETSTATE_GET_QUOTE_DATA_PREPARING;
+                }
                 try
                 {
-                    mContext.mShareManager.loadAllShares();
-                    doFilterQuick();
+                    //mContext.mShareManager.loadAllShares();
+                    //doFilterQuick();
                 }
                 catch (Exception e)
                 {
@@ -131,6 +135,7 @@ namespace stock123.app
                     Utils.trace(e.Message);
                 }
             }
+                /*
             else
             {
                 if (share.getID() > 0)
@@ -157,6 +162,7 @@ namespace stock123.app
                     }
                 }
             }
+                 */
 
             updateUI();
         }
@@ -308,8 +314,8 @@ namespace stock123.app
             //addToolbarButton(C.ID_SPLIT_VIEW, 8, "-View-", ToolBarButtonStyle.ToggleButton, viewPushed);
             //addToolbarButton(C.ID_GOTO_MINI_SCREEN, 4, "Minimize");
             //addToolbarSeparator();
-            addToolbarSeparator();
-            mAlarmButton = addToolbarButton(C.ID_ALARM_MANAGER, 10, "Cảnh báo");
+            //addToolbarSeparator();
+            //mAlarmButton = addToolbarButton(C.ID_ALARM_MANAGER, 10, "Cảnh báo");
             //addToolbarSeparator();
             addToolbarSeparator();
             //addToolbarButton(C.ID_GOTO_HELP, 1, "Help");
@@ -1970,6 +1976,12 @@ namespace stock123.app
             }
             else
             {
+                if (!share.loadShareFromFile(applyTodayCandle))
+                {
+
+                    share.loadShareFromCommonData(true);
+                }
+                /*
                 if (mContext.isQuoteFavorite(share)
                     || share.isIndex())
                 {
@@ -1983,6 +1995,7 @@ namespace stock123.app
                 {
                     share.loadShareFromCommonData(true);
                 }
+                 */
             }
         }
 
@@ -2272,6 +2285,8 @@ namespace stock123.app
                 mShare.setCursorScope(Context.getInstance().mOptHistoryChartTimeFrame);
 
                 mShare.allocMemoryUsingShared(false);
+
+                //ScreenRoot.instance().createNewHistory(share);
 
                 reloadShare(mShare, true);
 

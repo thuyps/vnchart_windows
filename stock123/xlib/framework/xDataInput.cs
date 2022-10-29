@@ -163,6 +163,13 @@ namespace xlib.framework
             return (float)readLong() / 1000;
         }
 
+        public float readFloatJava()
+        {
+            float f = BitConverter.ToSingle(getBytes(), mNumBytesRead);
+            mNumBytesRead += 4;
+            return f;
+        }
+
         public int readLong()
         {
             if (available() < 4)

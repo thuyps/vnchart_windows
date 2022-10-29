@@ -400,7 +400,7 @@ namespace stock123.app.data
         public Share saveToShare()
         {
             Share share = new Share();
-            share.mIsRealtime = true;
+            share.setDataType(Share.DATATYPE_TICK);
             share.allocMemoryUsingShared(false);
 
             int cnt = getTransactionCount();
