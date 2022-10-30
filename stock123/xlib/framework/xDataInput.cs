@@ -163,12 +163,21 @@ namespace xlib.framework
             return (float)readLong() / 1000;
         }
 
+        //-------------------------------
+        public static unsafe float Int32BitsToSingle(int value)
+        {
+            return *(float*)(&value);
+        }
+
         public float readFloatJava()
         {
-            float f = BitConverter.ToSingle(getBytes(), mNumBytesRead);
-            mNumBytesRead += 4;
+            int intValue = readInt();
+
+            float f = Int32BitsToSingle(intValue);
+
             return f;
         }
+        //-------------------------------
 
         public int readLong()
         {

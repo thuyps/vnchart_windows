@@ -598,9 +598,21 @@ namespace stock123.app
             }
             if (aIntParameter >= C.ID_CANDLETYPE_M1 && aIntParameter <= C.ID_CANDLETYPE_MONTH)
             {
-                mChartType = aIntParameter;
+                if (aIntParameter == C.ID_CANDLETYPE_M1) mChartType = Share.CANDLETYPE_1m;
+                else if (aIntParameter == C.ID_CANDLETYPE_M30) mChartType = Share.CANDLETYPE_30m;
+                else if (aIntParameter == C.ID_CANDLETYPE_H1) mChartType = Share.CANDLETYPE_H1;
+                else if (aIntParameter == C.ID_CANDLETYPE_H2) mChartType = Share.CANDLETYPE_H2;
+                else if (aIntParameter == C.ID_CANDLETYPE_H4) mChartType = Share.CANDLETYPE_H4;
+                else if (aIntParameter == C.ID_CANDLETYPE_DAILY) mChartType = Share.CANDLETYPE_DAILY;
+                else if (aIntParameter == C.ID_CANDLETYPE_WEEKLY) mChartType = Share.CANDLETYPE_WEEKLY;
+                else if (aIntParameter == C.ID_CANDLETYPE_MONTH) mChartType = Share.CANDLETYPE_MONTHLY;
+
+                if (aIntParameter >= C.ID_CANDLETYPE_M30 && aIntParameter <= C.ID_CANDLETYPE_H4)
+                {
+                    reload30mDataIfNeed();
+                }
+
                 reloadShare(mShare, true);
-                
             }
         }
 
@@ -690,6 +702,9 @@ namespace stock123.app
                 }
                 else
                 {
+                    int endDate = share.getEndDate();
+                    int scope = share.getCursorScope();
+
                     share.setDataType(Share.DATATYPE_DAILY);
                     if (!share.loadShareFromFile(applyTodayCandle))
                     {
@@ -704,11 +719,13 @@ namespace stock123.app
                     {
                         share.toMonthly();
                     }
+
+                    share.setEndDate(endDate);
+                    share.setCursorScope(scope);
                 }
             }
             
-            //share.setEndDate(endDate);
-            //share.setCursorScope(scope);
+            
 
             createChartRangeControls(share, mTimingRange);
 

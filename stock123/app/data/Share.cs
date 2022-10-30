@@ -633,9 +633,18 @@ namespace stock123.app.data
         public bool loadShareFromFile(bool appendToday)
         {
             mVolumeDivided = 1;
-            if (isRealtime())
+            if (isRealtime() || dataType == DATATYPE_30m)
             {
                 appendToday = false;
+            }
+
+            if (dataType == DATATYPE_30m)
+            {
+                mCandleType = CANDLETYPE_30m;
+            }
+            else if (dataType == DATATYPE_DAILY)
+            {
+                mCandleType = CANDLETYPE_DAILY;
             }
 
             clearCalculations();

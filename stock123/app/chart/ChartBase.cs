@@ -278,7 +278,7 @@ namespace stock123.app.chart
 
             Share share = getShare();
 
-            if (share.isRealtime())
+            if (share.isRealtime() || share.is30mData())
             {
                 return;
             }
