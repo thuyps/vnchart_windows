@@ -1976,12 +1976,6 @@ namespace stock123.app
             }
             else
             {
-                if (!share.loadShareFromFile(applyTodayCandle))
-                {
-
-                    share.loadShareFromCommonData(true);
-                }
-                /*
                 if (mContext.isQuoteFavorite(share)
                     || share.isIndex())
                 {
@@ -1995,7 +1989,6 @@ namespace stock123.app
                 {
                     share.loadShareFromCommonData(true);
                 }
-                 */
             }
         }
 
@@ -2053,13 +2046,21 @@ namespace stock123.app
 
                 refreshCharts();
 
-                if (mNetProtocol != null)
+                if (mContext.isQuoteFavorite(mShare) || mShare.isIndex())
                 {
-                    mNetProtocol.cancelNetwork();
+                    if (mNetProtocol != null)
+                    {
+                        mNetProtocol.cancelNetwork();
+                    }
+                    mNetProtocol = mContext.createNetProtocol();
+                    mNetProtocol.setListener(this);
+                    mNetState = NETSTATE_GET_QUOTE_DATA_PREPARING;
                 }
-                mNetProtocol = mContext.createNetProtocol();
-                mNetProtocol.setListener(this);
-                mNetState = NETSTATE_GET_QUOTE_DATA_PREPARING;
+                else
+                {
+
+                }
+                
             }
             if (chart != -1)
             {

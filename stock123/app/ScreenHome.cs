@@ -579,7 +579,7 @@ namespace stock123.app
                 http.get(mContext.configJson.url_all_share_compaq_small, null);
                  */
                 downloadGroupsFile("http://soft123.com.vn/web/groups2.txt");
-                downloadDatabaseFile(mContext.configJson.url_all_share_compaq_small);
+                downloadDatabaseFile(mContext.configJson.url_all_share_compaq_large);
                 mNetState = STATE_DOWNLOAD_ALL_SHARE;
             }
 
@@ -1011,7 +1011,7 @@ namespace stock123.app
                 net.requestGetCompanyInfo();
             }
 
-            net.requestGetUserData();
+            //net.requestGetUserData();
             net.requestGetUserData2();
 
             updateLatestData(net);
@@ -2823,7 +2823,7 @@ namespace stock123.app
             long delta2 = Utils.dateToNumber(today) - Utils.dateToNumber(mContext.mLastDayOfShareUpdate);
             if (deltaAllshare > 2 || delta2 > 7)
             {
-                String url = Context.getInstance().configJson.url_all_share_compaq_small;
+                String url = Context.getInstance().configJson.url_all_share_compaq_large;
                 if (url != null && url.Length > 0)
                 {
                     return true;

@@ -53,7 +53,7 @@ namespace stock123.app
             : base()
         {
             logTimeElapsedStart2();
-            mChartType = Share.CANDLE_DAILY;
+            mChartType = Share.CANDLETYPE_DAILY;
             setSize(w, h);
             mIsSecondPanel = isSecondPanel;
 
@@ -508,8 +508,10 @@ namespace stock123.app
                 if (aIntParameter == C.ID_WEEKLY_CHART && share != null)
                 {
                     mChartType++;
-                    if (mChartType > Share.CANDLE_MONTHLY)
-                        mChartType = Share.CANDLE_DAILY;
+                    if (mChartType > Share.CANDLETYPE_MONTHLY)
+                    {
+                        mChartType = Share.CANDLETYPE_DAILY;
+                    }
 
                     reloadShare(share, true);
                     
@@ -594,6 +596,12 @@ namespace stock123.app
                     mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, null);
                 }
             }
+            if (aIntParameter >= C.ID_CANDLETYPE_M1 && aIntParameter <= C.ID_CANDLETYPE_MONTH)
+            {
+                mChartType = aIntParameter;
+                reloadShare(mShare, true);
+                
+            }
         }
 
         NetProtocol netRefreshShareData;
@@ -667,37 +675,40 @@ namespace stock123.app
 
         public void reloadShare(Share share, bool applyTodayCandle)
         {
-            int scope = share.getCursorScope();
-            int endDate = share.getEndDate();
-
-            /*
-            share.loadShareFromFile(true);
-            if (share.getCandleCount() == 0)
-                share.loadShareFromCommonData(true);
-            */
-
-            if (!share.loadShareFromFile(applyTodayCandle))
+            if (mChartType == Share.CANDLETYPE_1m)
             {
-
-                share.loadShareFromCommonData(true);
+                //  realtime
+                share.setDataType(Share.DATATYPE_TICK);
             }
-
-            if (!share.isRealtime())
+            else
             {
-                share.appendTodayCandle();
+                if (mChartType >= Share.CANDLETYPE_30m && mChartType <= Share.CANDLETYPE_H4)
+                {
+                    share.setDataType(Share.DATATYPE_30m);
+                    share.loadShareFromFile(false);
+                    share.to30Minutes(mChartType);
+                }
+                else
+                {
+                    share.setDataType(Share.DATATYPE_DAILY);
+                    if (!share.loadShareFromFile(applyTodayCandle))
+                    {
+                        share.loadShareFromCommonData(true);
+                    }
+                    //----------------------
+                    if (mChartType == Share.CANDLETYPE_WEEKLY)
+                    {
+                        share.toWeekly();
+                    }
+                    else if (mChartType == Share.CANDLETYPE_MONTHLY)
+                    {
+                        share.toMonthly();
+                    }
+                }
             }
-
-            if (mChartType == Share.CANDLE_WEEKLY)
-            {
-                share.toWeekly();
-            }
-            else if (mChartType == Share.CANDLE_MONTHLY)
-            {
-                share.toMonthly();
-            }
-
-            share.setEndDate(endDate);
-            share.setCursorScope(scope);
+            
+            //share.setEndDate(endDate);
+            //share.setCursorScope(scope);
 
             createChartRangeControls(share, mTimingRange);
 
@@ -783,7 +794,7 @@ namespace stock123.app
 
             xLabel l;
             //  5 days, 1 month, 3 month, 6 month, 1 year, 2 year
-            String[] ss = { "5d", "1m", "3m", "6m", "1y", "2y", "5y", "-", null };
+            String[] ss = { "5D", "1M", "3M", "6M", "1Y", "2Y", "5Y", "-", null };
             int[] scopes = { Share.SCOPE_1WEEKS, Share.SCOPE_1MONTH, Share.SCOPE_3MONTHS, Share.SCOPE_6MONTHS, Share.SCOPE_1YEAR, Share.SCOPE_2YEAR, Share.SCOPE_5YEAR, Share.SCOPE_ALL };
             int i = 0;
 
@@ -810,7 +821,8 @@ namespace stock123.app
             i = 0;
             while (ss[i] != null)
             {
-                l = xLabel.createSingleLabel(ss[i], mContext.getFontSmallest(), 25);
+                l = xLabel.createSingleLabel(ss[i], mContext.getFontSmallestFix(), 25);
+                l.setSize(30, 14);
 
                 l.setPosition(x, 0);
                 l.setAlign(xGraphics.HCENTER);
@@ -833,27 +845,10 @@ namespace stock123.app
                 i++;
             }
             //=======weekly button=======
-            /*
-            string charttype = "daily";
-            if (mChartType == Share.CANDLE_DAILY)
-                charttype = "daily";
-            else if (mChartType == Share.CANDLE_WEEKLY)
-                charttype = "weekly";
-            else
-                charttype = "monthly";
-            l = xLabel.createSingleLabel(charttype, mContext.getFontSmallest(), 60);
-            l.setPosition(x, 0);
-            l.setAlign(xGraphics.HCENTER);
-            l.enableClick(C.ID_WEEKLY_CHART, this);
-
-            x += l.getW();
-            l.setBackgroundColor(C.COLOR_GRAY_DARK);
-            l.setTextColor(C.COLOR_ORANGE);
-            c.addControl(l);
-            */
+            
             //===========================
             //  30m/H1/H2/H4
-            string[] candleTypes = {"M1","M30", "H1", "H2", "H4", "Ng", "Tu", "Th"};
+            string[] candleTypes = {"M1","M30", "H1", "H2", "H4", "DAY", "WK", "MON"};
             int[] candleTypeIDs = {C.ID_CANDLETYPE_M1, 
                                       C.ID_CANDLETYPE_M30,
                                       C.ID_CANDLETYPE_H1,
@@ -863,10 +858,11 @@ namespace stock123.app
                                       C.ID_CANDLETYPE_WEEKLY,
                                       C.ID_CANDLETYPE_MONTH
                                   };
-            x += 4;
+            x += 8;
             for (i = 0; i < candleTypes.Length; i++)
             {
-                l = xLabel.createSingleLabel(candleTypes[i], mContext.getFontSmallest(), 25);
+                l = xLabel.createSingleLabel(candleTypes[i], mContext.getFontSmallestFix(), 32);
+                l.setSize(30, 14);
                 l.setPosition(x, 0);
                 l.setAlign(xGraphics.HCENTER);
                 l.enableClick(candleTypeIDs[i], this);
@@ -874,7 +870,44 @@ namespace stock123.app
                 x += l.getW();
                 x += 1;
                 l.setBackgroundColor(C.COLOR_GRAY_DARK);
-                l.setTextColor(C.COLOR_ORANGE);
+                l.setTextColor(C.COLOR_WHITE);
+
+                if (mShare != null)
+                {
+                    if (candleTypeIDs[i] == C.ID_CANDLETYPE_M1 && mChartType == Share.CANDLETYPE_1m)
+                    {
+                        l.setTextColor(C.COLOR_ORANGE);
+                    }
+                    else if (candleTypeIDs[i] == C.ID_CANDLETYPE_M30 && mChartType == Share.CANDLETYPE_30m)
+                    {
+                        l.setTextColor(C.COLOR_ORANGE);
+                    }
+                    else if (candleTypeIDs[i] == C.ID_CANDLETYPE_H1 && mChartType == Share.CANDLETYPE_H1)
+                    {
+                        l.setTextColor(C.COLOR_ORANGE);
+                    }
+                    else if (candleTypeIDs[i] == C.ID_CANDLETYPE_H2 && mChartType == Share.CANDLETYPE_H2)
+                    {
+                        l.setTextColor(C.COLOR_ORANGE);
+                    }
+                    else if (candleTypeIDs[i] == C.ID_CANDLETYPE_H4 && mChartType == Share.CANDLETYPE_H4)
+                    {
+                        l.setTextColor(C.COLOR_ORANGE);
+                    }
+                    else if (candleTypeIDs[i] == C.ID_CANDLETYPE_DAILY && mChartType == Share.CANDLETYPE_DAILY)
+                    {
+                        l.setTextColor(C.COLOR_ORANGE);
+                    }
+                    else if (candleTypeIDs[i] == C.ID_CANDLETYPE_WEEKLY && mChartType == Share.CANDLETYPE_WEEKLY)
+                    {
+                        l.setTextColor(C.COLOR_ORANGE);
+                    }
+                    else if (candleTypeIDs[i] == C.ID_CANDLETYPE_MONTH && mChartType == Share.CANDLETYPE_MONTHLY)
+                    {
+                        l.setTextColor(C.COLOR_ORANGE);
+                    }
+                }
+
                 c.addControl(l);
             }
             //-----------------------------------
@@ -991,7 +1024,7 @@ namespace stock123.app
             if (mCurrentShare != mShare && mTimingRange != null)
             {
                 mCurrentShare = mShare;
-                if (mChartType == Share.CANDLE_MONTHLY)
+                if (mChartType == Share.CANDLETYPE_MONTHLY)
                 {
                     createChartRangeControls(mShare, mTimingRange);
                 }

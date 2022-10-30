@@ -33,9 +33,18 @@ namespace stock123.app.data
         public static int CANDLE_30MINS = 30;
         public static int CANDLE_60MINS = 60;
 
-        public static int CANDLE_DAILY = 0;
-        public static int CANDLE_WEEKLY = 1;
-        public static int CANDLE_MONTHLY = 2;
+        //=============================
+        public static int CANDLETYPE_1m = 29;
+
+        public static int CANDLETYPE_30m = 30;
+        public static int CANDLETYPE_H1 = 60;
+        public static int CANDLETYPE_H2 = 120;
+        public static int CANDLETYPE_H4 = 200;
+
+        public static int CANDLETYPE_DAILY = 0;
+        public static int CANDLETYPE_WEEKLY = 1;
+        public static int CANDLETYPE_MONTHLY = 2;
+        //=============================
 
         public static int SHARE_CODE_LENGTH = 8;
         //static  int FILE_VERSION = 0x02;
@@ -585,7 +594,7 @@ namespace stock123.app.data
             clearCalculations();
 
             mLastScope = -1;
-            mCandleType = CANDLE_DAILY;
+            mCandleType = CANDLETYPE_DAILY;
 
             //appendToday = true;
             removeAllCandles();
@@ -606,7 +615,7 @@ namespace stock123.app.data
             allocMemoryUsingShared(useSharedMemory);
 
             mLastScope = -1;
-            mCandleType = CANDLE_DAILY;
+            mCandleType = CANDLETYPE_DAILY;
 
             //appendToday = true;
             removeAllCandles();
@@ -630,7 +639,7 @@ namespace stock123.app.data
             }
 
             clearCalculations();
-            mCandleType = CANDLE_DAILY;
+
             mLastScope = -1;
             //appendToday = true;
             if (mCode == null || mCode.Length == 0)
@@ -1319,8 +1328,8 @@ namespace stock123.app.data
                 return;
             }
 
-            if (!isRealtime() && mCandleType != CANDLE_DAILY)
-            {
+            bool canSave = (mCandleType != CANDLETYPE_DAILY  || mCandleType != CANDLETYPE_30m || isRealtime());
+            if (!canSave){
                 return;
             }
 
@@ -1911,9 +1920,9 @@ namespace stock123.app.data
             }
             else if (_scope >= SCOPE_1MONTH)
             {
-                if (mCandleType == CANDLE_WEEKLY)
+                if (mCandleType == CANDLETYPE_WEEKLY)
                     scope = _scope / 5;
-                else if (mCandleType == CANDLE_MONTHLY)
+                else if (mCandleType == CANDLETYPE_MONTHLY)
                     scope = _scope / 22;
                 else
                     scope = _scope;
@@ -6212,7 +6221,7 @@ namespace stock123.app.data
             //--------------
             mCandleCnt = j;
 
-            mCandleType = CANDLE_WEEKLY;
+            mCandleType = CANDLETYPE_WEEKLY;
         }
 
         public void toMonthly()
@@ -6297,7 +6306,183 @@ namespace stock123.app.data
             //--------------    
             mCandleCnt = j;
 
-            mCandleType = CANDLE_MONTHLY;
+            mCandleType = CANDLETYPE_MONTHLY;
+        }
+
+        //  timeframe:1/2/4/8 <=> 30m; 1h; 2hs; 4hs
+        public void to30Minutes(int timeframe)
+        {
+            loadShareFromFile(false);
+
+            mCandleType = timeframe;
+
+            if (timeframe == CANDLETYPE_30m){
+                timeframe = 1;
+            }
+            else if (timeframe == CANDLETYPE_30m){
+                timeframe = 1;
+            }
+            else if (timeframe == CANDLETYPE_H1){
+                timeframe = 2;
+            }
+            else if (timeframe == CANDLETYPE_H2){
+                timeframe = 4;
+            }
+            else if (timeframe == CANDLETYPE_H4){
+                timeframe = 8;
+            }
+    
+            if (timeframe == 1){
+                return;
+            }
+    
+            int cnt = getCandleCnt();
+            int FIRST_MARK = 0x0bcdabcd;
+            int last = FIRST_MARK;
+
+            int vol = getAveVolumeInDays(5);
+            if (vol > 10000000)
+            {
+                mVolumeDivided = 100;
+            }
+
+            int D = 0;
+            long V = 0;
+            float C = 0;
+            float H = 0;
+            float L = 0;
+            float O = 0;
+            int j = 0;
+            for (int i = 0; i < cnt; i++)
+            {
+                int date = mCDate[i];
+                int dateInt = dateFrom30mPackedDate(date);
+                int timeInt = timeFrom30mPackedDate(date);
+                int hh = Utils.EXTRACT_HOUR(timeInt);
+                int mm = Utils.EXTRACT_MINUTE(timeInt);
+
+                if (timeframe == 2 || timeframe == 4 || timeframe == 8)
+                {
+                    int MM = hh * 60 + mm;
+                    int idx = (MM - 5) / 60;    //  1h
+
+                    //  2h
+                    if (timeframe == 4)
+                    {
+                        if (MM <= 600) idx = 1;
+                        else if (MM <= 720) idx = 2;
+                        else if (MM <= 840) idx = 3;
+                        else idx = 4;
+                    }
+                    else if (timeframe == 8)
+                    {
+                        if (MM <= 720) idx = 1;
+                        else idx = 2;
+                    }
+
+                    if (idx != last) //  new hour
+                    {
+                        if (last != FIRST_MARK)    //  new candle
+                        {
+                            mCClose[j] = C;
+                            mCDate[j] = D;
+                            mCHighest[j] = H;
+                            mCLowest[j] = L;
+                            mCOpen[j] = O;
+                            mCVolume[j] = (int)V;
+
+                            j++;
+                        }
+
+                        O = mCOpen[i];
+                        H = mCHighest[i];
+                        L = mCLowest[i];
+                        C = mCClose[i];
+                        D = mCDate[i];
+                        V = mCVolume[i] / mVolumeDivided;
+
+                        last = idx;
+                    }
+                    else
+                    {
+                        V += (mCVolume[i] / mVolumeDivided);
+                        D = mCDate[i];
+                        C = mCClose[i];
+                        if (mCLowest[i] < L) L = mCLowest[i];
+                        if (mCHighest[i] > H) H = mCHighest[i];
+
+                        last = idx;
+                    }
+                }
+
+            }// end of for
+            //--------------
+            if (j < cnt)
+            {
+                mCClose[j] = C;
+                mCDate[j] = D;
+                mCHighest[j] = H;
+                mCLowest[j] = L;
+                mCOpen[j] = O;
+                mCVolume[j] = (int)V;
+
+                j++;
+            }
+            //--------------
+            mCandleCnt = j;
+        }
+
+        static public int packDate30m(int dateInt, int timeInt)
+        {
+            //  year: 0-99 => 8 bytes
+            //  month: 0-12: 4 bytes
+            //  days: 0-31: 6 bytes
+            //  hour: 0-24: 6 bytes
+            //  minutes: 0-60: 8 bytes
+
+            //  year(8:24) | month(4:20) | day(6:14) | hour(6:8) | minute(8:0)
+
+            int year = Utils.EXTRACT_YEAR(dateInt) - 2000;
+            int month = Utils.EXTRACT_MONTH(dateInt);
+            int day = Utils.EXTRACT_DAY(dateInt);
+            int hour = Utils.EXTRACT_HOUR(timeInt);
+            int minute = Utils.EXTRACT_MINUTE(timeInt);
+
+            int packedInt = (year << 24)
+                    | ((month & 0xf) << 20) //  1111
+                    | ((day & 0x3f) << 14)        //  111111
+                    | ((hour & 0x3f) << 8)        //  111111
+                    | (minute & 0xff);
+
+            return packedInt;
+        }
+
+        //  year(8:24) | month(4:20) | day(6:14) | hour(6:8) | minute(8:0)
+        static public int dateFrom30mPackedDate(int packedDate)
+        {
+            int year = (packedDate >> 24) & 0xff;
+            year += 2000;
+
+            int month = (packedDate >> 20) & 0xf;
+            int days = (packedDate >> 14) & 0x3f;
+            int hours = (packedDate >> 8) & 0x3f;
+            int minute = packedDate & 0xff;
+
+            return (year << 16) | (month << 8) | days;
+        }
+
+        //  year(8:24) | month(4:20) | day(6:14) | hour(6:8) | minute(8:0)
+        static public int timeFrom30mPackedDate(int packedDate)
+        {
+            int year = (packedDate >> 24) & 0xff;
+            year += 2000;
+
+            int month = (packedDate >> 20) & 0xf;
+            int days = (packedDate >> 14) & 0x3f;
+            int hours = (packedDate >> 8) & 0x3f;
+            int minute = packedDate & 0xff;
+
+            return (hours << 16) | (minute << 8);
         }
         //---------------------------
         public int getEndDate()

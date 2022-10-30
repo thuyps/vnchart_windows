@@ -94,11 +94,11 @@ namespace stock123.app.chart
             if (refShare.mCandleType != share.mCandleType)
             {
                 share.mCandleType = refShare.mCandleType;
-                if (share.mCandleType == Share.CANDLE_WEEKLY)
+                if (share.mCandleType == Share.CANDLETYPE_WEEKLY)
                 {
                     share.toWeekly();
                 }
-                else if (share.mCandleType == Share.CANDLE_MONTHLY)
+                else if (share.mCandleType == Share.CANDLETYPE_MONTHLY)
                 {
                     share.toMonthly();
                 }

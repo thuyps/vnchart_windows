@@ -86,6 +86,7 @@ namespace stock123.app
         Font mFontSlogan;
         Font mFontSmall;
         Font mFontSmallest;
+        Font mFontSmallestFix;
         Font mFontSmallB;
         Font mFontSmaller;
         //=============================
@@ -441,6 +442,17 @@ namespace stock123.app
             }
 
             return mFontSmallest;
+        }
+
+        public Font getFontSmallestFix()
+        {
+            if (mFontSmallestFix == null)
+            {
+                Font f = new Font(new FontFamily("Arial"), 8.0f);
+                mFontSmallestFix = f;
+            }
+
+            return mFontSmallestFix;
         }
 
         public Font getFontSmallestB()
@@ -2472,7 +2484,7 @@ namespace stock123.app
         public class ConfigJson
         {
             public int version;
-            public string url_all_share_compaq_small;
+            public string url_all_share_compaq_large;
         };
 
         public ConfigJson configJson = new ConfigJson();
@@ -2539,7 +2551,7 @@ namespace stock123.app
                     }, null);
                 }
 
-                Utils.trace("config: version=" + configJson.version + " url=" + configJson.url_all_share_compaq_small);
+                Utils.trace("config: version=" + configJson.version + " url=" + configJson.url_all_share_compaq_large);
             }
             catch (Exception e)
             {
