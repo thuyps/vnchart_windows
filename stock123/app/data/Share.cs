@@ -6505,10 +6505,17 @@ namespace stock123.app.data
         public void setEndDate(int date)
         {
             int cnt = getCandleCount();
+            if (cnt <= 1)
+            {
+                return;
+            }
             mEndIdx = cnt - 1;
 
-            if (date == -1)
-                return;
+            if (date == -1 || date == 0)
+            {
+                //return;
+                date = getDate(getCandleCnt() - 1);
+            }
 
             for (int i = 0; i < cnt; i++)
             {

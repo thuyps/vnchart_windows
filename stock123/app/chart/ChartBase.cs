@@ -964,6 +964,22 @@ namespace stock123.app.chart
                     int m = (date >> 8) & 0xff;
                     sb.AppendFormat("{0:D2}:{1:D2}", h, m);
                 }
+                else if (share.is30mData())
+                {
+                    int date = share.getDate(candleIdx);
+                    int day = (date >> 16) & 0xff;
+                    if (day > 0)
+                    {
+                        sb.AppendFormat("{0:D2}/{1:D2} {2:D2}:{3:D2}", (int)((date >> 24) & 0xff) + 1, (int)((date >> 16) & 0xff),
+                                (int)((date >> 8) & 0xff), (int)(date & 0xff));
+                    }
+                    else
+                    {
+                        sb.AppendFormat("{2:D2}:{3:D2}", 
+                                (int)((date >> 8) & 0xff), (int)(date & 0xff));
+                    }
+
+                }
                 else
                 {
                     int date = share.getDate(candleIdx);

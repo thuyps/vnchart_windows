@@ -421,5 +421,84 @@ namespace stock123.app.data
 
             return share;
         }
+
+        public Share convertToShareData(int timeStamp, Share share)
+        {
+            int time = 0;
+            int lastMinute = 0;
+
+            float o = 0;
+            float c = 0;
+            float h = 0;
+            float l = 0;
+            double v = 0;
+            int d = 0;
+
+            Share outShare = share;
+
+            if (outShare == null)
+            {
+                outShare = mShare;
+            }
+            outShare.setDataType(Share.DATATYPE_TICK);
+            outShare.setID(mShare.mID);
+            outShare.setCode(mShare.getCode(), getFloorID());
+
+            outShare.removeAllCandles();
+            outShare.clearCalculations();
+            //mShare.mIsRealtime = true;
+
+            int minute = 0;
+
+            for (int i = 0; i < mTradeTransactionCount; i++)
+            {
+                time = getTime(i);
+                int hour = (time >> 16) & 0xff;
+                minute = (time >> 8) & 0xff;
+                minute = hour * 60 + minute;
+
+                float price = getPrice(i);
+
+                if (lastMinute == 0)
+                {
+                    o = price;
+                    c = o;
+                    h = o;
+                    l = o;
+                    v = getTradeVolume(i);
+                    d = time;
+                    lastMinute = minute;
+                }
+                else if ((minute - lastMinute) >= timeStamp)
+                {
+                    outShare.addMoreCandle(o, c, o, h, l, (int)v, d);
+
+                    o = price;
+                    c = o;
+                    h = o;
+                    l = o;
+                    v = getTradeVolume(i);
+                    d = time;
+                    lastMinute = minute;
+                }
+                else
+                {
+                    if (price > h) h = price;
+                    if (price < l) l = price;
+                    c = price;
+
+                    v += getTradeVolume(i);
+                }
+            }
+
+            if (lastMinute > 0 && c > 0 && v > 0)
+            {
+                outShare.addMoreCandle(o, c, o, h, l, (int)v, d);
+            }
+
+            outShare.setCursorScope(Share.SCOPE_ALL);
+
+            return outShare;
+        }
     }
 }

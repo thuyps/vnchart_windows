@@ -607,7 +607,11 @@ namespace stock123.app
                 else if (aIntParameter == C.ID_CANDLETYPE_WEEKLY) mChartType = Share.CANDLETYPE_WEEKLY;
                 else if (aIntParameter == C.ID_CANDLETYPE_MONTH) mChartType = Share.CANDLETYPE_MONTHLY;
 
-                if (aIntParameter >= C.ID_CANDLETYPE_M30 && aIntParameter <= C.ID_CANDLETYPE_H4)
+                if (aIntParameter == C.ID_CANDLETYPE_M1)
+                {
+                    reload1mDataIfNeed();
+                }
+                else if (aIntParameter >= C.ID_CANDLETYPE_M30 && aIntParameter <= C.ID_CANDLETYPE_H4)
                 {
                     reload30mDataIfNeed();
                 }
@@ -636,8 +640,10 @@ namespace stock123.app
             netRefreshShareData.onDoneDelegate = (sender, ok) =>
             {
                 GlobalData.vars().setValueInt("share_refreshing", 0);
-
-                reloadShare(mShare, true);
+                if (mChartType >= Share.CANDLETYPE_30m && mChartType <= Share.CANDLETYPE_H4)
+                {
+                    reloadShare(mShare, true);
+                }
             };
 
             netRefreshShareData.flushRequest();
@@ -678,11 +684,51 @@ namespace stock123.app
     
             long now = Utils.currentTimeMillis();
             float elapsed = (now - _timeload30m)/1000;
-            if (mShare.getCandleCnt() == 0 || elapsed > 30)
+            if (mShare.getCandleCnt() == 0 || elapsed > 5*60)
             {
                 _timeload30m = now;
                 this.reload30mData();
             }
+        }
+
+
+        long _timeload1m = 0;
+        void reload1mDataIfNeed()
+        {
+            if (mShare == null)
+            {
+                return;
+            }
+
+            mShare.setDataType(Share.DATATYPE_TICK);
+            mShare.loadShareFromFile(false);
+
+            long now = Utils.currentTimeMillis();
+            float elapsed = (now - _timeload1m) / 1000;
+            if (mShare.getCandleCnt() == 0 || elapsed > 1 * 60)
+            {
+                _timeload1m = now;
+                
+                this.reload1mData();
+            }
+        }
+
+        void reload1mData()
+        {
+
+            netRefreshShareData = mContext.createNetProtocol();
+
+            TradeHistory trade = mContext.getTradeHistory(mShare.getShareID());
+            netRefreshShareData.requestTradeHistory(trade.getCode(), trade.getFloorID(), 0, trade.getLastTime());
+
+            netRefreshShareData.onDoneDelegate = (sender, ok) =>
+            {
+                GlobalData.vars().setValueInt("share_refreshing", 0);
+
+                reloadShare(mShare, true);
+            };
+
+            netRefreshShareData.flushRequest();
         }
 
         public void reloadShare(Share share, bool applyTodayCandle)
@@ -691,14 +737,28 @@ namespace stock123.app
             {
                 //  realtime
                 share.setDataType(Share.DATATYPE_TICK);
+
+                int endDate = share.getEndDate();
+                int scope = share.getCursorScope();
+
+                share.loadShareFromFile(false);
+
+                share.setCursorScope(scope);
+                share.setEndDate(endDate);
             }
             else
             {
                 if (mChartType >= Share.CANDLETYPE_30m && mChartType <= Share.CANDLETYPE_H4)
                 {
+                    int endDate = share.getEndDate();
+                    int scope = share.getCursorScope();
+
                     share.setDataType(Share.DATATYPE_30m);
                     share.loadShareFromFile(false);
                     share.to30Minutes(mChartType);
+
+                    share.setCursorScope(scope);
+                    share.setEndDate(endDate);
                 }
                 else
                 {
@@ -800,11 +860,12 @@ namespace stock123.app
         protected xContainer createChartRangeControls(Share share, xContainer c)
         {
             int currentRange = share.getCursorScope();
-
+            /*
             if (share.isRealtime())
             {
                 return createChartRangeControlsRT(share.mCandleType, c);
             }
+             */
 
             c.removeAllControls();
             c.setBackgroundColor(0xff000000);
