@@ -933,5 +933,63 @@ namespace xlib.utils
 
             return s;
         }
+
+        public static int CREATE_DATE(int yyyy, int mm, int dd)
+        {
+            return (yyyy << 16) | (mm << 8) | dd;
+        }
+
+        public static void arraycopy(object src, int offSrc, object dst, int offDst, int len)
+        {
+            if (src.GetType() == typeof(int[])){
+                int[] intSrc = (int[])src;
+                int[] intDst = (int[])dst;
+
+                for (int i = 0; i < len; i++)
+                {
+                    intDst[offDst + i] = intSrc[offSrc + i];
+                }
+            }
+            else if (src.GetType() == typeof(float[]))
+            {
+                float[] intSrc = (float[])src;
+                float[] intDst = (float[])dst;
+
+                for (int i = 0; i < len; i++)
+                {
+                    intDst[offDst + i] = intSrc[offSrc + i];
+                }
+            }
+            else if (src.GetType() == typeof(bool[]))
+            {
+                bool[] intSrc = (bool[])src;
+                bool[] intDst = (bool[])dst;
+
+                for (int i = 0; i < len; i++)
+                {
+                    intDst[offDst + i] = intSrc[offSrc + i];
+                }
+            }
+            else if (src.GetType() == typeof(double[]))
+            {
+                double[] intSrc = (double[])src;
+                double[] intDst = (double[])dst;
+
+                for (int i = 0; i < len; i++)
+                {
+                    intDst[offDst + i] = intSrc[offSrc + i];
+                }
+            }
+        }
+
+        public static uint ARGB(int a, int r, int g, int b)
+        {
+            return (uint)((a << 24) | (r << 16) | (g << 8) | b);
+        }
+        public static uint RGB(int r, int g, int b)
+        {
+            return (uint)((0xff << 24) | (r << 16) | (g << 8) | b);
+        }
     }
+
 }

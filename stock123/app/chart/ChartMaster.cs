@@ -1122,6 +1122,27 @@ namespace stock123.app.chart
                 mAttachedCharts.insertElementAt(bb, 0);
                 share.mIsCalcBollinger = false;
             }
+            if (CHART_ALPHATREND == chart)
+            {
+                ChartAlphatrend bb = new ChartAlphatrend(mFont);
+                bb.setSize(this);
+                mAttachedCharts.insertElementAt(bb, 0);
+                share.mIsCalcBollinger = false;
+            }
+            if (CHART_SUPERTREND == chart)
+            {
+                ChartSupertrend bb = new ChartSupertrend(mFont);
+                bb.setSize(this);
+                mAttachedCharts.insertElementAt(bb, 0);
+                share.mIsCalcBollinger = false;
+            }
+            if (CHART_HEIKEN_ASHI_EMA == chart)
+            {
+                ChartHeikenAShiEMA bb = new ChartHeikenAShiEMA(mFont);
+                bb.setSize(this);
+                mAttachedCharts.insertElementAt(bb, 0);
+                share.mIsCalcBollinger = false;
+            }
             if (CHART_ICHIMOKU == chart)
             {
                 ChartIchimoku ichi = new ChartIchimoku(mFont);

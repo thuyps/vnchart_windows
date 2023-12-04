@@ -229,7 +229,14 @@ namespace stock123.app
                 C.ID_TS_CHARTCANDLE_HEIKEN,
                 C.ID_TS_CHARTHLC,
                 C.ID_TS_CHARTOHLC, -1,
-                C.ID_EDIT_BOLLINGER, C.ID_EDIT_ENVELOP, C.ID_EDIT_ICHIMOKU, C.ID_EDIT_PSAR, C.ID_EDIT_ZIGZAG, -1, 
+                C.ID_TS_ALPHATREND,
+                C.ID_TS_SUPERTREND,
+                C.ID_TS_HEIKEN_ASHI_EMA,
+                C.ID_EDIT_BOLLINGER, 
+                C.ID_EDIT_ENVELOP, 
+                C.ID_EDIT_ICHIMOKU, 
+                C.ID_EDIT_PSAR, 
+                C.ID_EDIT_ZIGZAG, -1, 
                 C.ID_CAPTURE_IMAGE,
                 -1,
                 C.ID_RELOAD_DATA_OF_SYMBOL,
@@ -243,11 +250,14 @@ namespace stock123.app
                 "Kiểu đồ thị HLC",
                 "Kiểu đồ thị OHLC",
                 "",
-                                "Thông số Bollinger",
-                                "Thông số Envelops",
-                                "Thông số Ichimoku Kynko Hyo",
-                                "Thông số Parabollic (PSAR)",
-                                "Thông số Zigzag",
+                                "Alpha Trend",
+                                "Super Trend",
+                                "Smoothed EMA Heiken AShi",
+                                "Bollinger",
+                                "Envelops",
+                                "Ichimoku Kynko Hyo",
+                                "Parabollic (PSAR)",
+                                "Zigzag",
                                 "",
                                 "Lưu file ảnh",
                                 "",
@@ -1239,6 +1249,11 @@ namespace stock123.app
             {
                 mChartMaster.toggleAttachChart(ChartBase.CHART_BOLLINGER);
             }
+            else if (idx == C.ID_TS_ALPHATREND)
+            {
+                mChartMaster.toggleAttachChart(ChartBase.CHART_ALPHATREND);
+            }
+            
             else if (idx == C.ID_TS_ENVELOP)
             {
                 mChartMaster.toggleAttachChart(ChartBase.CHART_ENVELOP);
@@ -1279,7 +1294,7 @@ namespace stock123.app
                 }
                 mChartMaster.clearModifyKey();
                 mChartMaster.invalidate();
-                
+
             }
             else if (idx == C.ID_TS_COMPARE_2_SHARES)
             {
@@ -1287,7 +1302,7 @@ namespace stock123.app
                 {
                     mChartMaster.hideAttachChart(ChartBase.CHART_COMPARING_SECOND_SHARE);
 
-                    
+
 
                     mChartMaster.clearModifyKey();
                     mChartMaster.invalidate();
@@ -1849,6 +1864,14 @@ namespace stock123.app
             mChartMaster.invalidate();
         }
 
+        public void toggleOverlay(int chart)
+        {
+            mChartMaster.toggleAttachChart(chart);
+        }
 
+        public bool isOverlayOn(int chart)
+        {
+            return mChartMaster.isAttachedOn(chart);
+        }
     }
 }

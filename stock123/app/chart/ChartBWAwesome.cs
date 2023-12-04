@@ -15,8 +15,6 @@ namespace stock123.app.chart
     {
         float[] AO;
 
-        float lowest;
-        float highest;
         //===================================
         public ChartBWAwesome(Font f)
             : base(f)
@@ -69,21 +67,21 @@ namespace stock123.app.chart
                 }
 
                 calcAO();
-                highest = AO[0];
-                lowest = AO[0];
+                mHighest = AO[0];
+                mLowest = AO[0];
                 for (int i = share.mBeginIdx; i <= share.mEndIdx; i++)
                 {
-                    if (AO[i] > highest)
+                    if (AO[i] > mHighest)
                     {
-                        highest = AO[i];
+                        mHighest = AO[i];
                     }
-                    if (AO[i] < lowest)
+                    if (AO[i] < mLowest)
                     {
-                        lowest = AO[i];
+                        mLowest = AO[i];
                     }
                 }
 
-                double ry = (float)getDrawingH() / (highest - lowest);
+                double ry = (float)getDrawingH() / (mHighest - mLowest);
                 double rw = (float)getDrawingW() / mChartLineLength;
                 mVolumeBarW = (((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
                 if (mVolumeBarW < 1) mVolumeBarW = 1;
@@ -95,7 +93,7 @@ namespace stock123.app.chart
 
                     mChartLineXY[i * 2] = (float)(mX + CHART_BORDER_SPACING_X + i * rw + getStartX() - volumeBarWHalf);	//	x
 
-                    mChartLineXY[i * 2 + 1] = (float)(mY + getMarginY() + getDrawingH() - (AO[j] - lowest) * ry);
+                    mChartLineXY[i * 2 + 1] = (float)(mY + getMarginY() + getDrawingH() - (AO[j] - mLowest) * ry);
                 }
             }
 
@@ -108,46 +106,12 @@ namespace stock123.app.chart
             uint color;
 
             //  zero line
-            float y0 = priceToY(0, lowest, highest);
+            float y0 = priceToY(0, mLowest, mHighest);
             g.setColor(colorPriceline());
             g.drawHorizontalLine(0, (float)y0, getW() - 20);
 
-            for (int i = 0; i < mChartLineLength; i++)
-            {
-                int j = share.mBeginIdx + i;
-                if (j <= 0)
-                {
-                    continue;
-                }
-                //if (j)
-                {
-                    if (AO[j] >= AO[j - 1])
-                    {
-                        color = colorUp;
-                    }
-                    else if (AO[j] < AO[j - 1])
-                    {
-                        color = colorDown;
-                    }
-                    else
-                    {
-                        color = preColor;
-                    }
-                    preColor = color;
-                    g.setColor(color);
-                }
-
-                //if (AO[j] > 0)
-                {
-                    g.fillRect((mChartLineXY[2 * i] - mVolumeBarW / 2),
-                        mChartLineXY[2 * i + 1],
-                        mVolumeBarW,
-                        y0 - mChartLineXY[2 * i + 1]);
-                }
-                //else{
-                //g->fillRect(mChartLineXY[2*i]-mVolumeBarW/2, mChartLineXY[2*i+1], mVolumeBarW, y0 - mChartLineXY[2*i+1]);
-                //}
-            }
+            g.drawHistogram(mChartLineXY, 0, mChartLineLength, y0, mVolumeBarW,
+                colorUp, colorUp, colorDown, colorDown); 
 
             if (mShouldDrawTitle)
             {

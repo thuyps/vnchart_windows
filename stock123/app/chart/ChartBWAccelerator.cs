@@ -15,8 +15,6 @@ namespace stock123.app.chart
     {
         float[] AO;
 
-        float lowest;
-        float highest;
         //===================================
         public ChartBWAccelerator(Font f)
             : base(f)
@@ -87,21 +85,21 @@ namespace stock123.app.chart
                 }
 
                 calcAC();
-                highest = AO[0];
-                lowest = AO[0];
+                mLowest = AO[0];
+                mHighest = AO[0];
                 for (int i = share.mBeginIdx; i <= share.mEndIdx; i++)
                 {
-                    if (AO[i] > highest)
+                    if (AO[i] > mHighest)
                     {
-                        highest = AO[i];
+                        mHighest = AO[i];
                     }
-                    if (AO[i] < lowest)
+                    if (AO[i] < mLowest)
                     {
-                        lowest = AO[i];
+                        mLowest = AO[i];
                     }
                 }
 
-                double ry = (float)getDrawingH() / (highest - lowest);
+                double ry = (float)getDrawingH() / (mHighest - mLowest);
                 double rw = (float)getDrawingW() / mChartLineLength;
                 mVolumeBarW = (((float)getDrawingW() / mChartLineLength) * 2.0f / 3);
                 if (mVolumeBarW < 1) mVolumeBarW = 1;
@@ -113,7 +111,7 @@ namespace stock123.app.chart
 
                     mChartLineXY[i * 2] = (float)(mX + CHART_BORDER_SPACING_X + i * rw + getStartX() - volumeBarWHalf);	//	x
 
-                    mChartLineXY[i * 2 + 1] = (float)(mY + getMarginY() + getDrawingH() - (AO[j] - lowest) * ry);
+                    mChartLineXY[i * 2 + 1] = (float)(mY + getMarginY() + getDrawingH() - (AO[j] - mLowest) * ry);
                 }
             }
 
@@ -126,7 +124,7 @@ namespace stock123.app.chart
             uint color;
 
             //  zero line
-            float y0 = priceToY(0, lowest, highest);
+            float y0 = priceToY(0, mLowest, mHighest);
             g.setColor(colorPriceline());
             g.drawHorizontalLine(0, (float)y0, getW() - 20);
 

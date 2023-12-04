@@ -39,7 +39,7 @@ namespace stock123.app.data
         public static int[] volumes;
         //==============================================
         public static int NET_CANDLE_SIZE = 36;
-        public static int MAX_COMMON_CANDLES = 600;   //  1 year
+        public static int MAX_COMMON_CANDLES = 1000;   //  1 year
         public static int CANDLE_SIZE = 36;
         byte[] mCommonData = null;
         //  item: code:8 + candle_cnt:2 + floor:2 + [CANDLE_SIZE*MAX_COMMON_CANDLES];

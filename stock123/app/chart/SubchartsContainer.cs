@@ -127,6 +127,8 @@ namespace stock123.app.chart
                 ChartBase.CHART_STOCHRSI,
                 ChartBase.CHART_TRIX,
                     ChartBase.CHART_WILLIAMR,
+                    ChartBase.CHART_SMI_RSI,
+                    ChartBase.CHART_XTRENDER,
                 ChartBase.CHART_VOLUME,
                 //ChartBase.CHART_THUYPS,
                 -1,
@@ -160,6 +162,8 @@ namespace stock123.app.chart
                             "StochRSI",
                             "TRIX - Triple Exponential Average",
                             "William %R",
+                            "SMI - RSI (Stochastic RSI)",
+                            "XTrender",
                             "Volume",
                 //"ThuyPS",
                             "",
@@ -506,6 +510,16 @@ namespace stock123.app.chart
             if (chartID == ChartBase.CHART_WILLIAMR)
             {
                 c = new ChartWilliamR(f);
+                c.mShouldDrawCursor = true;
+            }
+            else if (chartID == ChartBase.CHART_XTRENDER)
+            {
+                c = new ChartXTrender(f);
+                c.mShouldDrawCursor = true;
+            }
+            else if (chartID == ChartBase.CHART_SMI_RSI)
+            {
+                c = new ChartSMIOfRSI(f);
                 c.mShouldDrawCursor = true;
             }
             if (chartID == ChartBase.CHART_NVI)

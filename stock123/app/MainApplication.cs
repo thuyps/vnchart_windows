@@ -27,6 +27,8 @@ namespace stock123.app
             mInstance = this;
             mContext = Context.getInstance();
 
+            stock123.app.chart.TA.initTA();
+
             //this.Resize += new EventHandler(MainApplication_Resize);
 
             //this.MaximizeBox = false;

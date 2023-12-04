@@ -56,7 +56,8 @@ namespace stock123.app.chart
         void drawChartAroon(xGraphics g)
         {
             int idx = 0;
-            int maxPrice = 80;
+            mLowest = 0;
+            mHighest = 100;
             if (detectShareCursorChanged())
             {
                 Share s = getShare();
@@ -66,8 +67,8 @@ namespace stock123.app.chart
                 mAroonDownXY = allocMem(mAroonDownXY, mChartLineLength * 2);
                 mAroonOscillatorXY = allocMem(mAroonOscillatorXY, mChartLineLength * 2);
 
-                pricesToYs(mAroonUp, s.mBeginIdx, mAroonUpXY, mChartLineLength, 0, 100);
-                pricesToYs(mAroonDown, s.mBeginIdx, mAroonDownXY, mChartLineLength, 0, 100);
+                pricesToYs(mAroonUp, s.mBeginIdx, mAroonUpXY, mChartLineLength, mLowest, mHighest);
+                pricesToYs(mAroonDown, s.mBeginIdx, mAroonDownXY, mChartLineLength, mLowest, mHighest);
             }
 
             if (mShouldDrawGrid)
@@ -75,7 +76,7 @@ namespace stock123.app.chart
 
             String[] ss = { "30", "50", "70" };
             float[] tmp = { 30, 50, 70 };
-            pricesToYs(tmp, 0, mPricelines, 3, 0, 100);
+            pricesToYs(tmp, 0, mPricelines, 3, mLowest, mHighest);
             for (int i = 0; i < 3; i++)
             {
                 g.setColor(C.COLOR_FADE_YELLOW);
@@ -100,6 +101,8 @@ namespace stock123.app.chart
 
         protected void drawChartAroonOscillator(xGraphics g)
         {
+            mLowest = -100;
+            mHighest = 100;
             if (detectShareCursorChanged())
             {
                 Share s = getShare();
@@ -107,7 +110,7 @@ namespace stock123.app.chart
 
                 mAroonOscillatorXY = allocMem(mAroonOscillatorXY, mChartLineLength * 2);
 
-                pricesToYs(mAroonOscillator, s.mBeginIdx, mAroonOscillatorXY, mChartLineLength, -100, 100);
+                pricesToYs(mAroonOscillator, s.mBeginIdx, mAroonOscillatorXY, mChartLineLength, mLowest, mHighest);
             }
 
             if (mShouldDrawGrid)
@@ -115,7 +118,7 @@ namespace stock123.app.chart
 
             String[] ss = { "-50", "0", "50" };
             float[] tmp = { -50, 0, 50 };
-            pricesToYs(tmp, 0, mPricelines, 3, -100, 100);
+            pricesToYs(tmp, 0, mPricelines, 3, mLowest, mHighest);
             for (int i = 0; i < 3; i++)
             {
                 g.setColor(C.COLOR_FADE_YELLOW);

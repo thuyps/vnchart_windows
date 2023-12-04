@@ -52,6 +52,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
@@ -89,6 +90,7 @@
     <Compile Include="app\chart\ChartVolumeByPrice.cs" />
     <Compile Include="app\chart\ChartVStop.cs" />
     <Compile Include="app\chart\ChartWilliamR.cs" />
+    <Compile Include="app\chart\ChartXTrender.cs" />
     <Compile Include="app\chart\ChartZigzag.cs" />
     <Compile Include="app\chart\ChartMaster.cs" />
     <Compile Include="app\chart\ChartFrame.cs" />
@@ -100,11 +102,16 @@
     <Compile Include="app\chart\ChartMasterSimple.cs" />
     <Compile Include="app\chart\ChartBWAccelerator.cs" />
     <Compile Include="app\chart\ChartBWAwesome.cs" />
+    <Compile Include="app\chart\ChartAlphatrend.cs" />
+    <Compile Include="app\chart\ChartSupertrend.cs" />
+    <Compile Include="app\chart\ChartHeikenAShiEMA.cs" />
+    <Compile Include="app\chart\ChartSMIOfRSI.cs" />
     <Compile Include="app\chart\IndexCandle.cs" />
     <Compile Include="app\chart\QuotePoint.cs" />
     <Compile Include="app\chart\Drawer.cs" />
     <Compile Include="app\chart\RealtimeChart.cs" />
     <Compile Include="app\chart\SubchartsContainer.cs" />
+    <Compile Include="app\chart\TA.cs" />
     <Compile Include="app\chart\TodayCandle.cs" />
     <Compile Include="app\CompanyInfo.cs">
     </Compile>

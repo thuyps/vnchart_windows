@@ -299,6 +299,10 @@ public const uint COLOR_TD_DOWN       = 0xffff1212;
 
         public const int ID_BUTTON_INDICES = 1407;
 
+        public const int ID_TS_HEIKEN_ASHI_EMA = 1416;
+        public const int ID_TS_SUPERTREND = 1417;
+        public const int ID_TS_ALPHATREND = 1418;
+
         public const int ID_TS_INFO = 1419;
         public const int ID_TS_CHARTLINE = 1420;
         public const int ID_TS_CHARTCANDLE = 1421;

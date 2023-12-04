@@ -2003,11 +2003,23 @@ namespace stock123.app
                 return;
             }
 
-            if (idx == C.ID_EDIT_BOLLINGER)
+            if (idx == C.ID_TS_ALPHATREND)
+            {
+                chart = ChartBase.CHART_ALPHATREND;
+            }
+            else if (idx == C.ID_TS_HEIKEN_ASHI_EMA)
+            {
+                chart = ChartBase.CHART_HEIKEN_ASHI_EMA;
+            }
+            else if (idx == C.ID_TS_SUPERTREND)
+            {
+                chart = ChartBase.CHART_SUPERTREND;
+            }
+            else if (idx == C.ID_EDIT_BOLLINGER)
             {
                 chart = ChartBase.CHART_BOLLINGER;
             }
-            if (idx == C.ID_EDIT_ENVELOP)
+            else if (idx == C.ID_EDIT_ENVELOP)
             {
                 chart = ChartBase.CHART_ENVELOP;
             }
@@ -2060,13 +2072,34 @@ namespace stock123.app
                 {
 
                 }
-                
+
             }
             if (chart != -1)
             {
-                FormSettingParameters dlg = new FormSettingParameters(mShare, this);
-                dlg.setCurrentChart(chart);
-                dlg.ShowDialog();
+                bool hasConfig = true;
+                if (chart == ChartBase.CHART_ALPHATREND 
+                    || chart == ChartBase.CHART_SUPERTREND
+                    || chart == ChartBase.CHART_HEIKEN_ASHI_EMA
+                    )
+                {
+                    hasConfig = false;
+                }
+
+                if (mMainHistoryChartControl.isOverlayOn(chart) || !hasConfig)
+                {
+                    mMainHistoryChartControl.toggleOverlay(chart);
+                }
+                else
+                {
+
+                    FormSettingParameters dlg = new FormSettingParameters(mShare, this);
+                    dlg.setCurrentChart(chart);
+                    DialogResult r = dlg.ShowDialog();
+                    if (r == DialogResult.OK)
+                    {
+                        this.mMainHistoryChartControl.toggleOverlay(chart);
+                    }
+                }
             }
             else
             {

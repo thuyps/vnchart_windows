@@ -1282,6 +1282,7 @@ namespace stock123.app
                     mShare.invalideModifiedKey();
 
                     mContext.saveOptions();
+                    this.DialogResult = DialogResult.OK;
                     this.Close();
 
                     mListener.onEvent(this, C.EVT_REPAINT_CHARTS, 0, 0);

@@ -161,6 +161,41 @@ namespace xlib.ui
             mGraphics.SmoothingMode = oldSmoothMode;
         }
 
+        public void drawLines(float[] xy, int offset, int pointCnt, float thickness)
+        {
+            System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath(System.Drawing.Drawing2D.FillMode.Winding);
+
+            System.Drawing.Drawing2D.SmoothingMode oldSmoothMode = mGraphics.SmoothingMode;
+            mGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            if (pointCnt > xy.Length / 2)
+            {
+                pointCnt = xy.Length / 2;
+            }
+
+            int i = 0;
+            float x0, y0, x, y;
+            //path.StartFigure();
+            int t = offset;
+            x0 = xy[t];
+            y0 = xy[t+1];
+            for (i = 1; i < pointCnt; i++)
+            {
+                t = offset + (i << 1);
+
+                x = xy[t];
+                y = xy[t + 1];
+                path.AddLine(x0, y0, x, y);
+                x0 = x;
+                y0 = y;
+            }
+            //path.CloseFigure();
+            mPen.Width = thickness;
+            mGraphics.DrawPath(mPen, path);
+
+            mGraphics.SmoothingMode = oldSmoothMode;
+        }
+
         public void drawLines(float[] xy, int pointCnt, float lineThick)
         {
             float oldThick = mPen.Width;
@@ -369,6 +404,11 @@ namespace xlib.ui
             mGraphics.DrawEllipse(mPen, x, y, w, h);
         }
 
+        public void fillCircle(float ox, float oy, float r)
+        {
+            mGraphics.FillEllipse(mPen.Brush, ox - r, oy - r, 2 * r, 2 * r);
+        }
+
         public void drawArc(float ox, float oy, float r, float startAngle, float sweepAngle)
         {
             float x = ox - r;
@@ -407,6 +447,83 @@ namespace xlib.ui
         {
             //  overload 14
             mGraphics.DrawImage(img, dx, dy, new RectangleF(sx, sy, w, h), GraphicsUnit.Pixel);
+        }
+
+        public void drawHistogram(float[] xy, int offset, int pointCnt,
+                              float yBase, float hisW,
+                              uint colorUp1, uint colorUp2,
+                              uint colorDown1, uint colorDown2)
+        {
+            uint color;
+            uint preColor = colorUp1;
+            for (int i = offset; i < offset + pointCnt; i++)
+            {
+                int x = 2 * i;
+                int y = 2 * i + 1;
+                int y_1 = i > 0 ? (2 * (i - 1) + 1) : y;
+
+                if (xy[y] < yBase)
+                {
+                    color = xy[y] < xy[y_1] ? colorUp1 : colorUp2;
+                }
+                else if (xy[y] > yBase)
+                {
+                    color = xy[y] > xy[y_1] ? colorDown1 : colorDown2;
+                }
+                else
+                {
+                    color = preColor;
+                }
+                preColor = color;
+                setColor(color);
+
+                setColor(color);
+
+                fillRect(xy[x] - hisW / 2, xy[y], hisW, yBase - xy[y]);
+            }
+        }
+
+        public void drawLinesUpDown(float[] xy, int offset, int pointCnt,
+                                    float[] values,
+                                    int valueOffset,
+                                    float thick,
+                                    uint colorUp, uint colorDown)
+        {
+            if (pointCnt == 0 || xy == null)
+            {
+                return;
+            }
+
+            int start = offset;
+            bool trendUp = true;
+            trendUp = values[valueOffset + 1] > values[valueOffset];
+            int end = offset + pointCnt;
+            for (int i = offset + 1; i < end; i++)
+            {
+                int vi = valueOffset + i - offset;
+                if (trendUp && values[vi] < values[vi - 1])
+                {
+                    setColor(colorUp);
+                    drawLines(xy, 2 * start, i - start, thick);
+
+                    start = i - 1;
+                    trendUp = false;
+                }
+                else if (!trendUp && values[vi] > values[vi - 1])
+                {
+                    setColor(colorDown);
+                    drawLines(xy, 2 * start, i - start, thick);
+                    start = i - 1;
+                    trendUp = true;
+                }
+            }
+
+            if (start < end - 1)
+            {
+                setColor(trendUp ? colorUp : colorDown);
+                drawLines(xy, 2 * start, end - start, thick);
+            }
+
         }
     }
 }

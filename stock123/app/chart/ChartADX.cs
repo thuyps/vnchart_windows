@@ -41,6 +41,8 @@ namespace stock123.app.chart
 
             int idx = 0;
             int maxPrice = 80;
+            mLowest = 0;
+            mHighest = 80;
             if (detectShareCursorChanged())
             {
                 share.calcADX();

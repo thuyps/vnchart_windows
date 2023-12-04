@@ -39,6 +39,8 @@ namespace stock123.app.chart
             if (detectShareCursorChanged())
             {
                 recalcMACD();
+
+                detectBullBearLines();
             }
 
             if (mChartLineLength == 0)
@@ -64,11 +66,15 @@ namespace stock123.app.chart
                 g.fillRect(mHistogramXY[2 * i], mHistogramXY[2 * i + 1], hisW, mHistogramH[i]);
             }
 
+            //  macd
             g.setColor(C.COLOR_BLUE_LIGHT);
             g.drawLines(mLineMACD, mChartLineLength, 2.0f);
 
+            //  signal
             g.setColor(0xffff0000);
             g.drawLines(mLineSignal9, mChartLineLength, 1.0f);
+
+            //  bull/bear
             
             StringBuilder sb = Utils.sb;
             //=========================
@@ -238,6 +244,33 @@ namespace stock123.app.chart
             v.addElement(new stTitle(sb.ToString(), 0xffff0000));
 
             return v;
+        }
+
+        bool[] _bear;
+        bool[] _bull;
+        float[] _osc;
+        int[] _line;
+        public void detectBullBearLines()
+        {
+            if (_line == null)
+            {
+                _osc = new float[Share.MAX_CANDLE_CHART_COUNT];
+                _bull = new bool[Share.MAX_CANDLE_CHART_COUNT];
+                _bear = new bool[Share.MAX_CANDLE_CHART_COUNT];
+                _line = new int[Share.MAX_CANDLE_CHART_COUNT];
+            }
+            //float[] price = mBuffers[4];
+            float[] pMACD = getShare().pMACD;
+            ///getShare().readCloses(price);
+            TA.detectConvergenceDivergence(getShare(),
+                    pMACD, 0,
+                    getShare().getCandleCnt(),
+                    7,
+                    2,
+                    _bear,
+                    _bull,
+                    _line
+            );
         }
     }
 }

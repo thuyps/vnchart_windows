@@ -1861,6 +1861,57 @@ namespace stock123.app.data
             //return mCHighest[mHighestCandle] + (mCHighest[mHighestCandle] * 5) / 100;
         }
 
+        public float getHighestPriceInRange()
+        {
+            return getHighestPriceInRange(mBeginIdx, mEndIdx, null);// mCHighest[mHighestCandle];
+        }
+
+        public float getLowestPriceInRange()
+        {
+            return getLowestPriceInRange(mBeginIdx, mEndIdx, null);// mCLowest[mLowestCandle];
+        }
+
+        public float getLowestPriceInRange(int begin, int end, int[] pos)
+        {
+            if (begin < 0) begin = 0;
+
+            float price = 1000000000;
+
+            for (int i = begin; i <= end; i++)
+            {
+                if (mCClose[i] < price)
+                {
+                    price = mCClose[i];
+                    if (pos != null)
+                    {
+                        pos[0] = i;
+                    }
+                }
+            }
+            return price;// - (price * 5) / 100;
+        }
+    
+
+        public float getHighestPriceInRange(int begin, int end, int[] pos)
+        {
+            if (begin < 0) begin = 0;
+
+            float price = 0;
+
+            for (int i = begin; i <= end; i++)
+            {
+                if (mCClose[i] > price)
+                {
+                    price = mCClose[i];
+                    if (pos != null)
+                    {
+                        pos[0] = i;
+                    }
+                }
+            }
+            return price;// + (price * 5) / 100;
+        }
+
         public float getLowestPrice()
         {
             float v = 0;
@@ -7423,6 +7474,120 @@ sum the absolute values. Fourth, divide by the total number of periods (20).
             {
                 ac[i] = ac[i] - sma5[i];
             }
+        }
+
+        public float[] readCloses()
+        {
+            return readCloses(null);
+        }
+
+        public float[] readCloses(float[] closes)
+        {
+            if (closes == null)
+            {
+                closes = pTMP;
+            }
+            int cnt = getCandleCnt();
+            for (int i = 0; i < cnt; i++)
+            {
+                closes[i] = mCClose[i];
+            }
+
+            return closes;
+        }
+
+        public float[] readOpens(float[] opens)
+        {
+            int cnt = getCandleCnt();
+            for (int i = 0; i < cnt; i++)
+            {
+                opens[i] = mCOpen[i];
+            }
+
+            return opens;
+        }
+
+        public float[] readHighests(float[] hi)
+        {
+            int cnt = getCandleCnt();
+            for (int i = 0; i < cnt; i++)
+            {
+                hi[i] = mCHighest[i];
+            }
+            return hi;
+        }
+
+        public float[] readLowest(float[] lo)
+        {
+            int cnt = getCandleCnt();
+            for (int i = 0; i < cnt; i++)
+            {
+                lo[i] = mCLowest[i];
+            }
+
+            return lo;
+        }
+
+        public float[] readHLC(float[] hlc)
+        {
+            if (hlc == null)
+            {
+                hlc = pTMP;
+            }
+            int cnt = getCandleCnt();
+            for (int i = 0; i < cnt; i++)
+            {
+                hlc[i] = (mCHighest[i] + mCLowest[i] + mCClose[i]) / 3;
+            }
+
+            return hlc;
+        }
+
+        public float[] readHL2C(float[] hl2c)
+        {
+            if (hl2c == null)
+            {
+                hl2c = pTMP;
+            }
+            int cnt = getCandleCnt();
+            for (int i = 0; i < cnt; i++)
+            {
+                hl2c[i] = (mCHighest[i] + mCLowest[i] + 2 * mCClose[i]) / 4;
+            }
+
+            return hl2c;
+        }
+
+        public float[] readHL(float[] hl)
+        {
+            if (hl == null)
+            {
+                hl = pTMP;
+            }
+            int cnt = getCandleCnt();
+            for (int i = 0; i < cnt; i++)
+            {
+                hl[i] = (mCHighest[i] + mCLowest[i]) / 2;
+            }
+
+            return hl;
+        }
+
+        public float[] getCloses()
+        {
+            readCloses(pTMP);
+            return pTMP;
+        }
+
+        public int[] readVolumes(int[] vols)
+        {
+            Utils.arraycopy(mCVolume, 0, vols, 0, getCandleCnt());
+            return vols;
+        }
+        public int[] readDate(int[] dates)
+        {
+            Utils.arraycopy(mCDate, 0, dates, 0, getCandleCnt());
+            return dates;
         }
     }
 }

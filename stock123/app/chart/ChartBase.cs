@@ -92,6 +92,13 @@ namespace stock123.app.chart
         public const int CHART_AWESOME = 53;
         public const int CHART_BW_ALLIGATOR = 54;
         public const int CHART_BW_Accelerator = 55;
+
+        public const int CHART_SUPERTREND = 58;
+        public const int CHART_HEIKEN_ASHI_EMA = 64;
+
+        public const int CHART_XTRENDER = 66;
+        public const int CHART_SMI_RSI = 67;
+        public const int CHART_ALPHATREND = 68;
         //--------------------------------------------
 
         //public int CHART_BORDER_SPACING_Y = 5;
@@ -122,6 +129,8 @@ namespace stock123.app.chart
         protected int mCurrentKey;	//	for detecting share's cursor change
         protected int mLastScope;
 
+        protected float[][] mBuffers = { null, null, null, null, null, null, null, null, null, null };
+
         protected float[] mPrices = new float[5];
         protected float[] mPricesY = new float[5];
         protected float[] mChartLineXY;
@@ -136,6 +145,9 @@ namespace stock123.app.chart
         protected float[] mChartLineColorArea;
 
         protected Font mFont;
+
+        protected float mLowest;
+        protected float mHighest;
         //	====================mouse/keyboard================
         protected bool mIsControlEnable;
         //	====================END OF mouse/keyboard================
@@ -180,6 +192,16 @@ namespace stock123.app.chart
 
             setBackgroundColor(C.COLOR_BLACK);
         }
+
+        protected void initBuffers(int size)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                mBuffers[i] = new float[Share.MAX_CANDLE_CHART_COUNT];
+            }
+
+        }
+
         void test(xGraphics g)
         {
             g.setColor(C.COLOR_RED);
@@ -510,6 +532,11 @@ namespace stock123.app.chart
             float dx = candlesToDx(deltaC);
 
             return (mX + CHART_BORDER_SPACING_X + dx + getStartX());
+        }
+
+        protected float candleIdxToX(int candle)
+        {
+            return candleToX(candle);
         }
 
         public void supportDrawingTrend(bool set) { mSupportDrawingTrend = set; }
@@ -1637,6 +1664,221 @@ namespace stock123.app.chart
                 return;
             }
             scaleY = v;
+        }
+
+        protected void renderBullBearLines(xGraphics g,
+                                       float[] osc,
+                                       bool[] bull,
+                                       bool[] bear,
+                                       int[] line,
+                                       int begin,
+                                       int end)
+        {
+            if (osc == null)
+            {
+                return;
+            }
+            float radius = 3;
+            for (int i = begin; i <= end; i++)
+            {
+                if (bull[i] || bear[i])
+                {
+                    if (bull[i])
+                    {
+                        //xUtils.trace("");
+                    }
+                    if (i == 2883)
+                    {
+                        //xUtils.trace("");
+                    }
+                    //  line
+                    int idx1 = (line[i] >> 16) & 0xffff;
+                    int idx2 = (line[i]) & 0xffff;
+
+                    //y = priceToY(osc[i], mLowest, mHighest);
+                    //x = candleIdxToX(i);
+                    float y1 = priceToY(osc[idx1], mLowest, mHighest);
+                    float x1 = candleIdxToX(idx1);
+
+                    float y2 = priceToY(osc[idx2], mLowest, mHighest);
+                    float x2 = candleIdxToX(idx2);
+
+                    g.setColor(bull[i] ? C.COLOR_GREEN_DARK : 0xffa00000);
+                    g.drawLine(x1, y1, x2, y2);
+
+                    //  small circle
+                    x2 = candleIdxToX(idx2);
+                    g.setColor(C.COLOR_MAGENTA);
+                    g.fillCircle(x2, y2, radius);
+                }
+            }
+
+        }
+
+        protected uint colorTitle()
+        {
+            return themeDark() ? C.COLOR_WHITE : C.COLOR_BLACK;
+        }
+
+        protected void fillShape2Lines(xGraphics g,
+                        float[] line1,
+                        float[] line2,
+                        int pointCount,
+                         int[] direction, int dirOffset, 
+            uint colorUp, uint colorDown)
+        {
+            mChartLineColorArea = allocMem(mChartLineColorArea, (2 * pointCount + 20) * 2);
+
+            int j = 0;
+            int lastDir = direction[dirOffset];
+            int startPoint = 0;
+            int endPoint;
+            for (int i = 0; i < pointCount; i++)
+            {
+                if (i == pointCount - 1)
+                {
+                    //xUtils.trace("");
+                }
+                if (i < pointCount && i > 0)
+                {
+                    int newDir = direction[i + dirOffset];
+                    if (newDir != lastDir || i == pointCount - 1)
+                    {
+                        endPoint = i - 1;
+                        /*
+                        if (i == pointCount-1){
+                            endPoint = i;
+                            lastDir = newDir;
+                        }
+
+                         */
+                        j = 0;
+                        for (int k = startPoint; k <= endPoint; k++)
+                        {
+                            mChartLineColorArea[2 * j] = line1[2 * k];
+                            mChartLineColorArea[2 * j + 1] = line1[2 * k + 1];
+                            j++;
+                        }
+                        for (int k = endPoint; k >= startPoint; k--)
+                        {
+                            mChartLineColorArea[2 * j] = line2[2 * k];
+                            mChartLineColorArea[2 * j + 1] = line2[2 * k + 1];
+                            j++;
+                        }
+                        //  close shape
+                        if (j >= 2)
+                        {
+                            g.setColor(lastDir > 0 ? colorUp : colorDown);
+                            g.fillShapes(mChartLineColorArea, j);
+                        }
+                        j = 0;
+                        startPoint = i - 1;
+                    }
+                    lastDir = newDir;
+                }
+            }
+
+            //======================
+            endPoint = pointCount - 1;
+            if (startPoint < endPoint)
+            {
+                j = 0;
+                for (int k = startPoint; k <= endPoint; k++)
+                {
+                    mChartLineColorArea[2 * j] = line1[2 * k];
+                    mChartLineColorArea[2 * j + 1] = line1[2 * k + 1];
+                    j++;
+                }
+                for (int k = endPoint; k >= startPoint; k--)
+                {
+                    mChartLineColorArea[2 * j] = line2[2 * k];
+                    mChartLineColorArea[2 * j + 1] = line2[2 * k + 1];
+                    j++;
+                }
+                //  close shape
+                if (j >= 2)
+                {
+                    g.setColor(lastDir > 0 ? colorUp : colorDown);
+                    g.fillShapes(mChartLineColorArea, j);
+                }
+            }
+        }
+
+        protected
+        void drawShape2Lines(xGraphics g,
+                             float[] line1, float[] line2, int
+                                     pointCount,
+                             int[] direction, int dirOffset, 
+            uint colorUp, uint colorDown)
+        {
+            int j = 0;
+            int lastDir = direction[dirOffset];
+            int startPoint = 0;
+            int endPoint;
+            for (int i = 0; i < pointCount; i++)
+            {
+                if (i == pointCount - 1)
+                {
+                    //xUtils.trace("");
+                }
+                if (i < pointCount && i > 0)
+                {
+                    int newDir = direction[i + dirOffset];
+                    if (newDir != lastDir || i == pointCount - 1)
+                    {
+                        endPoint = i - 1;
+                        /*
+                        if (i == pointCount-1){
+                            endPoint = i;
+                            lastDir = newDir;
+                        }
+
+                         */
+                        int ptCnt = endPoint - startPoint + 1;
+
+                        if (lastDir > 0)
+                        {
+                            g.setColor(colorDown);
+                            g.drawLines(line2, 2 * startPoint, ptCnt, 1.5f);
+                            //g.drawLinesWithOffset(line2, 2 * startPoint, ptCnt, 1.5f);
+                            g.setColor(colorUp);
+                            g.drawLines(line1, 2 * startPoint, ptCnt, 1.5f);
+                        }
+                        else
+                        {
+                            g.setColor(colorUp);
+                            g.drawLines(line1, 2 * startPoint, ptCnt, 1.5f);
+                            g.setColor(colorDown);
+                            g.drawLines(line2, 2 * startPoint, ptCnt, 1.5f);
+                        }
+
+
+                        startPoint = i - 1;
+                    }
+                    lastDir = newDir;
+                }
+            }
+
+            //======================
+            endPoint = pointCount - 1;
+            if (startPoint < endPoint)
+            {
+                int ptCnt = endPoint - startPoint + 1;
+                if (lastDir > 0)
+                {
+                    g.setColor(colorDown);
+                    g.drawLines(line2, 2 * startPoint, ptCnt, 1.5f);
+                    g.setColor(colorUp);
+                    g.drawLines(line1, 2 * startPoint, ptCnt, 1.5f);
+                }
+                else
+                {
+                    g.setColor(colorUp);
+                    g.drawLines(line1, 2 * startPoint, ptCnt, 1.5f);
+                    g.setColor(colorDown);
+                    g.drawLines(line2, 2 * startPoint, ptCnt, 1.5f);
+                }
+            }
         }
     }
 }

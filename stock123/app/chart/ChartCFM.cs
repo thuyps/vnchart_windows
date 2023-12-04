@@ -18,8 +18,6 @@ namespace stock123.app.chart
         float[] mPricelines = new float[10];
         //==================
         short[] mChartEMA;
-        float mHi = -1000000;
-        float mLo = 1000000;
         //===================================
         public ChartCFM(Font f)
             : base(f)
@@ -33,8 +31,8 @@ namespace stock123.app.chart
         {
             if (detectShareCursorChanged())
             {
-                mHi = -1000000;
-                mLo = 1000000;
+                mHighest = -1000000;
+                mLowest = 1000000;
                 Share s = getShare();
 
                 int period = (int)mContext.mOptCFMPeriod;
@@ -43,12 +41,12 @@ namespace stock123.app.chart
 
                 for (int i = s.mBeginIdx; i < s.mEndIdx; i++)
                 {
-                    if (mCFM[i] > mHi) mHi = mCFM[i];
-                    if (mCFM[i] < mLo) mLo = mCFM[i];
+                    if (mCFM[i] > mHighest) mHighest = mCFM[i];
+                    if (mCFM[i] < mLowest) mLowest = mCFM[i];
                 }
                 mChartLineXY = allocMem(mChartLineXY, mChartLineLength * 2);
 
-                pricesToYs(mCFM, s.mBeginIdx, mChartLineXY, mChartLineLength, mLo, mHi);
+                pricesToYs(mCFM, s.mBeginIdx, mChartLineXY, mChartLineLength, mLowest, mHighest);
             }
 
             if (mShouldDrawGrid)
@@ -56,7 +54,7 @@ namespace stock123.app.chart
 
             String[] ss = { "-0.2", "-0.1", "0.0", "0.1", "0.2" };
             float[] tmp = { -0.2f, -0.1f, 0.0f, 0.1f, 0.2f };
-            pricesToYs(tmp, 0, mPricelines, 5, mLo, mHi);
+            pricesToYs(tmp, 0, mPricelines, 5, mLowest, mHighest);
 
             for (int i = 0; i < 5; i++)
             {
