@@ -1511,7 +1511,7 @@ namespace stock123.app.chart
             int[] offset2 = {0};
             int[] offset3 = {0};
 
-            int dateInt = Utils.CREATE_DATE(2021, 7, 5);
+            int dateInt = Utils.CREATE_DATE(2023, 9, 13);
             //int timeInt = (10<<8)|59;
             //int date = Share.dateToPacked30m(2023, 9, 19, 9, 29);
             for (int i = 1; i < cnt; i++) {
@@ -1521,9 +1521,9 @@ namespace stock123.app.chart
             bear[0] = false;
             for (int i = 1; i < cnt; i++){
                 //if (Share.compare30mPackedDate(share.getDate(i), date) == 0){
-                //if (dateInt == share.getDate(i)){
-                    ////xUtils.trace("");
-                //}
+                if (dateInt == share.getDate(i)){
+                    Utils.trace("");
+                }
                 if (i == 239){
                     //xUtils.trace("");
                 }

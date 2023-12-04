@@ -75,6 +75,7 @@ namespace stock123.app.chart
             g.drawLines(mLineSignal9, mChartLineLength, 1.0f);
 
             //  bull/bear
+            renderBullBearLines(g, _osc, _bull, _bear, _line, getShare().mBeginIdx, getShare().mEndIdx);
             
             StringBuilder sb = Utils.sb;
             //=========================
@@ -91,8 +92,6 @@ namespace stock123.app.chart
             renderDrawer(g);
         }
 
-        float hi = -99999;
-        float lo = 99999;
         void recalcMACD()
         {
             float[] macd;
@@ -129,27 +128,31 @@ namespace stock123.app.chart
             //	get the highest
             float rx = (float)getDrawingW() / cnt;
 
+            mHighest = -99999;
+            mLowest = 99999;
             //	lo/hi
             for (i = 0; i < cnt; i++)
             {
-                if (macd[i+s.mBeginIdx] > hi)
-                    hi = macd[i+s.mBeginIdx];
-                if (macd[i + s.mBeginIdx] < lo)
-                    lo = macd[i + s.mBeginIdx];
+                if (macd[i+s.mBeginIdx] > mHighest)
+                    mHighest = macd[i + s.mBeginIdx];
+                if (macd[i + s.mBeginIdx] < mLowest)
+                    mLowest = macd[i + s.mBeginIdx];
             }
             for (i = 0; i < cnt; i++)
             {
-                if (signal[i + s.mBeginIdx] > hi)
-                    hi = signal[i + s.mBeginIdx];
-                if (signal[i + s.mBeginIdx] < lo)
-                    lo = signal[i + s.mBeginIdx];
+                if (signal[i + s.mBeginIdx] > mHighest)
+                    mHighest = signal[i + s.mBeginIdx];
+                if (signal[i + s.mBeginIdx] < mLowest)
+                    mLowest = signal[i + s.mBeginIdx];
             }
 
-            if (hi < 0) hi = 0;
-            if (lo < 0) lo = -lo;
+            if (mHighest < 0) mHighest = 0;
+            if (mLowest < 0) mLowest = -mLowest;
 
-            float double_hi = Utils.ABS_FLOAT(hi) > Utils.ABS_FLOAT(lo) ? hi : lo;// hi + lo;
-            double_hi = 2 * Utils.ABS_FLOAT(double_hi);
+            float double_hi = Math.Abs(mHighest) > Math.Abs(mLowest) ? mHighest : mLowest;// hi + lo;
+            //double_hi = 2 * xUtils.ABS_FLOAT(double_hi);
+            mHighest = double_hi;
+            mLowest = -double_hi;
 
             float minHistoH = 9;
             float signalDrawH = getDrawingH() - 2 * minHistoH;
@@ -172,8 +175,8 @@ namespace stock123.app.chart
                 tmp_signal = signal[i+s.mBeginIdx];// + hi;
                 //if (hi != 0)
                 {
-                    mLineMACD[2 * i + 1] = (float)(OY - tmp_macd * ry);
-                    mLineSignal9[2 * i + 1] = (float)(OY - tmp_signal * ry);
+                    mLineMACD[2 * i + 1] = priceToY(tmp_macd);// (float)(OY - tmp_macd * ry);
+                    mLineSignal9[2 * i + 1] = priceToY(tmp_signal);// (float)(OY - tmp_signal * ry);
                 }
             }
 
@@ -185,19 +188,23 @@ namespace stock123.app.chart
             }
 
             //	histogram
-            hi = 0;
+            /*
+            mHighest = 0;
             for (i = 0; i < cnt; i++)
             {
-                if (Utils.ABS_FLOAT(his[i + s.mBeginIdx]) > hi)
-                    hi = Utils.ABS_FLOAT(his[i + s.mBeginIdx]);
+                if (Utils.ABS_FLOAT(his[i + s.mBeginIdx]) > mHighest)
+                    mHighest = Utils.ABS_FLOAT(his[i + s.mBeginIdx]);
             }
             //	int deltaY = 0;//deltaLoHi*mDrawingH/double_hi;
-            double_hi = 2 * hi;
+            double_hi = 2 * mHighest;
+            */
             //	double_hi	==	100 pixels
             float halfH = getDrawingH() / 2;
             float hry = 0;
-            if (hi != 0)
-                hry = (float)halfH / hi;//double_hi;
+            if (mHighest != 0)
+            {
+                hry = (float)halfH / mHighest;//double_hi;
+            }
 
             for (i = 0; i < cnt; i++)
             {
@@ -261,9 +268,10 @@ namespace stock123.app.chart
             }
             //float[] price = mBuffers[4];
             float[] pMACD = getShare().pMACD;
+            Utils.arraycopy(pMACD, 0, _osc, 0, getShare().getCandleCnt());
             ///getShare().readCloses(price);
             TA.detectConvergenceDivergence(getShare(),
-                    pMACD, 0,
+                    _osc, 0,
                     getShare().getCandleCnt(),
                     7,
                     2,

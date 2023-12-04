@@ -1217,11 +1217,11 @@ namespace stock123.app.chart
             if (share == null)
                 return 0;
 
-            float priceDistance = share.getHighestPrice() - share.getLowestPrice();
+            float priceDistance = mHighest - mLowest;
             if (priceDistance <= 0)
                 return 0;
 
-            float dy = (float)((price - share.getLowestPrice()) * getDrawingH() / priceDistance);
+            float dy = (float)((price - mLowest) * getDrawingH() / priceDistance);
 
             return mY + getMarginY() + getDrawingH() - dy;//y + mY + CHART_BORDER_SPACING_Y;
         }
