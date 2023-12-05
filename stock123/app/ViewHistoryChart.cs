@@ -45,8 +45,9 @@ namespace stock123.app
 
         String sortedColumn = null;
 
+        xButton showHideLeftPanel;
         xContainer mLeftPanel;  //  quote list & search control
-        xContainer mRightPanel;
+        xContainer mRightPanel; //  history
         xVector mPanels = new xVector(2);
 
         xTextField mQuickCode;
@@ -256,6 +257,7 @@ namespace stock123.app
             }
         }
 
+
         void updateUI()
         {
             logTimeElapsedStart();
@@ -263,6 +265,7 @@ namespace stock123.app
             removeAllControls();
             mRightPanel = null;
             mLeftPanel = null;
+
             //--------------------------------------
             createToolbar();
 
@@ -273,11 +276,19 @@ namespace stock123.app
             logTimeElapsedStop("updateUI0");
             createRightPanel(); //  main chart & sub charts
             logTimeElapsedStop("updateUI3");
+
             
             createSymbolList(0, 0);
 
+
             logTimeElapsedStop("updateUI4");
 
+        }
+
+        bool isHidingLeftPanel()
+        {
+            bool isHidingLeftPanel = GlobalData.vars().getValueInt("HideLP") == 1 ? true : false;
+            return isHidingLeftPanel;
         }
 
         void createToolbar()
@@ -336,6 +347,13 @@ namespace stock123.app
             tf.setPosition(x+28, 7);//, dropdown.getY() + l.getH() + 4);
             tb.Controls.Add(tf.getControl());
             tf.setButtonEvent(C.ID_BUTTON_QUOTE, this);
+
+            //====================
+            String showHide = isHidingLeftPanel() ? "<< DS" : ">>Ẩn DS";
+            showHideLeftPanel = xButton.createStandardButton(C.EVT_SHOW_HIDE_LEFTPANEL, this, showHide, 60);
+            showHideLeftPanel.setPosition(getW() - 72, 7);
+            tb.Controls.Add(showHideLeftPanel.getControl());
+            
   
             //==============================================================
             addStatusBar();
@@ -373,7 +391,7 @@ namespace stock123.app
         }
         void createLeftPanel()
         {
-            int leftW = LEFT_PANEL_W;
+            int leftW = isHidingLeftPanel()?1:LEFT_PANEL_W;
             long t = Utils.currentTimeMillis();
 
             logTimeElapsedStart();
@@ -383,6 +401,11 @@ namespace stock123.app
                 mLeftPanel.setSize(leftW, getWorkingH());
                 //mLeftPanel.setPosition(0, getToolbarH());
                 mLeftPanel.setPosition(getW() - mLeftPanel.getW(), getToolbarH());
+
+                if (isHidingLeftPanel())
+                {
+                    return;
+                }
                 
                 //  tabs
                 int h = heightOfSharelist();
@@ -1241,6 +1264,7 @@ namespace stock123.app
          
             Share share = mShare;
 
+
             if (evt == xBaseControl.EVT_ON_CONTEXT_MENU)
             {
                 processMenuContext(aIntParameter);
@@ -1258,6 +1282,13 @@ namespace stock123.app
 
             if (evt == xBaseControl.EVT_BUTTON_CLICKED)
             {
+                if (aIntParameter == C.EVT_SHOW_HIDE_LEFTPANEL)
+                {
+                    int v = isHidingLeftPanel() ? 0 : 1;
+                    GlobalData.vars().setValueInt("HideLP", v);
+                    updateUI();
+                    return;
+                }
                 if (aIntParameter == C.ID_BUTTON_CHON_NHOM_CP || aIntParameter == C.ID_BUTTON_CHON_NHOM_CP_NGANH)
                 {
                     showShareGroupListMenu(aIntParameter == C.ID_BUTTON_CHON_NHOM_CP, ((xButton)sender).getControl());

@@ -161,6 +161,7 @@ public const uint COLOR_TD_DOWN       = 0xffff1212;
         public const int EVT_WINDOW_INITIALIZED = 93;
         public const int EVT_FOCUS_AT_CURSOR = 94;
         public const int EVT_REFRESH_SHARE_DATA = 95;
+        public const int EVT_SHOW_HIDE_LEFTPANEL = 96;
         //==============================================
 
         public const int ID_BUTTON_INDICES_DETAIL = 1000;
