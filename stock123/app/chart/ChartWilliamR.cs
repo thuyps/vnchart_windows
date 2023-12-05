@@ -36,6 +36,8 @@ namespace stock123.app.chart
 
             int ma1 = 0;
             int ma2 = 0;
+            mLowest = -100;
+            mHighest = 0;
             if (detectShareCursorChanged())
             {
                 share.calcWilliamR();

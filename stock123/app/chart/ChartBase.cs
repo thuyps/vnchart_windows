@@ -93,6 +93,8 @@ namespace stock123.app.chart
         public const int CHART_BW_ALLIGATOR = 54;
         public const int CHART_BW_Accelerator = 55;
 
+        public const int CHART_L3BANKER_FUNDTREND_FLOW = 56;
+
         public const int CHART_SUPERTREND = 58;
         public const int CHART_HEIKEN_ASHI_EMA = 64;
 
@@ -139,7 +141,7 @@ namespace stock123.app.chart
 
         protected float mVolumeBarW;
 
-        protected float mPriceDistance;
+        protected float _mPriceDistance;
         protected int mChartLineLength;
 
         protected float[] mChartLineColorArea;
@@ -218,6 +220,15 @@ namespace stock123.app.chart
             g.setColor(C.COLOR_BLUE);
             g.fillShapes(path, 4);
             g.drawLines(path, 4);
+        }
+
+        protected float priceDistance()
+        {
+            if (mRefChart != null)
+            {
+                return mRefChart.priceDistance();
+            }
+            return mHighest - mLowest;
         }
 
         //======================================
@@ -633,37 +644,21 @@ namespace stock123.app.chart
             {
                 mCurrentKey = key;
                 mChartLineLength = share.mEndIdx - share.mBeginIdx + 1;
+
                 mLastScope = share.mEndIdx - share.mBeginIdx + 1;
                 if (mChartLineLength > MAX_DRAW_POINT)
                     mChartLineLength = MAX_DRAW_POINT;
 
-                //mDrawingH = mH - 2 * CHART_BORDER_SPACING_Y;
-                //getDrawingW() = internalW() - 2 * CHART_BORDER_SPACING_X;
-                /*
-                mPriceDistance = share.getHighestPrice() - share.getLowestPrice();
-                //	price lines
-                float low = share.getLowestPrice();
-                //	priceDistance will fit drawingH
-                //	ex: 100k == 120 pixels . 1k = 1.2 pixels
-                float rY = (float)getDrawingH() / mPriceDistance;
-                //		float rX = (float)getDrawingW()/mChartLineLength;
-                //price
-                //rY = (float)priceDistance/drawingH;
-                float priceStep = (float)mPriceDistance / 5;
-
-                for (int i = 0; i < 5; i++)
-                {
-                    mPrices[i] = low + i * priceStep + priceStep / 2;
-                    mPricesY[i] = mY + (getDrawingH() - getMarginY()) - (int)((mPrices[i] - low) * rY);
-                }
-                 */
+               
 
                 mCurrentShare = share;
 
+                /*
                 calcPriceLines();
 
                 if (hasDrawer())
                     mDrawer.recalcPosition();
+                 */
 
                 return true;
             }
@@ -677,12 +672,15 @@ namespace stock123.app.chart
         {
             Share share = getShare();
 
-            mPriceDistance = share.getHighestPrice() - share.getLowestPrice();
+            mLowest = share.getLowestPrice();
+            mHighest = share.getHighestPrice();
+
+            //mPriceDistance = share.getHighestPrice() - share.getLowestPrice();
             //    price lines
             float low = share.getLowestPrice();
-            float rY = (float)getDrawingH() / mPriceDistance;
+            float rY = (float)getDrawingH() / priceDistance();
 
-            double priceStep = mPriceDistance / 5;
+            double priceStep = priceDistance() / 5;
 
             double startValue = share.getLowestPrice() - priceStep / 10;
 
@@ -775,11 +773,17 @@ namespace stock123.app.chart
         //=============================================
         protected void pricesToYs(float[] price, int offset, float[] xy, int len, bool detectLowHi)
         {
+            if (mRefChart != null)
+            {
+                mRefChart.pricesToYs(price, offset, xy, len, detectLowHi);
+                return;
+            }
+
             Share share = getShare();
             if (share == null)
                 return;
 
-            float priceDistance = 0;
+            float PriceDistance = 0;
             float low = 0;
             if (detectLowHi)
             {
@@ -790,18 +794,18 @@ namespace stock123.app.chart
                     if (price[i + offset] > hi) hi = price[i + offset];
                     if (price[i + offset] < lo) lo = price[i + offset];
                 }
-                priceDistance = hi - lo;
+                PriceDistance = hi - lo;
                 low = lo;
             }
             else
             {
-                priceDistance = mPriceDistance;
+                PriceDistance = priceDistance();
                 low = share.getLowestPrice();
             }
 
             //	priceDistance will fit drawingH
             //	ex: 100k == 120 pixels . 1k = 1.2 pixels
-            float rY = (float)getDrawingH() / priceDistance;
+            float rY = (float)getDrawingH() / PriceDistance;
 
             float rX = (float)getDrawingW() / (share.mEndIdx - share.mBeginIdx + 1);
 
@@ -818,6 +822,12 @@ namespace stock123.app.chart
         }
         protected void pricesToYs(float[] price, int offset, float[] xy, int len, float price_low, float price_hi)
         {
+            if (mRefChart != null)
+            {
+                mRefChart.pricesToYs(price, offset, xy, len, price_low, price_hi);
+                return;
+            }
+
             Share share = getShare();
             if (share == null)
                 return;
@@ -1156,6 +1166,11 @@ namespace stock123.app.chart
 
         public int xToCandleIdx(float x)
         {
+            if (mRefChart != null)
+            {
+                return mRefChart.xToCandleIdx(x);
+            }
+
             float mX = 0;
             float mY = 0;
             float mH = getH();
@@ -1172,6 +1187,10 @@ namespace stock123.app.chart
 
         public float yToPrice(float y)
         {
+            if (mRefChart != null)
+            {
+                return mRefChart.yToPrice(y);
+            }
             int mX = 0;
             int mY = 0;
 
@@ -1197,6 +1216,11 @@ namespace stock123.app.chart
 
         public float candleToX(float candle)
         {
+            if (mRefChart != null)
+            {
+                return mRefChart.candleToX(candle);
+            }
+
             float mX = 0;
             float mY = 0;
             float mH = getH();
@@ -1209,6 +1233,11 @@ namespace stock123.app.chart
         }
         public float priceToY(float price)
         {
+            if (mRefChart != null)
+            {
+                return mRefChart.priceToY(price);
+            }
+
             int mX = 0;
             int mY = 0;
             int mH = getH();
@@ -1880,5 +1909,16 @@ namespace stock123.app.chart
                 }
             }
         }
+
+        public uint colorLine()
+        {
+            return themeDark() ? C.COLOR_TD_LINE : C.COLOR_TL_LINE;
+        }
+
+        public uint colorPriceLabel()
+        {
+            return themeDark() ? C.COLOR_TD_PRICELABEL : C.COLOR_TL_PRICELABEL;
+        }
+
     }
 }

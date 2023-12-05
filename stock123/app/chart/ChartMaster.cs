@@ -137,6 +137,20 @@ namespace stock123.app.chart
             }
         }
 
+        protected override bool detectShareCursorChanged()
+        {
+            bool ok = base.detectShareCursorChanged();
+
+            //if (ok)
+            {
+                mLowest = getShare().getLowestPrice();
+                mHighest = getShare().getHighestPrice();
+
+                calcPriceLines();
+            }
+            return ok;
+        }
+
         virtual public void renderOverlayAttachedCharts(xGraphics g)
         {
             if (mOverlayAttachedCharts != null)
@@ -196,11 +210,7 @@ namespace stock123.app.chart
 
                 mChartLineXY = allocMem(mChartLineXY, items);
 
-                float lo = share.getLowestPrice();
-                float hi = share.getHighestPrice();
-                mPriceDistance = share.getHighestPrice() - lo;
-
-                pricesToYs(share.mCClose, share.mBeginIdx, mChartLineXY, mChartLineLength, lo, hi);
+                pricesToYs(share.mCClose, share.mBeginIdx, mChartLineXY, mChartLineLength, mLowest, mHighest);
             }
 
             if (mChartLineXY == null)
@@ -297,7 +307,7 @@ namespace stock123.app.chart
 
             float x, y;
             float low = s.getLowestPrice();
-            float ry = (float)getDrawingH() / mPriceDistance;
+            float ry = (float)getDrawingH() / priceDistance();
             float rw = (float)getDrawingW() / mChartLineLength;
 
             float shadowH = 0;
@@ -434,7 +444,7 @@ namespace stock123.app.chart
 
             float x, y;
             float low = s.getLowestPrice();
-            float ry = (float)getDrawingH() / mPriceDistance;
+            float ry = (float)getDrawingH() / priceDistance();
             float rw = (float)getDrawingW() / mChartLineLength;
 
             float shadowH = 0;
@@ -598,7 +608,7 @@ namespace stock123.app.chart
 
             float x, y;
             float low = s.getLowestPrice();
-            float ry = (float)getDrawingH() / mPriceDistance;
+            float ry = (float)getDrawingH() / priceDistance();
             float rw = (float)getDrawingW() / mChartLineLength;
 
             float shadowH = 0;
@@ -728,7 +738,7 @@ namespace stock123.app.chart
 
             float x, y;
             float low = s.getLowestPrice();
-            float ry = (float)getDrawingH() / mPriceDistance;
+            float ry = (float)getDrawingH() / priceDistance();
             float rw = (float)getDrawingW() / mChartLineLength;
 
             float shadowH = 0;

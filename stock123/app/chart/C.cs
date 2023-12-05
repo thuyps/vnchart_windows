@@ -64,7 +64,9 @@ namespace stock123.app
         public const uint COLOR_BLUE = 0xff0000ff;
         public const uint COLOR_BLUE_LIGHT = 0xff4040ff;
         public const uint COLOR_YELLOW = 0xffffff00;
+        public const uint COLOR_YELLOW_DARK = 0xff404000;
         public const uint COLOR_RED = 0xffff0000;
+        public const uint COLOR_RED_DARK = 0xff800000;
         public const uint COLOR_BLACK = 0xff000000;
         public const uint COLOR_WHITE = 0xffffffff;
         public const uint COLOR_GREEN_DARK = 0xff008000;
@@ -77,6 +79,12 @@ namespace stock123.app
         public const uint COLOR_GRAY_LIGHT = 0xffa0a0a0;
         public const uint COLOR_FIBO_DOT_LINE = 0xffff8000;
         public const uint COLOR_FIBO_DOT_LINE2 = 0xff804000;
+
+        public const uint COLOR_TD_PRICELABEL  = 0x80e0e0e0;
+        public const uint COLOR_TL_PRICELABEL  = 0xf05050e0;
+
+        public const uint COLOR_TD_LINE  = 0xf0a0a0a0;
+        public const uint COLOR_TL_LINE = 0xf0010101;
 
         public const uint COLOR_FADE_YELLOW0 = 0x90909040;
         public const uint COLOR_FADE_YELLOW = 0x40909040;
@@ -109,11 +117,11 @@ public const uint COLOR_TD_DOWN       = 0xffff1212;
     public const uint COLOR_TD_PRICELINE  = 0x40e0e0e0;
     public const uint COLOR_TL_PRICELINE  = 0x70101010;
 
-    public const uint COLOR_TD_PRICELABEL  = 0x80e0e0e0;
-    public const uint COLOR_TL_PRICELABEL  = 0xf05050e0;
+    //public const uint COLOR_TD_PRICELABEL  = 0x80e0e0e0;
+    //public const uint COLOR_TL_PRICELABEL  = 0xf05050e0;
 
-    public const uint COLOR_TD_LINE  = 0xf0a0a0a0;
-    public const uint COLOR_TL_LINE = 0xf0010101;
+    //public const uint COLOR_TD_LINE  = 0xf0a0a0a0;
+    //public const uint COLOR_TL_LINE = 0xf0010101;
 
 
         //================================

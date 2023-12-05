@@ -121,7 +121,7 @@ namespace stock123.app.chart
 
             float x, y;
 
-            float ry = (float)getDrawingH() / mPriceDistance;
+            float ry = (float)getDrawingH() / priceDistance();
             float rw = (float)getDrawingW() / mChartLineLength;
 
             int j = 0;

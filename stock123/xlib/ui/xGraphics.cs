@@ -43,7 +43,7 @@ namespace xlib.ui
             mPen.Color = Color.FromArgb((int)color);
         }
 
-        public void drawLine(int x1, int y1, int x2, int y2, float thickness)
+        public void drawLine(float x1, float y1, float x2, float y2, float thickness)
         {
             float oldThick = mPen.Width;
             mPen.Width = thickness;

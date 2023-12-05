@@ -104,6 +104,7 @@ namespace stock123.app.chart
                     ChartBase.CHART_ATR,
                 ChartBase.CHART_ADL,
                 ChartBase.CHART_ADX,
+                ChartBase.CHART_L3BANKER_FUNDTREND_FLOW,
                 ChartBase.CHART_BW_Accelerator,
                 ChartBase.CHART_AWESOME,
                 ChartBase.CHART_CCI,
@@ -139,6 +140,7 @@ namespace stock123.app.chart
                             "ATR - Average true range",
                             "ADL - Accumulation Distribution Line",
                             "ADX - Average Directional Index",
+                            "Banker Fund Flow",
                             "BW - Accelerator",
                             "BW - Awesome",
                             "CCI - Commodity Channel Index",
@@ -517,6 +519,11 @@ namespace stock123.app.chart
                 c = new ChartXTrender(f);
                 c.mShouldDrawCursor = true;
             }
+            else if (chartID == ChartBase.CHART_L3BANKER_FUNDTREND_FLOW)
+            {
+                c = new ChartBankerFund(f);
+                c.mShouldDrawCursor = true;
+            }
             else if (chartID == ChartBase.CHART_SMI_RSI)
             {
                 c = new ChartSMIOfRSI(f);
@@ -605,7 +612,7 @@ namespace stock123.app.chart
 
             c.setHasDrawer(true);
             c.setShare(mShare);
-            c.setRefChart(mChartMaster);
+            //c.setRefChart(mChartMaster);
 
             return c;
         }
